@@ -26,7 +26,7 @@ Here's a few of the important terms I will use throughout the course of this doc
 
 ## Data Design and Abstraction
 
-Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing <a href="http://blog.pop.co/post/67465239611/why-we-chose-api-first-development">API First Development</a> this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
+Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing [API First Development](http://blog.pop.co/post/67465239611/why-we-chose-api-first-development) this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
 
 Occasionally, a Collection can represent a database table, and a Resource can represent a row within that table. However, this is not the usual case. In fact, your API should abstract away as much of your data and business logic as possible. It is very important that you don't overwhelm Third-Party Developers with any complex application data, if you do they won't want to use your API.
 
@@ -86,9 +86,9 @@ Here are two common URL Roots:
 * https://example.org/api/v1/*
 * https://api.example.com/v1/*
 
-If your application is huge, or you anticipate it becoming huge, putting the API on its own subdomain (e.g. <strong>api.</strong>) is a good choice. This can allow for some more flexible scalability down the road.
+If your application is huge, or you anticipate it becoming huge, putting the API on its own subdomain (e.g. **api.**) is a good choice. This can allow for some more flexible scalability down the road.
 
-If you anticipate your API will never grow to be that large, or you want a much simpler application setup (e.g. you want to host the website AND API from the same framework), placing your API beneath a URL segment at the root of the domain (e.g. <strong>/api/</strong>) works as well.
+If you anticipate your API will never grow to be that large, or you want a much simpler application setup (e.g. you want to host the website AND API from the same framework), placing your API beneath a URL segment at the root of the domain (e.g. **/api/**) works as well.
 
 It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
 
@@ -129,7 +129,7 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Verb
 * `POST /zoos/ZID/employees`: Hire an Employee at a specific Zoo
 * `DELETE /zoos/ZID/employees/EID`: Fire an Employee from a specific Zoo
 
-In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID, and ATID means Animal Type ID. Having a key in your documentation for whatever convention you choose is a good idea.</span>
+In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID, and ATID means Animal Type ID. Having a key in your documentation for whatever convention you choose is a good idea.
 
 I've left out the common API URL prefix in the above examples for brevity. While this can be fine during communications, in your actual API documentation, you should always display the full URL to each endpoint (e.g. GET http://api.example.com/v1/animal_type/ATID).
 
@@ -138,7 +138,7 @@ Notice how the relationships between data is displayed, specifically the many to
 
 ## Filtering
 
-When a Consumer makes a request for a listing of objects, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is coming from. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
+When a Consumer makes a request for a listing of objects, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is coming from. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
 > Minimize the arbitrary limits imposed on Third Party Developers.
 
@@ -158,7 +158,7 @@ Also, this goes without saying, but whenever you perform filtering or sorting of
 
 ## Status Codes
 
-It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. There are a <a title="HTTP Status Codes" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">plethora of HTTP Status Codes</a> to choose from, however this list should be a good starting point:
+It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. There are a [plethora of HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) to choose from, however this list should be a good starting point:
 
 * **200** OK
   * GET Requests
@@ -174,7 +174,7 @@ It is very important that as a RESTful API, you make use of the proper HTTP Stat
   * The Consumer gave bad data to the Server, and the Server did nothing with it (Idempotent)
 * **404** NOT FOUND
   * All Requests
-  * The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
+  * The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
 * **500** INTERNAL SERVER ERROR
   * All Requests
   * The Server encountered an error, and the Consumer has no knowledge if the request was successful
@@ -187,7 +187,7 @@ The **2xx** range is reserved for successful messages where all goes as planned.
 
 The **3xx** range is reserved for traffic redirection. Most APIs do not use these requests much (not nearly as often as the SEO folks use them ;), however, the newer Hypermedia style APIs will make more use of these.
 
-The **4xx** range is reserved for responding to errors made by the Consumer, e.g. they're providing bad data or asking for things which don't exist. These requests should be be idempotent, and not change the state of the server.
+The **4xx** range is reserved for responding to errors made by the Consumer, e.g. they're providing bad data or asking for things which don't exist. These requests should be be idempotent, and not change the state of the server.
 
 The **5xx** range is reserved as a response when the Server makes a mistake. Often times, these errors are thrown by low-level functions even outside of the developers hands, to ensure a Consumer gets some sort of response. The Consumer can't possibly know the state of the server when a 5xx response is received, and so these should be avoidable.
 
@@ -208,9 +208,9 @@ Note that when a Consumer creates a Resource, they usually do not know the ID of
 
 Most of the time a Server will want to know exactly who is making which Requests. Sure, some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
 
-<a href="https://tools.ietf.org/html/rfc6749">OAuth 2.0</a> provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
+[OAuth 2.0](https://tools.ietf.org/html/rfc6749) provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
 
-There are also <a href="http://tools.ietf.org/html/rfc5849">OAuth 1.0</a> and <a href="https://dev.twitter.com/docs/oauth/xauth">xAuth</a>, which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
+There are also [OAuth 1.0](http://tools.ietf.org/html/rfc5849) and [xAuth](https://dev.twitter.com/docs/oauth/xauth), which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
@@ -230,7 +230,7 @@ Hypermedia APIs are very likely the future of RESTful API design. They're actual
 
 When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the Server and the Consumer. These Endpoints MUST be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the Server as intended. This, as you can assume, is quite a limitation.
 
-Now, API Consumers are of course not the only user agent making HTTP requests on the Internet. Far from it. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are. What makes humans so special? Well, they're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where they want to go. If a URL changes, a human is not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved data).
+Now, API Consumers are of course not the only user agent making HTTP requests on the Internet. Far from it. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are. What makes humans so special? Well, they're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where they want to go. If a URL changes, a human is not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved data).
 
 The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important (or necessarily required), as long as a URL is provided.
 
@@ -238,7 +238,7 @@ With the Consumer of a Hypermedia API crawling links and gathering information, 
 
 When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3xx redirect to the complete Resource.
 
-JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
+JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
 
 
 ## Documentation
@@ -264,7 +264,7 @@ Since everything we do is over HTTP, I'm going to show you a dissection of an HT
 
 The server then responds in the say Key/Value pair format, with two newlines and then the response body. HTTP is very much a request/response protocol; there is no "Push" support (the Server sending data to the Consumer unprovoked), unless you use a different protocol such as Websockets.
 
-When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using <a href="https://www.wireshark.org/">Wireshark</a>, for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
+When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using [Wireshark](https://www.wireshark.org), for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
 
 ### Example HTTP Request
 
@@ -298,4 +298,4 @@ When designing your API, you should be able to work with tools which allow you t
 
 ## About the Author
 
-At the time of this writing, <a title="Thomas Hunter II" href="http://thomashunter.name">Thomas Hunter</a> works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
+At the time of this writing, [Thomas Hunter II](http://thomashunter.name) works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
