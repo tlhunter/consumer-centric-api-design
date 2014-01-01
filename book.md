@@ -8,6 +8,26 @@ Building an API is one of the most important things you can do to increase the v
 
 The principles of this document, if followed closely when designing your API, will ensure that Consumers of your API will be able to understand what is going on, and should drastically reduce the number of confused and/or angry emails you receive. I've organized everything into topics, which don't necessarily need to be read in order.
 
+### Goals of this Book
+
+Happy Developers
+
+Future Proof API
+
+TODO
+
+### Intended Audience
+
+TODO
+
+### Approach
+
+Language Agnostic
+
+Not too technical
+
+TODO
+
 
 ## Definitions
 
@@ -32,6 +52,10 @@ Occasionally, a Collection can represent a database table, and a Resource can re
 
 There are also many parts of your service which you SHOULD NOT expose via API at all. A common example is that many APIs will not allow third parties to create users.
 
+TODO: Examples of bad abstractions
+
+TODO: Examples of good abstractions
+
 
 ## Verbs
 
@@ -39,16 +63,32 @@ Surely you know about GET and POST requests. These are the two most commonly req
 
 There are four and a half very important HTTP verbs that you need to know about. I say "and a half", because the PATCH verb is very similar to the PUT verb, and two two are often combined by many an API developer. Here are the verbs, and next to them are their associated database call (I'm assuming most people reading this know more about writing to a database than designing an API).
 
-* **GET** (SELECT): Retrieve a specific Resource from the Server, or a listing of Resources.
-* **POST** (CREATE): Create a new Resource on the Server.
-* **PUT** Update a Resource on the Server, providing the entire Resource.
-* **PATCH** (UPDATE): Update a Resource on the Server, providing only changed attributes.
-* **DELETE** (DELETE): Remove a Resource from the Server.
+* **GET**
+    * Retrieve a specific Resource from the Server
+    * Retrieve a listing of Resources from the Server
+    * Think of this as a SQL SELECT statement
+* **POST**
+    * Creates a new Resource on the Server
+    * Think of this as a SQL INSERT statement
+* **PUT**
+    * Update a Resource on the Server
+    * Provide the entire Resource
+    * Think of the SQL UPDATE statement providing null values for some keys
+* **PATCH**
+    * Update a Resource on the Server
+    * Provide only changed attributes
+    * Like the SQL UPDATE statement providing only a few keys
+* **DELETE**
+    * Remove a Resource from the Server
+    * Similar to the SQL DELETE statement
 
 Here are two lesser known HTTP verbs:
 
-* **HEAD** - Retrieve meta data about a Resource, such as a hash of the data or when it was last updated.
-* **OPTIONS** - Retrieve information about what the Consumer is allowed to do with the Resource.
+* **HEAD**
+    * Retrieve meta data about a Resource
+    * Such as a hash of the data or when it was last updated
+* **OPTIONS**
+    * Retrieve information about what the Consumer is allowed to do with the Resource
 
 A good RESTful API will make use of the four and a half HTTP verbs for allowing third parties to interact with its data, and will never include actions / verbs as URL segments.
 
@@ -59,11 +99,15 @@ Typically, GET requests can be cached (and often are!) Browsers, for example, wi
 
 No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
 
+    TODO: http://api.example.org/v1/*
+
 Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
 
 As a side note, if you are simply ADDING new features to your API, such as new attributes on a Resource (which are not required and the Resource will function without), or if you are ADDING new Endpoints, you do not need to increment your API version number since these changes do not break backwards compatibility. You will want to update your API Documentation (your Contract), of course.
 
 Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to tell Consumers of your API that the older version will be removed on a specific date and that they should upgrade to a newer version.
+
+    TODO: Accept: application/json+v1;
 
 A good RESTful API will keep track of the version in the URL. The other most common solution is to put a version number in a request header, but after working with many different Third Party Developers, I can tell you that adding headers is no where near as easy as adding a URL Segment.
 
@@ -93,6 +137,8 @@ If you anticipate your API will never grow to be that large, or you want a much 
 It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
 
 Also, notice the HTTPS prefix. As a good RESTful API, you must host your API behind HTTPS.
+
+TODO: Don't use a different TLD
 
 
 ## Endpoints
@@ -212,6 +258,12 @@ Note that when a Consumer creates a Resource, they usually do not know the ID of
 
 ## Authentication
 
+There are two common paradigms your server may represent. In the three legged paradigm, a third-party API consumer is making requests on behalf of a user of your website / service. In a two-legged paradigm, there really isn't a user involved.
+
+### Three Legged Authentication
+
+TODO: Mention things need to be revoked.
+
 Most of the time a Server will want to know exactly who is making which Requests. Sure, some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
 
 [OAuth 2.0](https://tools.ietf.org/html/rfc6749) provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
@@ -219,6 +271,12 @@ Most of the time a Server will want to know exactly who is making which Requests
 There are also [OAuth 1.0](http://tools.ietf.org/html/rfc5849) and [xAuth](https://dev.twitter.com/docs/oauth/xauth), which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+
+### Two Legged Authentication
+
+TODO: Something proprietary? Simple GET parameter?
+
+TODO: Research solutions
 
 
 ## Content Type
@@ -246,6 +304,8 @@ When retrieving a list of Resources within a Collection, an attribute containing
 
 JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
 
+TODO: Link to some specs
+
 
 ## Documentation
 
@@ -264,7 +324,7 @@ If you've got the spare time, build a developer API console so that developers c
 Make sure your documentation can be printed; CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
 
 
-## Errata: Raw HTTP Packet
+## Raw HTTP Packet
 
 Since everything we do is over HTTP, I'm going to show you a dissection of an HTTP packet. I'm often surprised at how many people don't know what these things look like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
 
