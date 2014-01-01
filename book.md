@@ -149,7 +149,7 @@ Filtering is mostly useful for performing GETs on Collections of resources. Sinc
 * ?limit=10: Reduce the number of results returned to the Consumer (for Pagination)
 * ?offset=10: Send sets of information to the Consumer (for Pagination)
 * ?animal_type_id=1: Filter records which match the following condition (WHERE animal_type_id = 1)
-* ?sortby=name&amp;order=asc: Sort the results based on the specified attribute (ORDER BY `name` ASC)
+* ?sortby=name&order=asc: Sort the results based on the specified attribute (ORDER BY `name` ASC)
 
 Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET /zoo/ZID/animals. This would be the same thing as GET /animals?zoo_id=ZID. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
 
@@ -161,23 +161,23 @@ Also, this goes without saying, but whenever you perform filtering or sorting of
 It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. There are a [plethora of HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) to choose from, however this list should be a good starting point:
 
 * **200** OK
-  * GET Requests
-  * The Consumer requested data from the Server, and the Server found it for them (Idempotent)
+    * GET Requests
+    * The Consumer requested data from the Server, and the Server found it for them (Idempotent)
 * **201** ACCEPTED
-  * POST / PUT / PATCH Requests
-  * The Consumer gave the Server data, and the Server accepted it
+    * POST / PUT / PATCH Requests
+    * The Consumer gave the Server data, and the Server accepted it
 * **202** NO CONTENT
-  * DELETE Requests
-  * The Consumer asked the Server to delete a Resource, and the Server deleted it
+    * DELETE Requests
+    * The Consumer asked the Server to delete a Resource, and the Server deleted it
 * **400** INVALID REQUEST
-  * POST / PUT / PATCH Requests
-  * The Consumer gave bad data to the Server, and the Server did nothing with it (Idempotent)
+    * POST / PUT / PATCH Requests
+    * The Consumer gave bad data to the Server, and the Server did nothing with it (Idempotent)
 * **404** NOT FOUND
-  * All Requests
-  * The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
+    * All Requests
+    * The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
 * **500** INTERNAL SERVER ERROR
-  * All Requests
-  * The Server encountered an error, and the Consumer has no knowledge if the request was successful
+    * All Requests
+    * The Server encountered an error, and the Consumer has no knowledge if the request was successful
 
 ### Status Code Ranges
 
@@ -195,12 +195,18 @@ The **5xx** range is reserved as a response when the Server makes a mistake. Oft
 
 When performing actions using the different HTTP verbs to Server endpoints, a Consumer needs to get some sort of information in return. This list is pretty typical of RESTful APIs:
 
-* `GET /collection`: Return a listing (array) of Resource objects
-* `GET /collection/resource`: Return an individual Resource object
-* `POST /collection`: Return the newly created Resource object
-* `PUT /collection/resource`: Return the complete Resource object
-* `PATCH /collection/resource`: Return the complete Resource object
-* `DELETE /collection/resource`: Return an empty document
+* `GET /collection`
+    * Return a listing (array) of Resource objects
+* `GET /collection/resource`
+    * Return an individual Resource object
+* `POST /collection`
+    * Return the newly created Resource object
+* `PUT /collection/resource`
+    * Return the complete Resource object
+* `PATCH /collection/resource`
+    * Return the complete Resource object
+* `DELETE /collection/resource`
+    * Return an empty document
 
 Note that when a Consumer creates a Resource, they usually do not know the ID of the Resource being created (nor other attributes such as created and modified timestamps, if applicable). These additional attributes are returned with subsequent request, and of course as a response to the initial POST.
 
