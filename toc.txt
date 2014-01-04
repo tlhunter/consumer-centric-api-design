@@ -1,0 +1,38 @@
+INTRO
+    Introduction
+    Data Design and Abstraction
+    Raw HTTP Packet
+
+REQUESTS
+    API Root URL
+    API Versioning
+    HTTP Verbs
+    URL Endpoints
+    Resource Filtering for GET Requests
+    Attribute Filtering for GET Requests
+    JSON Request Body for POST, PUT, and PATCH Resquests
+
+RESPONSES
+    HTTP Response Status Codes
+    Response Content Types
+    Expected Response Bodies
+
+META
+    Authentication
+    API Analytics
+    Writing good Documentation
+    Developer Console
+
+ALTERNATIVES
+    Hypermedia APIs
+    JSON RPC: An Alternative to REST
+    Horrible SOAP?
+
+OUTRO
+    About People
+
+
+- Further Reading
+    Dissimenate into other sections as subheadings at the end
+- Definitions
+    Find a way to put this in the other sections
