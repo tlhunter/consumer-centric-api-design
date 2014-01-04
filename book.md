@@ -22,15 +22,15 @@ Developing a future-proof API is another goal.
 
 ### Intended Audience
 
-Anyone who has built a few websites, knows how to serve up a webpage over HTTP.
+Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice.
 
 ### Approach
 
-Language Agnostic
+This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, this book would make a good candidate for sitting on the back of your toilet.
 
-Will include examples in a few languages (e.g. Node.js, PHP)
+Code examples will often be done in a couple different languages, likely including PHP and Node.js.
 
-Not too technical
+A lot of this is philosophical, not so much technical.
 
 
 ## Data Design and Abstraction
@@ -46,8 +46,6 @@ Sometimes multiple tables should be represented as a single resource. Maybe even
 TODO: Examples of bad abstractions
 
 TODO: Examples of good abstractions
-
-TODO: Singular or Plural? does it matter? Consistensy is the most important
 
 
 ## Raw HTTP Packet
@@ -92,27 +90,41 @@ When designing your API, you should be able to work with tools which allow you t
 
 The root location of your API is important, believe it or not. When a developer (read as code archaeologist) inherits an old project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer calls out to. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
-Here are two common URL Roots:
+### Root URL Location
 
-* https://example.org/api/v1/*
-* https://api.example.com/v1/*
+Here are two common URL Root Locations:
 
-If your application is huge, or you anticipate it becoming huge, putting the API on its own subdomain (e.g. **api.**) is a good choice. This can allow for some more flexible scalability down the road.
+* `https://example.org/api/*`
+* `https://api.example.com/*`
+
+If your application is huge, or you anticipate it becoming huge, putting the API on its own subdomain (e.g. **api.**) is a good choice. This can allow for some more flexible scalability down the road. It can also be useful for preventing which cookie data can be shared between the content website and the API.
 
 If you anticipate your API will never grow to be that large, or you want a much simpler application setup (e.g. you want to host the website AND API from the same framework), placing your API beneath a URL segment at the root of the domain (e.g. **/api/**) works as well.
-
-It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
 
 Also, notice the HTTPS prefix. As a good RESTful API, you must host your API behind HTTPS.
 
 TODO: Don't use a different TLD
+
+### Content at the Root
+
+It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
+
+Here's a truncated example of the content provided by the [GitHub API Root URL](https://api.github.com/). Notice how it's both easily readable by a human and easily parsable by a machine.
+
+    {
+      "current_user_url": "https://api.github.com/user",
+      "authorizations_url": "https://api.github.com/authorizations",
+      "code_search_url": "https://api.github.com/search/code?q={query}{&page,per_page,sort,order}",
+      "emails_url": "https://api.github.com/user/emails",
+      ...
+    }
 
 
 ## API Versioning
 
 No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
 
-    TODO: http://api.example.org/v1/*
+    http://api.example.org/v1/*
 
 Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
 
@@ -120,7 +132,7 @@ As a side note, if you are simply ADDING new features to your API, such as new a
 
 Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to tell Consumers of your API that the older version will be removed on a specific date and that they should upgrade to a newer version.
 
-    TODO: Accept: application/json+v1;
+    Accept: application/json+v1;
 
 A good RESTful API will keep track of the version in the URL. The other most common solution is to put a version number in a request header, but after working with many different Third Party Developers, I can tell you that adding headers is no where near as easy as adding a URL Segment.
 
@@ -150,7 +162,7 @@ There are four and a half very important HTTP verbs that you need to know about.
     * Remove a Resource from the Server
     * Similar to the SQL DELETE statement
 
-Here are two lesser known HTTP verbs:
+Here are two lesser known HTTP verbs. Feel free to use them in your API, but they aren't 100% necessary.
 
 * **HEAD**
     * Retrieve meta data about a Resource
@@ -166,6 +178,8 @@ Typically, GET requests can be cached (and often are!) Browsers, for example, wi
 ## URL Endpoints
 
 An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources.
+
+Honestly, it doesn't matter too much if the endpoints are singular or plural. What does matter is that you stay consistent. The examples in this book are plural.
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
@@ -210,18 +224,18 @@ Notice how the relationships between data is displayed, specifically the many to
 
 When a Consumer makes a request for a listing of objects, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is coming from. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
-> Minimize the arbitrary limits imposed on Third Party Developers.
+> Minimize arbitrary limits imposed on Third Party Developers.
 
 It is important, however, that you do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this is that the network activity is minimal and the Consumer gets their results back as soon as possible. The second most important reason for this is the Consumer may be lazy, and if the Server can do filtering and pagination for them, all the better. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the request will be less resource heavy.
 
 Filtering is mostly useful for performing GETs on Collections of resources. Since these are GET requests, filtering information should be passed via the URL. Here are some examples of the types of filtering you could conceivably add to your API:
 
-* ?limit=10: Reduce the number of results returned to the Consumer (for Pagination)
-* ?offset=10: Send sets of information to the Consumer (for Pagination)
-* ?animal_type_id=1: Filter records which match the following condition (WHERE animal_type_id = 1)
-* ?sortby=name&order=asc: Sort the results based on the specified attribute (ORDER BY `name` ASC)
+* `?limit=10`: Reduce the number of results returned to the Consumer (for Pagination)
+* `?offset=10`: Send sets of information to the Consumer (for Pagination)
+* `?animal_type_id=1`: Filter records which match the following condition (WHERE animal_type_id = 1)
+* `?sortby=name&order=asc`: Sort the results based on the specified attribute (`ORDER BY name ASC`)
 
-Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET /zoo/ZID/animals. This would be the same thing as GET /animals?zoo_id=ZID. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
+Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET `/zoo/ZID/animals`. This would be the same thing as GET `/animals?zoo_id=ZID`. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
 
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
@@ -242,22 +256,22 @@ TODO: Write Me
 
 It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. There are a [plethora of HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) to choose from, however this list should be a good starting point:
 
-* **200** OK
+* `**200** OK`
     * GET Requests
     * The Consumer requested data from the Server, and the Server found it for them (Idempotent)
-* **201** ACCEPTED
+* `**201** ACCEPTED`
     * POST / PUT / PATCH Requests
     * The Consumer gave the Server data, and the Server accepted it
-* **202** NO CONTENT
+* `**202** NO CONTENT`
     * DELETE Requests
     * The Consumer asked the Server to delete a Resource, and the Server deleted it
-* **400** INVALID REQUEST
+* `**400** INVALID REQUEST`
     * POST / PUT / PATCH Requests
     * The Consumer gave bad data to the Server, and the Server did nothing with it (Idempotent)
-* **404** NOT FOUND
+* `**404** NOT FOUND`
     * All Requests
     * The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
-* **500** INTERNAL SERVER ERROR
+* `**500** INTERNAL SERVER ERROR`
     * All Requests
     * The Server encountered an error, and the Consumer has no knowledge if the request was successful
 
