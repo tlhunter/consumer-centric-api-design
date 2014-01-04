@@ -296,7 +296,7 @@ Developers using popular languages and frameworks can very likely parse any vali
 Some API creators recommend adding a .json, .xml, or .html file extension to the URL (after the endpoint) for specifying the content type to be returned, although I'm personally not a fan of this. I really like the Accept header (which is built into the HTTP spec) and feel that is the appropriate thing to use.
 
 
-## Expected Response Documents
+## Expected Response Bodies
 
 When performing actions using the different HTTP verbs to Server endpoints, a Consumer needs to get some sort of information in return. This list is pretty typical of RESTful APIs:
 
@@ -314,6 +314,23 @@ When performing actions using the different HTTP verbs to Server endpoints, a Co
     * Return an empty document
 
 Note that when a Consumer creates a Resource, they usually do not know the ID of the Resource being created (nor other attributes such as created and modified timestamps, if applicable). These additional attributes are returned with subsequent request, and of course as a response to the initial POST.
+
+
+## Response Document Standards
+
+### JSON Schema
+
+http://json-schema.org/
+
+### JSON API
+
+Standardized format for return documents
+
+http://jsonapi.org/
+
+### Siren
+
+http://sirenspec.org
 
 
 ## Authentication
@@ -370,7 +387,7 @@ Make sure your documentation can be printed; CSS is a powerful thing; don't be a
 TODO
 
 
-## Hypermedia APIs
+## Hypermedia APIs: REST Evolved
 
 Hypermedia APIs are very likely the future of RESTful API design. They're actually a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
 
@@ -406,16 +423,7 @@ This is a sort of example of Hypermedia API's gone wrong. Very complex. Also, no
 
 Big in corporate environments.
 
-
-## Further Reading
-
-TODO
-
-http://jsonapi.org/format/
-
-http://json-schema.org/examples.html
-
-http://sirenspec.org
+Mention how it Sucks
 
 
 ## About the Author and Reviewers

@@ -1,9 +1,13 @@
-INTRO
+Principles of Good RESTful API Design
+
+§1  INTRO
     Introduction
     Data Design and Abstraction
     Raw HTTP Packet
+        Request
+        Response
 
-REQUESTS
+§2  REQUESTS
     API Root URL
     API Versioning
     HTTP Verbs
@@ -12,27 +16,30 @@ REQUESTS
     Attribute Filtering for GET Requests
     JSON Request Body for POST, PUT, and PATCH Resquests
 
-RESPONSES
+§3  RESPONSES
     HTTP Response Status Codes
+        Status Code Ranges
     Response Content Types
     Expected Response Bodies
+    Response Document Standards
+        JSON Schema
+        JSON API
+        Siren
 
-META
+§4  META
     Authentication
+        Two Legged
+        Three Legged
     API Analytics
     Writing good Documentation
     Developer Console
 
-ALTERNATIVES
+§5  ALTERNATIVES
     Hypermedia APIs
-    JSON RPC: An Alternative to REST
-    Horrible SOAP?
+    JSON RPC
+    XML SOAP
 
-OUTRO
+§6  OUTRO
+    Links?
+    Glossary?
     About People
-
-
-- Further Reading
-    Dissimenate into other sections as subheadings at the end
-- Definitions
-    Find a way to put this in the other sections
