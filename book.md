@@ -14,38 +14,23 @@ The principles of this document, if followed closely when designing your API, wi
 
 ### Goals of this Book
 
-The number one goal of this book is not to build an API adhering to the idea of a perfect academic REST API. The real goal is to build an API which third parties will love, be able to grok extremely quickly, and reduce the number of support emails you receive.
+The primary goal of this book is not to build an API adhering to the idea of a perfect academic REST API.
+
+The real goal is to build an API which third parties will love, be able to grok extremely quickly, and reduce the number of support emails you receive.
 
 Developing a future-proof API is another goal.
 
-TODO
-
 ### Intended Audience
 
-TODO
+Anyone who has built a few websites, knows how to serve up a webpage over HTTP.
 
 ### Approach
 
 Language Agnostic
 
+Will include examples in a few languages (e.g. Node.js, PHP)
+
 Not too technical
-
-TODO
-
-
-## Definitions TODO REMOVE
-
-Here's a few of the important terms I will use throughout the course of this document:
-
-* **Resource**: A single instance of an object. For example, an animal.
-* **Collection**: A collection of homogeneous objects. For example, animals.
-* **HTTP**: A protocol for communicating over a network.
-* **Consumer**: A client computer application capable of making HTTP requests.
-* **Third Party Developer**: A developer not a part of your project but who wishes to consume your data.
-* **Server**: An HTTP server/application accessible from a Consumer over a network.
-* **Endpoint**: An API URL on a Server which represents either a Resource or an entire Collection.
-* **Idempotent**: Side-effect free, can happen multiple times without penalty.
-* **URL Segment**: A slash-separated piece of information in the URL.
 
 
 ## Data Design and Abstraction
@@ -188,6 +173,8 @@ If you were building a fictional API to represent several different Zoo's, each 
 * https://api.example.com/v1/**animals**
 * https://api.example.com/v1/**animal_types**
 * https://api.example.com/v1/**employees**
+
+Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
 
 When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
 
