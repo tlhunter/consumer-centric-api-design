@@ -402,39 +402,43 @@ Some API creators recommend adding a .json, .xml, or .html file extension to the
 
 ## Expected Response Bodies
 
-When performing actions using the different HTTP verbs to Server endpoints, a Consumer needs to get some sort of information in return. This list is pretty typical of RESTful APIs:
+When a Consumer makes a request to the Server, something needs to be returned in the response. Depending on the HTTP Verb being used, the response will be different. Here's a good list to adhere to:
 
 * `GET /collection`
     * Return a listing (array) of Resource objects
-* `GET /collection/resource`
-    * Return an individual Resource object
+* `GET /collection/resource_id`
+    * Return a singular Resource object
 * `POST /collection`
     * Return the newly created Resource object
-* `PUT /collection/resource`
+* `PUT /collection/resource_id`
     * Return the complete Resource object
-* `PATCH /collection/resource`
+* `PATCH /collection/resource_id`
     * Return the complete Resource object
-* `DELETE /collection/resource`
+* `DELETE /collection/resource_id`
     * Return an empty document
 
-Note that when a Consumer creates a Resource, they usually do not know the ID of the Resource being created (nor other attributes such as created and modified timestamps, if applicable). These additional attributes are returned with subsequent request, and of course as a response to the initial POST.
+Note that when a Consumer creates a Resource, they usually do not know the ID of the Resource being created (nor other attributes such as created and modified timestamps, if applicable). These additional attributes are returned with the resulting Response, which is vital for the Consumer to keep track of things.
 
 
 ## Response Document Standards
 
-### JSON Schema
+When responding with a document representing a Collection, it is usually adaquate to return a top-level array containing each Resource object. Likewise, when responding with a document representing a Resource, simply returning a top-level object containing the Resource is good-enough.
 
-http://json-schema.org/
+However, there are some standards people have developed for encapsulating these items in a standardized envelope to help give the Consumer some context when parsing the responses.
 
-### JSON API
+For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status Code, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
 
-Standardized format for return documents
+### JSON Schema ([json-schema.org](http://json-schema.org/))
 
-http://jsonapi.org/
+TODO
 
-### Siren
+### JSON API ([jsonapi.org](http://jsonapi.org/))
 
-http://sirenspec.org
+TODO
+
+### Siren ([sirenspec.org](http://sirenspec.org))
+
+TODO
 
 
 ## Authentication
@@ -451,7 +455,7 @@ TODO: Research solutions
 
 TODO: Mention things need to be revoked.
 
-Most of the time a Server will want to know exactly who is making which Requests. Sure, some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
+Typically, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
 
 [OAuth 2.0](https://tools.ietf.org/html/rfc6749) provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
 
