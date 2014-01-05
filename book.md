@@ -1,36 +1,30 @@
 # Principles of good RESTful API Design
 
-> A consumer centric approach to restful API design.
+> An API represents a contract between your data and those who Consume your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
 
 ## Introduction
-
-Good API design is hard! An API represents a contract between you and those who Consume your data. Breaking this contract will result in many angry emails, and a slew of sad users with mobile apps which no longer work. Documentation is half the battle, and it is very difficult to find programmer who also likes to write.
 
 Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service / core application has the potential to become a platform from which other services grow. Look at the current huge tech companies: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as big as they are today if they hadn't opened up their data via API. In fact, an entire industry exists with the sole purpose of consuming data provided by said platforms.
 
 > The easier your API is to consume, the more people that will consume it.
 
-The principles of this document, if followed closely when designing your API, will ensure that Consumers of your API will be able to understand what is going on, and should drastically reduce the number of confused and/or angry emails you receive. I've organized everything into topics, which don't necessarily need to be read in order.
-
-### Goals of this Book
-
-The primary goal of this book is not to build an API adhering to the idea of a perfect academic REST API.
-
-The real goal is to build an API which third parties will love, be able to grok extremely quickly, and reduce the number of support emails you receive.
-
-Developing a future-proof API is another goal.
-
-### Intended Audience
-
-Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice.
+The principles of this document, if followed while designing and operating your API, will ensure that Consumers will grok your API while substantially reducing support tickets. Developers will travel from tech conference to tech conference telling everyone what a pleasure working with your API is and convincing them to sign up.
 
 ### Approach
 
 This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, this book would make a good candidate for sitting on the back of your toilet.
 
-Code examples will often be done in a couple different languages, likely including PHP and Node.js.
+Code examples will often be done in a couple different languages, e.g. PHP and Node.js.
 
 A lot of this is philosophical, not so much technical.
+
+### Intended Audience
+
+Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice. Knowing how to read and write HTTP headers is also important.
+
+### Goals of this Book
+
+By the time you're done reading this book you'll have a high-level understanding of how to build a great RESTful API Ecosystem. This book will not cover the technical details of how to write code an API from scratch.
 
 
 ## Data Design and Abstraction
@@ -45,9 +39,13 @@ There are also many parts of your service which you SHOULD NOT expose via API at
 
 Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense (although, you may have made some poor database design decisions).
 
-TODO: Examples of bad abstractions
+### An Example of Bad Abstraction
 
-TODO: Examples of good abstractions
+TODO
+
+### An Example of Good Abstraction
+
+TODO
 
 
 ## Raw HTTP Packet
@@ -55,8 +53,6 @@ TODO: Examples of good abstractions
 Since everything we do is over HTTP, I'm going to show you a dissection of an HTTP packet. I'm often surprised at how many people don't know what these things look like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
 
 The server then responds in the say Key/Value pair format, with two newlines and then the response body. HTTP is very much a request/response protocol; there is no "Push" support (the Server sending data to the Consumer unprovoked), unless you use a different protocol such as Websockets.
-
-When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using [Wireshark](https://www.wireshark.org), for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
 
 ### Example HTTP Request
 
@@ -86,6 +82,14 @@ When designing your API, you should be able to work with tools which allow you t
 	  "name": "Gir",
 	  "animal_type": 12
 	}
+
+### Debugging HTTP Traffic
+
+When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using [Wireshark](https://www.wireshark.org), for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
+
+Here's an example of a heavier HTTP request of a form submission on a website. Notice all of the data sent back and forth using HTTP headers.
+
+![Wireshark Screenshot](images/wireshark.png)
 
 
 ## API Root URL
@@ -417,6 +421,8 @@ I can honestly tell you that OAuth 1.0a, while it is the most secure of the opti
 
 This is mostly applicable with Three Legged Authentication.
 
+![Twitter OAuth Permissions](images/permissions-twitter.png)
+
 
 ## API Analytics
 
@@ -447,6 +453,8 @@ Make sure your documentation can be printed; CSS is a powerful thing; don't be a
 ## Developer Console
 
 Building a Developer Console will allow developers to quickly test API commands without having to run their applications over and over. If commands can be linked to from within the documentation, this is even better.
+
+![Example API Console](images/api-console.png)
 
 
 ## Hypermedia APIs: REST Evolved
