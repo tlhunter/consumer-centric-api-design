@@ -183,10 +183,10 @@ Honestly, it doesn't matter too much if the endpoints are singular or plural. Wh
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
-* https://api.example.com/v1/**zoos**
-* https://api.example.com/v1/**animals**
-* https://api.example.com/v1/**animal_types**
-* https://api.example.com/v1/**employees**
+* `https://api.example.com/v1/**zoos**`
+* `https://api.example.com/v1/**animals**`
+* `https://api.example.com/v1/**animal_types**`
+* `https://api.example.com/v1/**employees**`
 
 Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
 
@@ -240,16 +240,70 @@ Some of these filterings can be redundant with endpoint URLS. For example I prev
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-## Attribute Filtering for GET Requests
+## Respone Attribute Filtering for GET Requests
 
-TODO: Write me ;)
+Often times, third party developers do not care about all of the data being returned. Having so much data could be a network bottleneck.
+
+Sometimes, getting less data can even reduce the overhead on your server, for example it may remove an unneccesary database JOIN.
+
+Accept a parameter for whitelisting parameters (blacklisting could work too).
+
+The parameter you choose isn't too important. It could be "filter", or "whitelist". In the examples below, I opted for an overly verbose option and called them "attribute_whitelist". Just be sure to be consistent.
+
+### Example Unfiltered Request
+
+In this example request, the default representation of a user object includes data from two tables joined together. One of the tables is the obvious user table, and another table contains some textual data related to a user called user_descriptions.
+
+#### URL
+
+    GET http://api.example.org/user/12
+
+#### SQL
+
+    SELECT * FROM user, user_descriptions WHERE user_descriptions.user_id = user.id AND user.id = 12;
+
+#### Response Document
+
+    {
+      "id": 12,
+      "name": "Thomas Hunter II",
+      "age": 27,
+      "email": "me@thomashunter.name",
+      "user_description": "Blah blah blah blah blah."
+    }
+
+### Example Filtered Request
+
+In this next example, the consumer has requested a filtered list of attributes. So, we're returning less data. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort may be involved.
+
+#### URL
+
+    GET http://api.example.org/user/12?attribute_whitelist=id,name,email
+
+#### SQL
+
+    SELECT id, name, email FROM user WHERE user.id = 12;
+
+#### Response Document
+
+    {
+      "id": 12,
+      "name": "Thomas Hunter II",
+      "email": "me@thomashunter.name"
+    }
 
 
 ## JSON Request Body for POST, PUT, and PATCH Requests
 
 Mention Content-Type
 
-TODO: Write Me
+Normally, when a website POSTs data to a webserver, it is using something called Multipart Form Data.
+
+EXAMPLE MULTIPART FORM DATA REQUEST W/ HEADER
+
+A better method for providing data to the server is to use a JSON document for the body. More powerful than multipart, heirarichal, data types, more accurately reflects response document.
+
+EXAMPLE JSON REQUEST W/ HEADER
 
 
 ## HTTP Response Status Codes
@@ -385,7 +439,7 @@ Make sure your documentation can be printed; CSS is a powerful thing; don't be a
 
 ## Developer Console
 
-TODO
+Building a Developer Console will allow developers to quickly test API commands without having to run their applications over and over. If commands can be linked to from within the documentation, this is even better.
 
 
 ## Hypermedia APIs: REST Evolved
