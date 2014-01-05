@@ -20,7 +20,7 @@ A lot of this is philosophical, not so much technical.
 
 ### Intended Audience
 
-Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice. Knowing how to read and write HTTP headers is also important.
+Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice. Knowing how to read and write HTTP headers is also important. Knowing generic SQL syntax is useful as well, as some example queries are shown in many sections.
 
 ### Goals of this Book
 
@@ -107,9 +107,9 @@ If your application is huge, or you anticipate it becoming huge, putting the API
 
 If you anticipate your API will never grow to be that large, or you want a much simpler application setup (e.g. you want to host the website AND API from the same framework), placing your API beneath a URL segment at the root of the domain (e.g. **/api/**) works as well.
 
-Also, notice the HTTPS prefix. As a good RESTful API, you must host your API behind HTTPS.
+> Also, notice the HTTPS prefix. As a good RESTful API, you MUST host your API behind HTTPS.
 
-TODO: Don't use a different TLD
+Don't use a different TLD (Top Level Domain) for hosting your API than you do for hosting your website. This may sound tempting, as your main domain could be **example.com**, and your API and developer documentation be entirely located on **example.io**. However, there is no logical relationship between these two domains and an adversary could have purchased **example.io** and is posing as a legitamate counterpart to **example.com**. Also, the "code archeologist" might only have knowledge of one domain and not the other. Finally, if you _do_ want to share some cookies between the two websites (e.g. an authenticated user on **example.com** can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or subdirectory.
 
 ### Content at the Root
 
@@ -130,7 +130,7 @@ Here's a truncated example of the content provided by the [GitHub API Root URL](
 
 No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
 
-    http://api.example.org/v1/*
+    https://api.example.org/v1/*
 
 Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
 
@@ -228,47 +228,44 @@ Notice how the relationships between data is displayed, specifically the many to
 
 ## Resource Filtering for GET Requests
 
-When a Consumer makes a request for a listing of objects, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is coming from. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
+When a Consumer makes a request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
 > Minimize arbitrary limits imposed on Third Party Developers.
 
-It is important, however, that you do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this is that the network activity is minimal and the Consumer gets their results back as soon as possible. The second most important reason for this is the Consumer may be lazy, and if the Server can do filtering and pagination for them, all the better. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the request will be less resource heavy.
+You do want to offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer gets their results back as soon as possible. Another reason for this is the Consumer may be lazy, and if the Server can do filtering and pagination for them, all the better. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the request will be less resource intensive.
 
 Filtering is mostly useful for performing GETs on Collections of resources. Since these are GET requests, filtering information should be passed via the URL. Here are some examples of the types of filtering you could conceivably add to your API:
 
-* `?limit=10`: Reduce the number of results returned to the Consumer (for Pagination)
-* `?offset=10`: Send sets of information to the Consumer (for Pagination)
+* `?limit=10&offset=20`: Pagination of results (`LIMIT 20, 10`)
 * `?animal_type_id=1`: Filter records which match the following condition (`WHERE animal_type_id = 1`)
-* `?sortby=name&order=asc`: Sort the results based on the specified attribute (`ORDER BY name ASC`)
+* `?sort_attribute=name,asc`: Sort the results based on the specified attribute (`ORDER BY name ASC`)
 
-Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET `/zoo/ZID/animals`. This would be the same thing as `GET /animals?zoo_id=ZID`. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
+Some of these filterings can be redundant with endpoint URLS. In the Endpoints chapter we mentioned `GET /zoo/ZID/animals`. This would be the same thing as `GET /animals?zoo_id=ZID`. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
 
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
 ## Respone Attribute Filtering for GET Requests
 
-Often times, when a Consumer is requesting a specific resource, they do not care about all of the data belonging to the resource. Having so much data could be a network bottleneck.
+Often times, when a Consumer is requesting a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database `JOIN`.
 
-Sometimes, getting less data can even reduce the overhead on your server, for example it may remove an unneccesary database JOIN.
+Again, since we're dealing with GET requests, you'll want to accept a URL parameter for whitelisting parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
 
-Accept a parameter for whitelisting parameters (blacklisting could work too).
+The parameter name you choose isn't too important. It could be "filter" or "whitelist". In the examples below, I opted for an overly verbose option and called them "attribute_whitelist". Consistency between different Endpoints is what is most important.
 
-The parameter you choose isn't too important. It could be "filter", or "whitelist". In the examples below, I opted for an overly verbose option and called them "attribute_whitelist". Just be sure to be consistent.
-
-### Example Unfiltered Request
+### Example Unfiltered Single-Resource Request
 
 In this example request, the default representation of a user object includes data from two tables joined together. One of the tables is the obvious user table, and another table contains some textual data related to a user called user_descriptions.
 
-#### URL
+#### Request URL
 
     GET http://api.example.org/user/12
 
-#### SQL
+#### Resulting SQL Query
 
     SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id = 12;
 
-#### Response Document
+#### Response Body
 
     {
       "id": 12,
@@ -278,19 +275,19 @@ In this example request, the default representation of a user object includes da
       "description": "Blah blah blah blah blah."
     }
 
-### Example Filtered Request
+### Example Filtered Single-Resource Request
 
 In this next example, the consumer has requested a filtered list of attributes. So, we're returning less data. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort may be involved.
 
-#### URL
+#### Request URL
 
     GET http://api.example.org/user/12?attribute_whitelist=id,name,email
 
-#### SQL
+#### Resulting SQL Query
 
     SELECT id, name, email FROM user WHERE user.id = 12;
 
-#### Response Document
+#### Response Body
 
     {
       "id": 12,
@@ -301,15 +298,57 @@ In this next example, the consumer has requested a filtered list of attributes. 
 
 ## JSON Request Body for POST, PUT, and PATCH Requests
 
-Mention Content-Type
+There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framwork for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multipart Form Data (required for file uploads), as well as Form URL Encoded.
 
-Normally, when a website POSTs data to a webserver, it is using something called Multipart Form Data.
+Below you'll see examples of both of those methods just so that you understand how the browser and server usually upload data. Unfortunately, neither of them are adaquate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
 
-EXAMPLE MULTIPART FORM DATA REQUEST W/ HEADER
+### Example Form URL Encoded Request
 
-A better method for providing data to the server is to use a JSON document for the body. More powerful than multipart, heirarichal, data types, more accurately reflects response document.
+This method is used by Websites for accepting simple data forms from a web browser.
 
-EXAMPLE JSON REQUEST W/ HEADER
+    POST /login HTTP/1.1
+    Host: example.com
+    Content-Length: 31
+    Accept: text/html
+    Content-Type: application/x-www-form-urlencoded
+    
+    username=root&password=Zion0101
+
+### Example Multipart Form Data Request
+
+This method is used by Websites for accepting more complex data from a web browser, such as file uploads.
+
+    POST /file_upload HTTP/1.1
+    Host: example.com
+    Content-Length: 275
+    Accept: text/html
+    Content-Type: multipart/form-data; boundary=----RANDOM_jDMUxq4Ot5
+    
+    ------RANDOM_jDMUxq4Ot5
+    Content-Disposition: form-data; name="file"; filename="hello.txt"
+    Content-Type: application/octet-stream
+    
+    Hello World
+    ------RANDOM_jDMUxq4Ot5
+    Content-Disposition: form-data; name="some_checkbox"
+    
+    on
+    ------RANDOM_jDMUxq4Ot5--
+
+### Example JSON Request
+
+This method is much better for uploading data. The JSON document used for the Request can be very similar to the JSON document used for the Response. JSON can specify the type of data (e.g. Integers, Strings, Booleans), while also allowing for hierarchal relationships of data.
+
+	POST /v1/animal HTTP/1.1
+	Host: api.example.org
+	Accept: application/json
+	Content-Type: application/json
+	Content-Length: 24
+
+	{
+	  "name": "Gir",
+	  "animal_type": 12
+	}
 
 
 ## HTTP Response Status Codes
