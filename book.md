@@ -35,13 +35,15 @@ A lot of this is philosophical, not so much technical.
 
 ## Data Design and Abstraction
 
+Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (Create, Read, Update, Delete). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+
 Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing [API First Development](http://blog.pop.co/post/67465239611/why-we-chose-api-first-development) this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
 
 Occasionally, a Collection can represent a database table, and a Resource can represent a row within that table. However, this is not the usual case. In fact, your API should abstract away as much of your data and business logic as possible. It is very important that you don't overwhelm Third-Party Developers with any complex application data, if you do they won't want to use your API.
 
 There are also many parts of your service which you SHOULD NOT expose via API at all. A common example is that many APIs will not allow third parties to create users.
 
-Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense.
+Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense (although, you may have made some poor database design decisions).
 
 TODO: Examples of bad abstractions
 
@@ -232,17 +234,17 @@ Filtering is mostly useful for performing GETs on Collections of resources. Sinc
 
 * `?limit=10`: Reduce the number of results returned to the Consumer (for Pagination)
 * `?offset=10`: Send sets of information to the Consumer (for Pagination)
-* `?animal_type_id=1`: Filter records which match the following condition (WHERE animal_type_id = 1)
+* `?animal_type_id=1`: Filter records which match the following condition (`WHERE animal_type_id = 1`)
 * `?sortby=name&order=asc`: Sort the results based on the specified attribute (`ORDER BY name ASC`)
 
-Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET `/zoo/ZID/animals`. This would be the same thing as GET `/animals?zoo_id=ZID`. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
+Some of these filterings can be redundant with endpoint URLS. For example I previously mentioned GET `/zoo/ZID/animals`. This would be the same thing as `GET /animals?zoo_id=ZID`. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
 
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
 ## Respone Attribute Filtering for GET Requests
 
-Often times, third party developers do not care about all of the data being returned. Having so much data could be a network bottleneck.
+Often times, when a Consumer is requesting a specific resource, they do not care about all of the data belonging to the resource. Having so much data could be a network bottleneck.
 
 Sometimes, getting less data can even reduce the overhead on your server, for example it may remove an unneccesary database JOIN.
 
@@ -260,7 +262,7 @@ In this example request, the default representation of a user object includes da
 
 #### SQL
 
-    SELECT * FROM user, user_descriptions WHERE user_descriptions.user_id = user.id AND user.id = 12;
+    SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id = 12;
 
 #### Response Document
 
@@ -269,7 +271,7 @@ In this example request, the default representation of a user object includes da
       "name": "Thomas Hunter II",
       "age": 27,
       "email": "me@thomashunter.name",
-      "user_description": "Blah blah blah blah blah."
+      "description": "Blah blah blah blah blah."
     }
 
 ### Example Filtered Request
@@ -409,6 +411,11 @@ Most of the time a Server will want to know exactly who is making which Requests
 There are also [OAuth 1.0](http://tools.ietf.org/html/rfc5849) and [xAuth](https://dev.twitter.com/docs/oauth/xauth), which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+
+
+## API Permissions
+
+This is mostly applicable with Three Legged Authentication.
 
 
 ## API Analytics
