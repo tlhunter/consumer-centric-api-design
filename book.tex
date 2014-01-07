@@ -25,15 +25,15 @@ The principles of this document, if followed while designing and operating your 
 
 \section{Approach}
 
-This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, this book would make a good candidate for sitting on the back of your toilet.
+This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technica, and this book would make a good candidate for sitting on the back of your toilet.
 
-Code examples will often be done in a couple different languages, e.g. PHP and Node.js.
-
-A lot of this is philosophical, not so much technical.
+Any code samples will usually be written using more than one language, e.g. PHP and Node.js.
 
 \section{Intended Audience}
 
-Anyone who has built a few websites, knows how to serve up a webpage over HTTP in their platform of choice. Knowing how to read and write HTTP headers is also important. Knowing generic SQL syntax is useful as well, as some example queries are shown in many sections.
+The ideal reader of this book is someone who has built a couple websites, and is comfortable working with a language or framework and understands some of the intermediate features such as reading request headers and writing response headers.
+
+While knowloedge of any particular language is not a requirement of this book, an understanding of generic SQL will be really helpful for following along with some of the example queries.
 
 \section{Goals of this Book}
 
@@ -182,7 +182,7 @@ Here's an example of a heavier HTTP request of a form submission on a website. N
 \end{figure}
 
 
-\chapter{API Root URL}
+\chapter{Choosing an API Root URL}
 
 The root location of your API is important, believe it or not. When a developer (read as code archaeologist) inherits an old project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer calls out to. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
@@ -242,52 +242,57 @@ A good RESTful API will keep track of the version in the URL. The other most com
 
 \chapter{HTTP Verbs}
 
-Surely you know about GET and POST requests. These are the two most commonly requests used when your browser visits different webpages. All browsers, such as IE6, have been able to make these two requests. TODO Wording
+Chances are you already know about GET and POST requests. These are the two most commonly used requests when a web browser visits different websites. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
-There are four and a half very important HTTP verbs that you need to know about. I say "and a half", because the PATCH verb is very similar to the PUT verb, and two two are often combined by many an API developer. Here are the verbs, and next to them are their associated database call (I'm assuming most people reading this know more about writing to a database than designing an API).
+There are, however, four and a half HTTP verbs that you need to know about when building a RESTful API. I say "and a half" because the PATCH verb is very similar to the PUT verb, and two two are often combined into one by many an API developer.
+
+You've undoubtedly heard of the phrase "CRUD" when refering to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a command. CRUD stands for Create, Read, Update, Delete, and short of handling any business logic, can be usred for handling 100\% of data entry.
+
+Here is the list of the verbs, as well as which CRUD operation they represent, and if your service were to represent a simple database, the associated SQL statement:
 
 \begin{itemize}
-\item \textbf{GET}
+\item \textbf{GET} (Read)
     \begin{itemize}
     \item Retrieve a specific Resource from the Server
-    \item Retrieve a listing of Resources from the Server
-    \item Think of this as a SQL SELECT statement
+    \item Retrieve a Collection of Resources from the Server
+    \item Corresponds to a SQL SELECT statement
     \end{itemize}
-\item \textbf{POST}
+\item \textbf{POST} (Create)
     \begin{itemize}
     \item Creates a new Resource on the Server
-    \item Think of this as a SQL INSERT statement
+    \item Corresponds to a SQL INSERT statement
     \end{itemize}
-\item \textbf{PUT}
+\item \textbf{PUT} (Update)
     \begin{itemize}
     \item Update a Resource on the Server
     \item Provide the entire Resource
-    \item Think of the SQL UPDATE statement providing null values for some keys
+    \item Corresponds to a SQL UPDATE statement providing null values for missing columns
     \end{itemize}
-\item \textbf{PATCH}
+\item \textbf{PATCH} (Update)
     \begin{itemize}
     \item Update a Resource on the Server
     \item Provide only changed attributes
-    \item Like the SQL UPDATE statement providing only a few keys
+    \item Corresponds to a SQL UPDATE statement specifying only columns being updated
     \end{itemize}
-\item \textbf{DELETE}
+\item \textbf{DELETE} (Delete)
     \begin{itemize}
     \item Remove a Resource from the Server
-    \item Similar to the SQL DELETE statement
+    \item Corresponds to a SQL DELETE statement
     \end{itemize}
 \end{itemize}
 
-Here are two lesser known HTTP verbs. Feel free to use them in your API, but they aren't 100% necessary.
+Here are two lesser known HTTP verbs. Feel free to use them in your API, but they aren't 100\% necessary.
 
 \begin{itemize}
 \item \textbf{HEAD}
     \begin{itemize}
-    \item Retrieve meta data about a Resource
-    \item Such as a hash of the data or when it was last updated
+    \item Retrieve meta data about a Resource (just the headers)
+    \item E.g. a hash of the data or when it was last updated
     \end{itemize}
 \item \textbf{OPTIONS}
     \begin{itemize}
-    \item Retrieve information about what the Consumer is allowed to do with the Resource
+    \item Retrieve information about what the Consumer can do with the Resource
+    \item Corresponds to a SQL EXPLAIN statement
     \end{itemize}
 \end{itemize}
 
@@ -313,7 +318,7 @@ If you were building a fictional API to represent several different Zoo's, each 
 
 Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
 
-When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
+When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zookeeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
 
 \begin{itemize}
 \item \texttt{GET /zoos}: List all Zoos (ID and Name, not too much detail)
@@ -343,6 +348,10 @@ In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID,
 I've left out the common API URL prefix in the above examples for brevity. While this can be fine during communications, in your actual API documentation, you should always display the full URL to each endpoint (e.g. GET http://api.example.com/v1/animal\_type/ATID).
 
 Notice how the relationships between data is displayed, specifically the many to many relationships between employees and zoos. By adding an additional URL segment, one can perform more specific interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
+
+Also, notice how the listing of Endpoints doesn't include every possible verb-to-resource combination. For example, a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
+
+There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
 
 
 \chapter{Resource Filtering}
@@ -493,7 +502,17 @@ Content-Length: 24
 
 \chapter{HTTP Response Status Codes}
 
-It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code. There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}{HTTP Status Codes} to choose from, however this list should be a good starting point:
+It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code.
+
+The Status Code is on the first line of information returned back to the Consumer. It is preceeded by the version of HTTP, and includes both the numerical status code as well as an all-caps human-readable version of the code:
+
+\begin{verbatim}
+HTTP/1.1 200 OK
+\end{verbatim}
+
+\section{Common Status Codes}
+
+There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}{HTTP Status Codes} to choose from, however this list should be a good starting point:
 
 \begin{itemize}
 \item \texttt{\textbf{200} OK}
@@ -506,7 +525,7 @@ It is very important that as a RESTful API, you make use of the proper HTTP Stat
     \item POST / PUT / PATCH Requests
     \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
-\item \texttt{\textbf{202} NO CONTENT}
+\item \texttt{\textbf{204} NO CONTENT}
     \begin{itemize}
     \item DELETE Requests
     \item The Consumer asked the Server to delete a Resource, and the Server deleted it
