@@ -52,14 +52,80 @@ There are also many parts of your service which you SHOULD NOT expose via API at
 
 Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense (although, you may have made some poor database design decisions).
 
-\section{An Example of Bad Abstraction}
+\section {Abstraction Examples}
 
-TODO
+For both the good and bad abstraction example, we'll make use of the same fictional service. Pretend that you control a web service which sends messages to different users and messages can either be sent as a text message or an email, depending on the preferences for a particular user.
 
-\section{An Example of Good Abstraction}
+\subsection{An Example of Bad Abstraction}
 
-TODO
+This example will include numerous shortcomings.
 
+\subsubsection{Getting User Preference}
+
+\begin{verbatim}
+GET /get_user_preferences/12
+
+{
+  "notification_preference": 1
+}
+\end{verbatim}
+
+This first API Endpoint is called get\_user\_preference, and is called by passing in the ID of the user whose preference we are looking for. The name of and Endpoint should just be a simple noun (or pair of nouns if need be). You should never add the action being performed (in this case get). The reason one should use a simple noun is that it tells you exactly what the following ID value represents. Does the 12 shown below represent user 12? Or some user preference 12 concept which might not be 1:1 the same as users?
+
+Another problem with this example is the response contains the integer 1. Internally to the service, there is a fictional set of constants, where 1 refers to sending a text, and 2 refers to sending an email. Even if this value is written in the API documentation, a Consumer of the API is not going to remember the value, and every time they look it up they'll be annoyed and lose productivity.
+
+Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. Something like this should have been merged with another endpoint for getting all the data about a particular user.
+
+\subsubsection{Sending a Text or Email (Two Endpoints)}
+
+\begin{verbatim}
+POST /users/12/send_text
+POST /users/12/send_email
+
+{
+  "message": "Hello World",
+  "sent": "2013-01-06 21:02:00"
+}
+\end{verbatim}
+
+This second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case send). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these sorts of endpoints is very common.
+
+Another issue with this is that the business logic for determining which method of notification is used is left to the Consumer to take care of! Sure, the Consumer can make a request to get the user preference for sending messages, but what if they ignore it? You're going to have some very annoyed users.
+
+Whenever you find yourself creating two endpoints with the exact same expected request inputs and response outputs, there may be an issue with abstraction and the two might be better off combines.
+
+Also, there is no way to refer to previous instances of sending notifications to a user. Sure, the Consumer could record this information somewhere in a database, but it would be beneficial if the API made available a method for looking up previous notifications.
+
+\subsection{An Example of Good Abstraction}
+
+With the same messaging web service, here's a cleaner, RESTful method for sending messages to users.
+
+\subsubsection{Creating a Notification}
+
+\begin{verbatim}
+POST /notifications
+
+{
+  "user_id": 12,
+  "message": "Hello World"
+}
+
+{
+  "id": 1000,
+  user_id: 12,
+  "message": "Hello World",
+  "medium": "email",
+  "created": "2013-01-06 21:02:00"
+}
+\end{verbatim}
+
+In this example, only a single endpoint is needed for doing the same work as the previous three endpoints of the bad example. The first JSON document is the request and the second is the response. This endpoint is simply called notifications, and as a Consumer you are working with creating notification objects.
+
+When the Consumer wants to notify a user, they are actually creating a new notification object, thereby abstracting the concept of performing an action to the concept of creating an object. Of course, an action can't be undone or changed, so the Consumer can't DELETE or PUT a notification object.
+
+Another important concept with this example is that the business logic of determining which method for contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notificaiton preference.
+
+In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbage should be correct).
 
 \chapter{Raw HTTP Packet}
 
