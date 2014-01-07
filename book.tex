@@ -6,9 +6,15 @@
 \usepackage{hyperref}
 \begin{document}
 
-An API represents a contract between your data and those who Consume your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
+\maketitle
+
+\tableofcontents
+
+\newpage
 
 \chapter{Introduction}
+
+An API represents a contract between data/business logic located on your Server and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
 
 Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service / core application has the potential to become a platform from which other services grow. Look at the current huge tech companies: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as big as they are today if they hadn't opened up their data via API. In fact, an entire industry exists with the sole purpose of consuming data provided by said platforms.
 
@@ -37,7 +43,7 @@ By the time you're done reading this book you'll have a high-level understanding
 
 Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (Create, Read, Update, Delete). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
-Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing [API First Development](http://blog.pop.co/post/67465239611/why-we-chose-api-first-development) this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
+Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
 
 Occasionally, a Collection can represent a database table, and a Resource can represent a row within that table. However, this is not the usual case. In fact, your API should abstract away as much of your data and business logic as possible. It is very important that you don't overwhelm Third-Party Developers with any complex application data, if you do they won't want to use your API.
 
@@ -95,13 +101,13 @@ Cache-Control: no-cache
 
 \section{Debugging HTTP Traffic}
 
-When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using [Wireshark](https://www.wireshark.org), for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
+When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using \href{https://www.wireshark.org}{Wireshark}, for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
 
 Here's an example of a heavier HTTP request of a form submission on a website. Notice all of the data sent back and forth using HTTP headers.
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=90mm]{images/wireshark.png}
+\includegraphics[height=90mm]{images/wireshark.png}
 \caption{Wireshark Screenshot}
 \label{overflow}
 \end{figure}
@@ -132,13 +138,12 @@ Don't use a different TLD (Top Level Domain) for hosting your API than you do fo
 
 It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
 
-Here's a truncated example of the content provided by the [GitHub API Root URL](https://api.github.com/). Notice how it's both easily readable by a human and easily parsable by a machine.
+Here's a truncated example of the content provided by the \href{https://api.github.com/}{GitHub API Root URL}. Notice how it's both easily readable by a human and easily parsable by a machine.
 
 \begin{verbatim}
 {
   "current_user_url": "https://api.github.com/user",
   "authorizations_url": "https://api.github.com/authorizations",
-  "code_search_url": "https://api.github.com/search/code?q={query}{&page,per_page,sort,order}",
   "emails_url": "https://api.github.com/user/emails",
   ...
 }
@@ -271,7 +276,7 @@ I've left out the common API URL prefix in the above examples for brevity. While
 Notice how the relationships between data is displayed, specifically the many to many relationships between employees and zoos. By adding an additional URL segment, one can perform more specific interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
 
 
-\chapter{Resource Filtering for GET Requests}
+\chapter{Resource Filtering}
 
 When a Consumer makes a request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
@@ -292,13 +297,13 @@ Some of these filterings can be redundant with endpoint URLS. In the Endpoints c
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\chapter{Respone Attribute Filtering for GET Requests}
+\chapter{Respone Attribute Filtering}
 
 Often times, when a Consumer is requesting a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
 
 Again, since we're dealing with GET requests, you'll want to accept a URL parameter for whitelisting parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
 
-The parameter name you choose isn't too important. It could be "filter" or "whitelist". In the examples below, I opted for an overly verbose option and called them "attribute\_whitelist". Consistency between different Endpoints is what is most important.
+The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
 \section{Example Unfiltered Single-Resource Request}
 
@@ -313,7 +318,8 @@ GET http://api.example.org/user/12
 \subsection{Resulting SQL Query}
 
 \begin{verbatim}
-SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id = 12;
+SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
+  WHERE user.id = 12;
 \end{verbatim}
 
 \subsection{Response Body}
@@ -335,7 +341,7 @@ In this next example, the consumer has requested a filtered list of attributes. 
 \subsection{Request URL}
 
 \begin{verbatim}
-GET http://api.example.org/user/12?attribute_whitelist=id,name,email
+GET http://api.example.org/user/12?whitelist=id,name,email
 \end{verbatim}
 
 \subsection{Resulting SQL Query}
@@ -355,7 +361,7 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 \end{verbatim}
 
 
-\chapter{JSON Request Body for POST, PUT, and PATCH Requests}
+\chapter{JSON Request Body}
 
 There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framwork for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multipart Form Data (required for file uploads), as well as Form URL Encoded.
 
@@ -418,7 +424,7 @@ Content-Length: 24
 
 \chapter{HTTP Response Status Codes}
 
-It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code. There are a plethora of [HTTP Status Codes](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) to choose from, however this list should be a good starting point:
+It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code. There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}{HTTP Status Codes} to choose from, however this list should be a good starting point:
 
 \begin{itemize}
 \item \texttt{\textbf{200} OK}
@@ -474,7 +480,7 @@ Here's a Google Trends graph comparing the terms JSON API, XML API, and SOAP API
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=90mm]{images/xml-vs-json-vs-soap-google-trends.png}
+\includegraphics[width=110mm]{images/xml-vs-json-vs-soap-google-trends.png}
 \caption{Google Trends for JSON API, XML API, and SOAP API}
 \label{overflow}
 \end{figure}
@@ -526,15 +532,15 @@ However, there are some standards people have developed for encapsulating these 
 
 For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status Code, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
 
-\section{JSON Schema ([json-schema.org](http://json-schema.org/))}
+\section{JSON Schema (\href{http://json-schema.org/}{json-schema.org})}
 
 TODO
 
-\section{JSON API ([jsonapi.org](http://jsonapi.org/))}
+\section{JSON API (\href{http://jsonapi.org/}{jsonapi.org})}
 
 TODO
 
-\section{Siren ([sirenspec.org](http://sirenspec.org))}
+\section{Siren (\href{http://sirenspec.org}{sirenspec.org})}
 
 TODO
 
@@ -555,9 +561,9 @@ TODO: Mention things need to be revoked.
 
 Typically, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
 
-[OAuth 2.0](https://tools.ietf.org/html/rfc6749) provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
+\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
 
-There are also [OAuth 1.0](http://tools.ietf.org/html/rfc5849) and [xAuth](https://dev.twitter.com/docs/oauth/xauth), which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
+There are also \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth}, which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
@@ -606,7 +612,7 @@ Building a Developer Console will allow developers to quickly test API commands 
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=90mm]{images/api-console.png}
+\includegraphics[width=110mm]{images/api-console.png}
 \caption{Example API Console}
 \label{overflow}
 \end{figure}
@@ -653,7 +659,7 @@ Mention how it Sucks
 
 \chapter{About the Author and Reviewers}
 
-At the time of this writing, [Thomas Hunter II](http://thomashunter.name) works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
+At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
 
 Jonathon Kuperman TODO
 
