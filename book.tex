@@ -1,8 +1,8 @@
 \documentclass{book}
 \setcounter{tocdepth}{1}
-\title{Principles of good RESTful API Design}
+\title{A Consumer-Centric Approach to RESTful API Design\newline{}REVIEW COPY DO NOT DISTRIBUTE}
 \author{Thomas Hunter II}
-\date{December 2013}
+\date{January 2014}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \begin{document}
@@ -42,7 +42,7 @@ By the time you're done reading this book you'll have a high-level understanding
 
 \chapter{Data Design and Abstraction}
 
-Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (Create, Read, Update, Delete). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
 Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
 
@@ -55,6 +55,8 @@ Sometimes multiple tables should be represented as a single resource. Maybe even
 \section {Abstraction Examples}
 
 For both the good and bad abstraction example, we'll make use of the same fictional service. Pretend that you control a web service which sends messages to different users and messages can either be sent as a text message or an email, depending on the preferences for a particular user.
+
+Don't worry too much about the technical parts of the examples; we'll get to them in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
 
 \subsection{An Example of Bad Abstraction}
 
@@ -70,9 +72,9 @@ GET /get_user_preferences/12
 }
 \end{verbatim}
 
-This first API Endpoint is called get\_user\_preference, and is called by passing in the ID of the user whose preference we are looking for. The name of and Endpoint should just be a simple noun (or pair of nouns if need be). You should never add the action being performed (in this case get). The reason one should use a simple noun is that it tells you exactly what the following ID value represents. Does the 12 shown below represent user 12? Or some user preference 12 concept which might not be 1:1 the same as users?
+This first API Endpoint is called \texttt{get\_user\_preference}, and is called by passing in the ID of the user whose preference we are looking for. The name of and Endpoint should just be a simple noun (or pair of nouns if need be). You should never add the action being performed (in this case \texttt{get}). The reason one should use a simple noun is that it tells you exactly what the following ID value represents. Does the \texttt{12} shown below represent user \texttt{12}? Or some user preference \texttt{12} concept which might not correlate 1:1 the same as users?
 
-Another problem with this example is the response contains the integer 1. Internally to the service, there is a fictional set of constants, where 1 refers to sending a text, and 2 refers to sending an email. Even if this value is written in the API documentation, a Consumer of the API is not going to remember the value, and every time they look it up they'll be annoyed and lose productivity.
+Another problem with this example is the response contains the integer \texttt{1}. Internally to the service, there is a fictional set of constants, where \texttt{1} refers to sending a text, and \texttt{2} refers to sending an email. Even if this value is written in the API documentation, a Consumer of the API is not going to remember the value, and every time they look it up they'll be annoyed and lose productivity.
 
 Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. Something like this should have been merged with another endpoint for getting all the data about a particular user.
 
@@ -88,7 +90,7 @@ POST /users/12/send_email
 }
 \end{verbatim}
 
-This second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case send). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these sorts of endpoints is very common.
+This second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these sorts of endpoints is very common.
 
 Another issue with this is that the business logic for determining which method of notification is used is left to the Consumer to take care of! Sure, the Consumer can make a request to get the user preference for sending messages, but what if they ignore it? You're going to have some very annoyed users.
 
@@ -119,7 +121,7 @@ POST /notifications
 }
 \end{verbatim}
 
-In this example, only a single endpoint is needed for doing the same work as the previous three endpoints of the bad example. The first JSON document is the request and the second is the response. This endpoint is simply called notifications, and as a Consumer you are working with creating notification objects.
+In this example, only a single endpoint is needed for doing the same work as the previous three endpoints of the bad example. The first JSON document is the request and the second is the response. This endpoint is simply called \texttt{notifications}, and as a Consumer you are working with creating notification objects.
 
 When the Consumer wants to notify a user, they are actually creating a new notification object, thereby abstracting the concept of performing an action to the concept of creating an object. Of course, an action can't be undone or changed, so the Consumer can't DELETE or PUT a notification object.
 
@@ -129,7 +131,7 @@ In the example response, we do have a medium attribute which represents the noti
 
 \chapter{Raw HTTP Packet}
 
-Since everything we do is over HTTP, I'm going to show you a dissection of an HTTP packet. I'm often surprised at how many people don't know what these things look like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
+Since everything we do is over HTTP, let's look at a dissection of an HTTP packet. It's surprising how many developers who have been building websites for years don't know what an HTTP packet looks like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
 
 The server then responds in the say Key/Value pair format, with two newlines and then the response body. HTTP is very much a request/response protocol; there is no "Push" support (the Server sending data to the Consumer unprovoked), unless you use a different protocol such as Websockets.
 
@@ -330,7 +332,7 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Verb
 \item \texttt{GET /animal\_types/ATID}: Retrieve an entire Animal Type object
 \item \texttt{GET /employees}: Retrieve an entire list of Employees
 \item \texttt{GET /employees/EID}: Retreive a specific Employee
-\item \texttt{GET /zoos/ZID/employees}: Retrieve a listing of Employees (ID and Name) who work at this Zoo
+\item \texttt{GET /zoos/ZID/employees}: Retrieve a listing of Employees at this Zoo
 \item \texttt{POST /employees}: Create a new Employee
 \item \texttt{POST /zoos/ZID/employees}: Hire an Employee at a specific Zoo
 \item \texttt{DELETE /zoos/ZID/employees/EID}: Fire an Employee from a specific Zoo
@@ -345,7 +347,7 @@ Notice how the relationships between data is displayed, specifically the many to
 
 \chapter{Resource Filtering}
 
-When a Consumer makes a request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
+When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
 Minimize arbitrary limits imposed on Third Party Developers.
 
@@ -366,7 +368,7 @@ Also, this goes without saying, but whenever you perform filtering or sorting of
 
 \chapter{Respone Attribute Filtering}
 
-Often times, when a Consumer is requesting a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
+Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
 
 Again, since we're dealing with GET requests, you'll want to accept a URL parameter for whitelisting parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
 
@@ -599,15 +601,21 @@ However, there are some standards people have developed for encapsulating these 
 
 For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status Code, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
 
-\section{JSON Schema (\href{http://json-schema.org/}{json-schema.org})}
+\section{JSON Schema}
+
+\href{http://json-schema.org/}{json-schema.org}
 
 TODO
 
-\section{JSON API (\href{http://jsonapi.org/}{jsonapi.org})}
+\section{JSON API}
+
+\href{http://jsonapi.org/}{jsonapi.org}
 
 TODO
 
-\section{Siren (\href{http://sirenspec.org}{sirenspec.org})}
+\section{Siren}
+
+\href{http://sirenspec.org}{sirenspec.org}
 
 TODO
 
@@ -701,21 +709,48 @@ When retrieving a list of Resources within a Collection, an attribute containing
 
 JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
 
-TODO: Link to some specs
-
 Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Now, imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. TODO
 
 Now, imagine that these amazing tools by different companies can all work with each other as tightly as these massive suite tools. The best of both worlds. Imagine it automatically working, them automatically discovering each other and configuring themselves to work together nicely. This is a future offered by hypermedia APIs. TODO
 
+\section{ATOM: An Early Hypermedia API}
 
-\chapter{JSON RPC: An Alternative to REST}
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Feed</title>
+  <subtitle>A subtitle.</subtitle>
+  <link href="http://example.org/feed/" rel="self" />
+  <link href="http://example.org/" />
+  <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
+  <updated>2003-12-13T18:30:02Z</updated>
+  <entry>
+    <title>Atom-Powered Robots Run Amok</title>
+    <link href="http://example.org/2003/12/13/atom03" />
+    <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
+    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <summary>Some text.</summary>
+      <author>
+        <name>John Doe</name>
+        <email>johndoe@example.com</email>
+      </author>
+  </entry>
+</feed>
+\end{verbatim}
+
+
+\chapter{Alternatives to REST}
+
+\section{JSON RPC}
 
 Useful for situations without HTTP. Can be done over HTTP, sockets, etc. Useful for gaming, embedded systems.
 
 If you've already got an HTTP server for your product, you probably want REST.
 
 
-\chapter{XML SOAP: An Alternative to REST}
+\section{XML SOAP}
 
 This is a sort of example of Hypermedia API's gone wrong. Very complex. Also, nobody likes XML. Mention that I don't know much.
 
@@ -726,9 +761,16 @@ Mention how it Sucks
 
 \chapter{About the Author and Reviewers}
 
+\section{Author: Thomas Hunter II}
+
 At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
 
-Jonathon Kuperman TODO
+\section{Reviewer: John Smith}
 
-Kelly King TODO
+Pellentesque tincidunt et purus sit amet cursus. Aliquam viverra eu massa sed laoreet. Cras mi est, accumsan eget est at, tincidunt interdum diam. Proin a ante neque. Nullam faucibus ligula ut gravida viverra. Ut et metus quis velit condimentum sodales. Nullam et urna sed purus sollicitudin adipiscing ac eget quam. Donec ac placerat arcu, eu lacinia velit. In ut purus a libero volutpat commodo eget in tellus. Sed vel fringilla metus, quis facilisis lacus. Nulla nec venenatis augue. In nec bibendum metus.
+
+\section{Reviewer: Jane Doe}
+
+Donec eget eros orci. Maecenas eu accumsan lacus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent et elit rutrum, dignissim velit at, accumsan arcu. Nunc in molestie odio. Sed id eros vitae mi vestibulum tincidunt. Proin id blandit libero, vitae luctus risus. Proin sit amet dapibus tortor. Aenean semper ipsum at vulputate rhoncus. Proin id nunc eu nibh semper molestie sed nec quam. Nullam id gravida sem, non vulputate orci.
+
 \end{document}
