@@ -114,7 +114,7 @@ POST /notifications
 
 {
   "id": 1000,
-  user_id: 12,
+  "user_id": 12,
   "message": "Hello World",
   "medium": "email",
   "created": "2013-01-06 21:02:00"
@@ -745,9 +745,32 @@ Now, imagine that these amazing tools by different companies can all work with e
 
 \section{JSON RPC}
 
-Useful for situations without HTTP. Can be done over HTTP, sockets, etc. Useful for gaming, embedded systems.
+\href{http://www.jsonrpc.org/specification}{JSON RPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't actually have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
 
-If you've already got an HTTP server for your product, you probably want REST.
+Unlike REST which requires an abstraction of the Server functionality of business logic and data into simple objects which can be acted upon using CRUD, JSON RPC calls typically map to existing functions within your application.
+
+When a client makes a call using JSON RPC, they specify the name of a function to execute, as well as arguments to the function. Arguments can be in the form of either ordered parameters (using a JSON Array), or named parameters (using a JSON Object).
+
+A big part of the specification is the envelope which the data being sent through adheres to. The concept of a URL doesn't really exist (if you're using JSON RPC over HTTP, there's probably a single URL all requests are sent through, and every request is likely sent as POST requests).
+
+JSON RPC is mostly useful for situations where you don't have an HTTP server, for example multiplayer games or embedded systems. If you already have an HTTP server for your product or service, REST is probably the correct solution.
+
+When dealing with HTTP, every Request and Response is guaranteed to be paired together correctly. Due to the asynchronous nature of sockets and other such communication protocols, requests need to provide a unique ID value, and the corresponding response needs to provide the same ID.
+
+For more information about the JSON RPC Specification visit \href{http://www.jsonrpc.org/specification}{jsonrpc.org}.
+
+\subsection{Example JSON RPC Request}
+
+\begin{verbatim}
+{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23],
+  "id": 1}
+\end{verbatim}
+
+\subsection{Example JSON RPC Response}
+
+\begin{verbatim}
+{"jsonrpc": "2.0", "result": 19, "id": 1}
+\end{verbatim}
 
 
 \section{XML SOAP}
