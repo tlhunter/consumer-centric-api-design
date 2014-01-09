@@ -129,7 +129,7 @@ Another important concept with this example is that the business logic of determ
 
 In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbage should be correct).
 
-\chapter{Raw HTTP Packet}
+\chapter{Anatomy of an HTTP Packet}
 
 Since everything we do is over HTTP, let's look at a dissection of an HTTP packet. It's surprising how many developers who have been building websites for years don't know what an HTTP packet looks like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
 
@@ -305,7 +305,7 @@ Typically, GET requests can be cached (and often are!) Browsers, for example, wi
 
 An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources.
 
-Honestly, it doesn't matter too much if the endpoints are singular or plural. What does matter is that you stay consistent. The examples in this book are plural.
+\section{Main Collections}
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
@@ -317,6 +317,8 @@ If you were building a fictional API to represent several different Zoo's, each 
 \end{itemize}
 
 Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
+
+\section{Specific Endpoints}
 
 When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zookeeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
 
@@ -352,6 +354,12 @@ Notice how the relationships between data is displayed, specifically the many to
 Also, notice how the listing of Endpoints doesn't include every possible verb-to-resource combination. For example, a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
 
 There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
+
+\section{Plural or Singular?}
+
+Honestly, it doesn't matter too much if the endpoints are singular or plural. What does matter is that you stay consistent. The examples in this book are plural.
+
+TODO: List what different people do
 
 
 \chapter{Resource Filtering}
@@ -499,6 +507,10 @@ Content-Length: 24
 }
 \end{verbatim}
 
+\section{Accessing a JSON Response Body}
+
+TODO: Add some code samples for reading the body. PHP, Express.js.
+
 
 \chapter{HTTP Response Status Codes}
 
@@ -582,34 +594,84 @@ Some API creators recommend adding a .json, .xml, or .html file extension to the
 
 When a Consumer makes a request to the Server, something needs to be returned in the response. Depending on the HTTP Verb being used, the response will be different. Here's a good list to adhere to:
 
-\begin{itemize}
-\item \texttt{GET /collection}
-    \begin{itemize}
-    \item Return a listing (array) of Resource objects
-    \end{itemize}
-\item \texttt{GET /collection/resource\_id}
-    \begin{itemize}
-    \item Return a singular Resource object
-    \end{itemize}
-\item \texttt{POST /collection}
-    \begin{itemize}
-    \item Return the newly created Resource object
-    \end{itemize}
-\item \texttt{PUT /collection/resource\_id}
-    \begin{itemize}
-    \item Return the complete Resource object
-    \end{itemize}
-\item \texttt{PATCH /collection/resource\_id}
-    \begin{itemize}
-    \item Return the complete Resource object
-    \end{itemize}
-\item \texttt{DELETE /collection/resource\_id}
-    \begin{itemize}
-    \item Return an empty document
-    \end{itemize}
-\end{itemize}
+\subsection{GET /collection}
 
-Note that when a Consumer creates a Resource, they usually do not know the ID of the Resource being created (nor other attributes such as created and modified timestamps, if applicable). These additional attributes are returned with the resulting Response, which is vital for the Consumer to keep track of things.
+When performing a GET request to an entire collection of objects, the Consumer expects an array of every object being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogenous list of resources.
+
+\begin{verbatim}
+[
+  {
+    "id": 1,
+    "name": "John Smith",
+    "created": "2014-01-01 12:00:00",
+    "modified": null
+  },
+  {
+    "id": 2,
+    "name": "Jane Doe",
+    "created": "2014-01-01 12:01:00",
+    "modified": null
+  }
+]
+\end{verbatim}
+
+\subsection{GET /collection/resource\_id}
+
+When performing a GET request for a specific resource, the Consumer is expecting to receive the resource. In a simple RESTful API, this is just the resource object as a top level object.
+
+\begin{verbatim}
+[
+  {
+    "id": 2,
+    "name": "Jane Doe",
+    "created": "2014-01-01 12:01:00",
+    "modified": null
+  }
+]
+\end{verbatim}
+
+\subsection{POST /collection}
+
+When performing a POST request to a Collection, the Consumer expects the object it just created to be returned. In the ideal academic REST API, the object being provided is exactly the same as the object being returned. However, there is very important information being returned to the Consumer which it doesn't already know, such as the resource\_id and other calculated attributes such as created timestamps.
+
+\begin{verbatim}
+{
+  "id": 3,
+  "name": "Alice Roberts",
+  "created": "2014-01-01 12:02:00",
+  "modified": null
+}
+\end{verbatim}
+
+\subsection{PUT /collection/resource\_id}
+
+The result of a PUT operation is the entirety of the Resource that was updated, as the root object of the document.
+
+\begin{verbatim}
+{
+  "id": 3,
+  "name": "Alice Smith",
+  "created": "2014-01-01 12:01:00",
+  "modified": "2014-01-01 12:03:00"
+}
+\end{verbatim}
+
+\subsection{PATCH /collection/resource\_id}
+
+The result of a PATCH operation is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the Resource attributes, the entire Resource is returned.
+
+\begin{verbatim}
+{
+  "id": 3,
+  "name": "Alicia Smith",
+  "created": "2014-01-01 12:01:00",
+  "modified": "2014-01-01 12:04:00"
+}
+\end{verbatim}
+
+\subsection{DELETE /collection/resource\_id}
+
+This is the easiest of the bodies to deal with. Once an object is deleted, you simply return an empty document. No need to return information about the deleted Resource or any of that.
 
 
 \chapter{Response Document Standards}
