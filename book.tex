@@ -71,7 +71,9 @@ There are also many parts of your service which you SHOULD NOT expose via API at
 
 Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense (although, you may have made some poor database design decisions).
 
-\section {Abstraction Examples}
+The \href{https://dev.twitter.com/docs/api/1.1}{Twitter API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs. However, the \href{http://developer.github.com/v3/}{GitHub API} is a beautiful example of properly-abstracted RESTful API design.
+
+\section{Abstraction Examples}
 
 For both the good and bad abstraction example, we'll make use of the same fictional service. Pretend that you control a web service which sends messages to different users and messages can either be sent as a text message or an email, depending on the preferences for a particular user.
 
@@ -376,9 +378,7 @@ There's nothing wrong with this, as every facet of data manipulation your servic
 
 \section{Plural or Singular?}
 
-Honestly, it doesn't matter too much if the endpoints are singular or plural. What does matter is that you stay consistent. The examples in this book are plural.
-
-TODO: List what different people do
+The standard convention is to use plural endpoint names. The following big API providers all use a plural naming convention for their collecions: \href{http://developer.github.com/v3/}{GitHub}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{http://developer.netflix.com/docs/REST_API_Conventions}{Netflix}
 
 
 \chapter{Resource Filtering}
@@ -703,21 +703,130 @@ For example, if making a filtered request limiting the Collection to containing 
 
 \section{JSON Schema}
 
-\href{http://json-schema.org/}{json-schema.org}
+\href{http://json-schema.org/}{JSON Schema} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, one could easily automate data validation and generation of CRUD forms.
 
-TODO
+\subsection{Example JSON Schema Document}
+
+\begin{verbatim}
+{
+  "title": "Example Schema",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "age": {
+      "description": "Age in years",
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": ["firstName", "lastName"]
+}
+\end{verbatim}
 
 \section{JSON API}
 
-\href{http://jsonapi.org/}{jsonapi.org}
+The \href{http://jsonapi.org/}{JSON API} spec provided a standardized format for structuring the response documents provided by an API and also introduces some reserved words which have special meanings in the responses (e.g. an id must be used for identifying a Resource, a convention we've been otherwise following).
 
-TODO
+An interesting feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating what the Consumer would want.
+
+\subsection{Example JSON API Document}
+
+\begin{verbatim}
+{
+  "links": {
+    "posts.author": {
+      "href": "http://example.com/people/{posts.author}",
+      "type": "people"
+    },
+    "posts.comments": {
+      "href": "http://example.com/comments/{posts.comments}",
+      "type": "comments"
+    }
+  },
+  "posts": [{
+    "id": "1",
+    "title": "Rails is Omakase",
+    "links": {
+      "author": "9",
+      "comments": [ "1", "2" ]
+    }
+  }],
+  "linked": {
+    "people": [{
+      "id": "9",
+      "name": "@d2h"
+    }],
+    "comments": [{
+      "id": "1",
+      "body": "Mmmmmakase"
+    }, {
+      "id": "2",
+      "body": "I prefer unagi"
+    }]
+  }
+}
+\end{verbatim}
 
 \section{Siren}
 
-\href{http://sirenspec.org}{sirenspec.org}
+The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standardized method for representing Resources and what actions can be performed on said Resources. It is a hypermedia API, meaning that whenever applicable, the URL for performing an action or linking to a Resource is provided in the document.
 
-TODO
+TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that whole chapter with this chapter?
+
+\subsection{Example Siren Document}
+
+\begin{verbatim}
+{
+  "class": [ "order" ],
+  "properties": { 
+      "orderNumber": 42, 
+      "itemCount": 3,
+      "status": "pending"
+  },
+  "entities": [
+    { 
+      "class": [ "items", "collection" ], 
+      "rel": [ "http://x.io/rels/order-items" ], 
+      "href": "http://api.x.io/orders/42/items"
+    },
+    {
+      "class": [ "info", "customer" ],
+      "rel": [ "http://x.io/rels/customer" ], 
+      "properties": { 
+        "customerId": "pj123",
+        "name": "Peter Joseph"
+      },
+      "links": [
+        { "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "add-item",
+      "title": "Add Item",
+      "method": "POST",
+      "href": "http://api.x.io/orders/42/items",
+      "type": "application/x-www-form-urlencoded",
+      "fields": [
+        { "name": "orderNumber", "type": "hidden", "value": "42" },
+        { "name": "productCode", "type": "text" },
+        { "name": "quantity", "type": "number" }
+      ]
+    }
+  ],
+  "links": [
+    { "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
+    { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
+    { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
+  ]
+}
+\end{verbatim}
 
 
 \chapter{Authentication}
