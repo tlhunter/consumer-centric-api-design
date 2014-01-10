@@ -1,5 +1,6 @@
 \documentclass{book}
 \setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{3}
 \title{A Consumer-Centric Approach to\newline{}RESTful API Design}
 \author{Thomas Hunter II}
 \date{January 2014}
@@ -85,7 +86,7 @@ Don't worry too much about the technical parts of the examples; we'll get to the
 
 This example will include numerous shortcomings.
 
-\textbf{Getting User Preference}
+\paragraph{\textbf{Getting User Preference}}
 
 \begin{verbatim}
 GET /get_user_preferences/12
@@ -101,7 +102,7 @@ Another problem with this example is the response contains the integer \texttt{1
 
 Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. Something like this should have been merged with another endpoint for getting all the data about a particular user.
 
-\textbf{Sending a Text or Email (Two Endpoints)}
+\paragraph{\textbf{Sending a Text or Email (Two Endpoints)}}
 
 \begin{verbatim}
 POST /users/12/send_text
@@ -125,7 +126,7 @@ Also, there is no way to refer to previous instances of sending notifications to
 
 With the same messaging web service, here's a cleaner, RESTful method for sending messages to users.
 
-\textbf{Creating a Notification}
+\paragraph{\textbf{Creating a Notification}}
 
 \begin{verbatim}
 POST /notifications
@@ -767,19 +768,60 @@ A good RESTful API will keep track of the version in the URL. The other most com
 
 \section{Authentication}
 
-There are two common paradigms your server may represent. In the three legged paradigm, a third-party API consumer is making requests on behalf of a user of your website / service. In a two-legged paradigm, there really isn't a user involved.
+There are two common paradigms your server may represent. In the Two-Legged paradigm, there are two parties involved, a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who probably has an account with both services.
 
-\subsection{Two Legged Authentication}
+\subsection{Two-Legged Authentication}
 
-TODO: Something proprietary? Simple GET parameter?
+When doing Two-Legged Authentication, nothing too fancy needs to be done. Essentially, the Third-Party needs a way to authenticate themselves with the Server. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
 
-TODO: Research solutions
+Conveniently, the HTTP protocol makes use of a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do authorization, most of them make use of this header.
 
-\subsection{Three Legged Authentication}
+\subsubsection{Basic HTTP Authentication}
 
-TODO: Mention things need to be revoked.
+The "classical" way of doing authentication is called \href{https://tools.ietf.org/html/rfc2617}{Basic HTTP Auth}, where a User Agent first makes a GET request to a protected resource. The Server responds with Unauthorized, and the User Agent displays a dialog to the user prompting them for a username and password.
 
-Typically, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
+\paragraph{\textbf{First Request}}
+
+\begin{verbatim}
+GET /protected HTTP/1.1
+Host: www.example.org
+Accept: text/html
+\end{verbatim}
+
+\paragraph{\textbf{Unauthorized Response}}
+
+\begin{verbatim}
+HTTP/1.1 401 Unauthorized
+Date: Thu, 9 Jan 2014 23:35:00 GMT
+WWW-Authenticate: Basic realm="Example"
+\end{verbatim}
+
+At this point, the user either clicks cancel and sees a not-very-useful screen and chooses to go away, or they enter correct credentials and click Authorize.
+
+The credentials the user supplies are sent as follows: The username (which cannon contain ":") is concatenated with ":", and then concatenated with the password. This text is then Base64 encoded and sent inside of the Authorization header. As you can probably guess, this is extremely insecure if done over HTTP, and perfectly fine if sent over HTTPS.
+
+\paragraph{\textbf{Authorized Request}}
+
+\begin{verbatim}
+GET /protected HTTP/1.1
+Host: www.example.org
+Accept: text/html
+Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+\end{verbatim}
+
+Finally, the Server begins giving the User Agent the content which the user is expecting. This exact same Authorization header is sent with every subsequent request. It is worth noting that web browsers don't usually provide a mechanism for the user to log out. Also, web browsers typically keep using this authentication header for any request made at the current path or deeper.
+
+\subsubsection{Alternatives to Basic Auth}
+
+You don't necessarily need to rely on this approach for doing authentication. OAuth (which you'll read about in the next section) provides some methods for doing Two-Legged authentication.
+
+You can even invent your own method where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this is often referred to as an Auth Token). Third parties will likely want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration system so that developers can provision these tokens themselves.
+
+\subsection{Three-Legged Authentication}
+
+Often, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of a user. This user probably trusts your Server with their username and password, but they don't trust the third-party consumer. The user would also like to one day revoke the third-parties access to their data on your Server, without the need to go around changing their username and password.
+
+The complexities of Three-Legged Authentication is far too complex to exemplify in this book, so you'll want to visit their websites to gain more information. At a high level, they provide a method for a Consumer to sign requests and to validate they are who they say they are. They also provide a method for Users to grant privilege to Consumers to access their data on your Server. Users can revoke permissions from Consumers whenever they'd like. At any point in time, the Server can revoke a Consumers privileges as well.
 
 \href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
 
@@ -788,11 +830,13 @@ There are also \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0} and \href{ht
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
 
-\section{API Permissions}
+\section{Consumer Permissions}
 
-This is mostly applicable with Three Legged Authentication.
+Permissions is a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
 
-Figure ~\ref{fig:twitteroauth} is a screen you've likely seen while using Twitter.
+When dealing with Two-Legged Authentication, the process for deciding Permissions is likely to be handled more simply. For example, if your Service is owned by a company, and this company trusts certain other companies and want to give them more privileges, your company would edit their account and allow access to much more data (for example user creation).
+
+Now, with Three-Legged Authentication, the Consumer needs to be able to specify which types of data of the User they would like to interact with. When the user authorizes the Consumer, they are usually given a GUI where they can review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook or LinkedIn.
 
 \begin{figure}[ht!]
 \centering
