@@ -364,7 +364,7 @@ There's nothing wrong with this, as every facet of data manipulation your servic
 The standard convention is to use plural endpoint names. The following big API providers all use a plural naming convention for their collecions: \href{http://developer.github.com/v3/}{GitHub}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{http://developer.netflix.com/docs/REST_API_Conventions}{Netflix}
 
 
-\section{Resource Filtering}
+\section{Collection Resource Filtering}
 
 When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
@@ -385,7 +385,7 @@ Some of these filterings can be redundant with endpoint URLS. In the Endpoints c
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\section{Respone Attribute Filtering}
+\section{Resource Attribute Filtering}
 
 Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
 
@@ -679,10 +679,67 @@ The result of a PATCH operation is exactly the same as the result of a PUT opera
 This is the easiest of the bodies to deal with. Once an object is deleted, you simply return an empty document. No need to return information about the deleted Resource or any of that.
 
 
-\section{JSON Attributes}
+\section{JSON Attribute Conventions}
 
-dates and types and stuff
+JSON, which stands for JavaScript Object Notation, is of course a subset of JavaScript, and was defined for the purpose of building a language-agnostic data interchange format. It fills mostly the same role that XML was designed to fill, except that it has the side effect of being much more compact, easily deserializing into native objects for most languages, and supporting many different data types (XML only supports strings).
 
+That said, there is still quite a bit of freedom that a developer has for representing data using JSON. This section of the book is designed to give you some pointers in these regards.
+
+\subsection{Attribute Consistency between Resources}
+
+Whenever you represent different Resources, each attribute should remain of the same data type. For example, if one Resource has a "name" attribute which is a String, you shouldn't later with a different Resource represent it as an Integer.
+
+There are some exceptions, such as when a value shouldn't exist, it can be represented as a null. However, in general, keeping the attributes of the same data type will make your API easier for consumers using statically typed languages (e.g. JavaScript and PHP is more forgiving than C).
+
+\subsection{Dates}
+
+JSON is a subset of JavaScript, and JavaScript does have a format for writing dates. The format of these dates looks a little something like this:
+
+\begin{verbatim}
+"Thu Jan 09 2014 22:06:17 GMT-0500 (EST)"
+\end{verbatim}
+
+That format is as much verbose as it is ugly.
+
+If you wanted something much more terse, you could represent the date as the number of seconds since the Unix Epoch, and it can be stored as an integer:
+
+\begin{verbatim}
+1389323177396
+\end{verbatim}
+
+Now that format is a bit too terse. Just looking at it, we have no idea what is going on! Linux and Unix machines and open source languages can parse that format very easily, but people in Microsoft land will be clueless!
+
+A much better standard for representing dates is the ISO 8601 standard, and it looks a bit like this:
+
+\begin{verbatim}
+"2014-01-10T03:06:17.396Z"
+\end{verbatim}
+
+\subsection{Resource Identifiers (Numeric or Otherwise)}
+
+Whenever dealing with Resource identifiers, you should store them as a String (even if they are numeric). This may sound counterintuitive at first.
+
+Whenever the Consumer is working with an Identifier, they are working with it as if it were a String. If they go to make a request to the Resource, it is concatenated with another String and turned into a URL. If it is logged, it is written as a String. And, unless the Consumer is doing some shady scraping of your API, the Identifier should never need to have arithmetic performed on it.
+
+Also, if Resource Identifiers are always sent as strings, if you ever decide to change from a numeric representation to a different format which must be a String, such as a UUID (e.g. \texttt{7d531700-79a5-11e3-979a-a79bcbe406e9}), no changes to the code will need to take place on the Consumer end.
+
+\subsection{Nulls}
+
+If most Resources have a particular attribute available, and some do not, you should always provide the attribute in the document with a null value, instead of removing it outright.
+
+This will usually make things easier for your Consumers, who won't need to check if a JSON attribute exists before attempting to read it.
+
+\subsection{Arrays}
+
+When representing Resources with attributes which represent an array, you should give the attribute a plural name. This signifies to the developer that they should expect more than one value.
+
+Also, when this Array shouldn't have any entries, you should typically return an array with nothing in it, instead of returning a null.
+
+\subsection{Whitespace}
+
+Whitespace, while convenient for a human to read, isn't very beneficial to a computer, and incurs some extra networking overhead. It's really up to you to decide if you want to add whitespace to the output.
+
+JSON allows for any number of whitespace between keys and values, but if you are going to add whitespace, use a simple and consistent standard, such as two spaces for indentation and a single newline.
 
 \chapter{API Ecosystem}
 
@@ -1010,6 +1067,5 @@ This is a sort of example of Hypermedia API's gone wrong. Very complex. Also, no
 Big in corporate environments.
 
 Mention how it Sucks
-
 
 \end{document}
