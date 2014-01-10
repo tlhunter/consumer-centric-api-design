@@ -1,6 +1,6 @@
 \documentclass{book}
-\setcounter{tocdepth}{1}
-\title{A Consumer-Centric Approach to RESTful API Design\newline{}REVIEW COPY DO NOT DISTRIBUTE}
+\setcounter{tocdepth}{2}
+\title{A Consumer-Centric Approach to\newline{}RESTful API Design}
 \author{Thomas Hunter II}
 \date{January 2014}
 \usepackage{graphicx}
@@ -12,19 +12,19 @@
 
 \section*{About the Author, Reviewers, and Editor}
 
-\subsection*{Thomas Hunter II, Author}
+\subsubsection*{Thomas Hunter II, Author}
 
 At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
 
-\subsection*{John Sheehan, Technical Reviewer}
+\subsubsection*{John Sheehan, Technical Reviewer}
 
 John is an API fanatic with over 15 years of experience working in a wide variety of IT and software development roles. As an early employee at Twilio, John lead the developer evangelism program and worked as a Product Manager for Developer Experience. After Twilio, John was Platform Lead at IFTTT working with API providers to create new channels. John is also the creator of \href{https://www.github.com/restsharp/restsharp}{RestSharp}, \href{http://www.apidigest.com/}{API Digest}, \href{http://www.api-jobs.com/}{API Jobs} and co-host of \href{http://trafficandweather.io/}{Traffic and Weather}, an API and cloud podcast.
 
-\subsection*{Kevin Swiber, Technical Reviewer}
+\subsubsection*{Kevin Swiber, Technical Reviewer}
 
 Senior software developer and Enterprise Architect with experience in multiple languages, platforms, and operating systems. Currently focused on cloud-based solutions and scalable, distributed systems. Leading the charge for open source development and inter-platform collaboration in the greater software development community.
 
-\subsection*{Jason Marciak, Editor}
+\subsubsection*{Jason Marciak, Editor}
 
 Blah blah blah
 
@@ -32,7 +32,7 @@ Blah blah blah
 
 \newpage
 
-\chapter{Introduction}
+\section{Introduction}
 
 An API represents a contract between data/business logic located on your Server and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
 
@@ -42,24 +42,26 @@ The easier your API is to consume, the more people that will consume it.
 
 The principles of this document, if followed while designing and operating your API, will ensure that Consumers will grok your API while substantially reducing support tickets. Developers will travel from tech conference to tech conference telling everyone what a pleasure working with your API is and convincing them to sign up.
 
-\section{Approach}
+\subsection{Approach}
 
 This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technica, and this book would make a good candidate for sitting on the back of your toilet.
 
 Any code samples will usually be written using more than one language, e.g. PHP and Node.js.
 
-\section{Intended Audience}
+\subsection{Intended Audience}
 
 The ideal reader of this book is someone who has built a couple websites, and is comfortable working with a language or framework and understands some of the intermediate features such as reading request headers and writing response headers.
 
 While knowloedge of any particular language is not a requirement of this book, an understanding of generic SQL will be really helpful for following along with some of the example queries.
 
-\section{Goals of this Book}
+\subsection{Goals of this Book}
 
 By the time you're done reading this book you'll have a high-level understanding of how to build a great RESTful API Ecosystem. This book will not cover the technical details of how to write code an API from scratch.
 
 
-\chapter{Data Design and Abstraction}
+\chapter{High Level}
+
+\section{Data Design and Abstraction}
 
 Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
@@ -73,17 +75,17 @@ Sometimes multiple tables should be represented as a single resource. Maybe even
 
 The \href{https://dev.twitter.com/docs/api/1.1}{Twitter API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs. However, the \href{http://developer.github.com/v3/}{GitHub API} is a beautiful example of properly-abstracted RESTful API design.
 
-\section{Abstraction Examples}
+\subsection{Abstraction Examples}
 
 For both the good and bad abstraction example, we'll make use of the same fictional service. Pretend that you control a web service which sends messages to different users and messages can either be sent as a text message or an email, depending on the preferences for a particular user.
 
 Don't worry too much about the technical parts of the examples; we'll get to them in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
 
-\subsection{An Example of Bad Abstraction}
+\subsubsection{An Example of Bad Abstraction}
 
 This example will include numerous shortcomings.
 
-\subsubsection{Getting User Preference}
+\textbf{Getting User Preference}
 
 \begin{verbatim}
 GET /get_user_preferences/12
@@ -99,7 +101,7 @@ Another problem with this example is the response contains the integer \texttt{1
 
 Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. Something like this should have been merged with another endpoint for getting all the data about a particular user.
 
-\subsubsection{Sending a Text or Email (Two Endpoints)}
+\textbf{Sending a Text or Email (Two Endpoints)}
 
 \begin{verbatim}
 POST /users/12/send_text
@@ -119,11 +121,11 @@ Whenever you find yourself creating two endpoints with the exact same expected r
 
 Also, there is no way to refer to previous instances of sending notifications to a user. Sure, the Consumer could record this information somewhere in a database, but it would be beneficial if the API made available a method for looking up previous notifications.
 
-\subsection{An Example of Good Abstraction}
+\subsubsection{An Example of Good Abstraction}
 
 With the same messaging web service, here's a cleaner, RESTful method for sending messages to users.
 
-\subsubsection{Creating a Notification}
+\textbf{Creating a Notification}
 
 \begin{verbatim}
 POST /notifications
@@ -150,13 +152,13 @@ Another important concept with this example is that the business logic of determ
 
 In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbage should be correct).
 
-\chapter{Anatomy of an HTTP Packet}
+\section{Anatomy of an HTTP Packet}
 
 Since everything we do is over HTTP, let's look at a dissection of an HTTP packet. It's surprising how many developers who have been building websites for years don't know what an HTTP packet looks like! When the Consumer sends a Request to the Server, they provide a set of Key/Value pairs, called a Header, along with two newline characters, and finally the request body. This is all sent in the same packet.
 
 The server then responds in the say Key/Value pair format, with two newlines and then the response body. HTTP is very much a request/response protocol; there is no "Push" support (the Server sending data to the Consumer unprovoked), unless you use a different protocol such as Websockets.
 
-\section{Example HTTP Request}
+\subsection{Example HTTP Request}
 
 \begin{verbatim}
 POST /v1/animal HTTP/1.1
@@ -171,7 +173,7 @@ Content-Length: 24
 }
 \end{verbatim}
 
-\section{Example HTTP Response}
+\subsection{Example HTTP Response}
 
 \begin{verbatim}
 HTTP/1.1 200 OK
@@ -189,25 +191,25 @@ Cache-Control: no-cache
 }
 \end{verbatim}
 
-\section{Debugging HTTP Traffic}
+\subsection{Debugging HTTP Traffic}
 
 When designing your API, you should be able to work with tools which allow you to look at raw HTTP packets. Consider using \href{https://www.wireshark.org}{Wireshark}, for example. Also, make sure you are using a framework / web server which allows you to read and change as many of these fields as possible.
 
-Here's an example of a heavier HTTP request of a form submission on a website. Notice all of the data sent back and forth using HTTP headers.
+Figure ~\ref{fig:wireshark} is an example of a heavier HTTP request of a form submission on a website. Notice all of the data sent back and forth using HTTP headers.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[height=90mm]{images/wireshark.png}
 \caption{Wireshark Screenshot}
-\label{overflow}
+\label{fig:wireshark}
 \end{figure}
 
 
-\chapter{Choosing an API Root URL}
+\section{Choosing an API Root URL}
 
 The root location of your API is important, believe it or not. When a developer (read as code archaeologist) inherits an old project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer calls out to. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
-\section{Root URL Location}
+\subsection{Root URL Location}
 
 Here are two common URL Root Locations:
 
@@ -224,7 +226,7 @@ Also, notice the HTTPS prefix. As a good RESTful API, you MUST host your API beh
 
 Don't use a different TLD (Top Level Domain) for hosting your API than you do for hosting your website. This may sound tempting, as your main domain could be \textbf{example.com}, and your API and developer documentation be entirely located on \textbf{example.io}. However, there is no logical relationship between these two domains and an adversary could have purchased \textbf{example.io} and is posing as a legitamate counterpart to \textbf{example.com}. Also, the "code archeologist" might only have knowledge of one domain and not the other. Finally, if you \emph{do} want to share some cookies between the two websites (e.g. an authenticated user on \textbf{example.com} can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or subdirectory.
 
-\section{Content at the Root}
+\subsection{Content at the Root}
 
 It's a good idea to have content at the root of your API. Hitting the root of GitHub's API returns a listing of endpoints, for example. Personally, I'm a fan of having the root URL give information which a lost developer would find useful, e.g., how to get to the developer documentation for the API.
 
@@ -240,28 +242,9 @@ Here's a truncated example of the content provided by the \href{https://api.gith
 \end{verbatim}
 
 
-\chapter{API Versioning}
+\chapter{API Requests}
 
-No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
-
-\begin{verbatim}
-https://api.example.org/v1/*
-\end{verbatim}
-
-Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
-
-As a side note, if you are simply ADDING new features to your API, such as new attributes on a Resource (which are not required and the Resource will function without), or if you are ADDING new Endpoints, you do not need to increment your API version number since these changes do not break backwards compatibility. You will want to update your API Documentation (your Contract), of course.
-
-Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to tell Consumers of your API that the older version will be removed on a specific date and that they should upgrade to a newer version.
-
-\begin{verbatim}
-Accept: application/json+v1;
-\end{verbatim}
-
-A good RESTful API will keep track of the version in the URL. The other most common solution is to put a version number in a request header, but after working with many different Third Party Developers, I can tell you that adding headers is no where near as easy as adding a URL Segment.
-
-
-\chapter{HTTP Verbs}
+\section{HTTP Verbs}
 
 Chances are you already know about GET and POST requests. These are the two most commonly used requests when a web browser visits different websites. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
@@ -322,11 +305,11 @@ A good RESTful API will make use of the four and a half HTTP verbs for allowing 
 Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on cache headers), and will go as far as prompt the user if they attempt to POST for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
 
 
-\chapter{URL Endpoints}
+\section{URL Endpoints}
 
 An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources.
 
-\section{Main Collections}
+\subsection{Main Collections}
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
@@ -339,7 +322,7 @@ If you were building a fictional API to represent several different Zoo's, each 
 
 Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
 
-\section{Specific Endpoints}
+\subsection{Specific Endpoints}
 
 When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zookeeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
 
@@ -376,12 +359,12 @@ Also, notice how the listing of Endpoints doesn't include every possible verb-to
 
 There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
 
-\section{Plural or Singular?}
+\subsection{Plural or Singular?}
 
 The standard convention is to use plural endpoint names. The following big API providers all use a plural naming convention for their collecions: \href{http://developer.github.com/v3/}{GitHub}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{http://developer.netflix.com/docs/REST_API_Conventions}{Netflix}
 
 
-\chapter{Resource Filtering}
+\section{Resource Filtering}
 
 When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
@@ -402,7 +385,7 @@ Some of these filterings can be redundant with endpoint URLS. In the Endpoints c
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\chapter{Respone Attribute Filtering}
+\section{Respone Attribute Filtering}
 
 Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
 
@@ -410,24 +393,24 @@ Again, since we're dealing with GET requests, you'll want to accept a URL parame
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
-\section{Example Unfiltered Single-Resource Request}
+\subsection{Example Unfiltered Single-Resource Request}
 
 In this example request, the default representation of a user object includes data from two tables joined together. One of the tables is the obvious user table, and another table contains some textual data related to a user called user\_descriptions.
 
-\subsection{Request URL}
+\subsubsection{Request URL}
 
 \begin{verbatim}
 GET http://api.example.org/user/12
 \end{verbatim}
 
-\subsection{Resulting SQL Query}
+\subsubsection{Resulting SQL Query}
 
 \begin{verbatim}
 SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
   WHERE user.id = 12;
 \end{verbatim}
 
-\subsection{Response Body}
+\subsubsection{Response Body}
 
 \begin{verbatim}
 {
@@ -439,23 +422,23 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
 }
 \end{verbatim}
 
-\section{Example Filtered Single-Resource Request}
+\subsection{Example Filtered Single-Resource Request}
 
 In this next example, the consumer has requested a filtered list of attributes. So, we're returning less data. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort may be involved.
 
-\subsection{Request URL}
+\subsubsection{Request URL}
 
 \begin{verbatim}
 GET http://api.example.org/user/12?whitelist=id,name,email
 \end{verbatim}
 
-\subsection{Resulting SQL Query}
+\subsubsection{Resulting SQL Query}
 
 \begin{verbatim}
 SELECT id, name, email FROM user WHERE user.id = 12;
 \end{verbatim}
 
-\subsection{Response Body}
+\subsubsection{Response Body}
 
 \begin{verbatim}
 {
@@ -466,13 +449,13 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 \end{verbatim}
 
 
-\chapter{JSON Request Body}
+\section{JSON Request Body}
 
 There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framwork for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multipart Form Data (required for file uploads), as well as Form URL Encoded.
 
 Below you'll see examples of both of those methods just so that you understand how the browser and server usually upload data. Unfortunately, neither of them are adaquate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
 
-\section{Example Form URL Encoded Request}
+\subsection{Example Form URL Encoded Request}
 
 This method is used by Websites for accepting simple data forms from a web browser.
 
@@ -486,7 +469,7 @@ Content-Type: application/x-www-form-urlencoded
 username=root&password=Zion0101
 \end{verbatim}
 
-\section{Example Multipart Form Data Request}
+\subsection{Example Multipart Form Data Request}
 
 This method is used by Websites for accepting more complex data from a web browser, such as file uploads.
 
@@ -509,7 +492,7 @@ on
 ------RANDOM_jDMUxq4Ot5--
 \end{verbatim}
 
-\section{Example JSON Request}
+\subsection{Example JSON Request}
 
 This method is much better for uploading data. The JSON document used for the Request can be very similar to the JSON document used for the Response. JSON can specify the type of data (e.g. Integers, Strings, Booleans), while also allowing for hierarchal relationships of data.
 
@@ -526,12 +509,14 @@ Content-Length: 24
 }
 \end{verbatim}
 
-\section{Accessing a JSON Response Body}
+\subsection{Accessing a JSON Response Body}
 
 TODO: Add some code samples for reading the body. PHP, Express.js.
 
 
-\chapter{HTTP Response Status Codes}
+\chapter{API Responses}
+
+\section{HTTP Response Status Codes}
 
 It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code.
 
@@ -541,19 +526,20 @@ The Status Code is on the first line of information returned back to the Consume
 HTTP/1.1 200 OK
 \end{verbatim}
 
-\section{Common Status Codes}
+\subsection{Common Status Codes}
 
 There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html}{HTTP Status Codes} to choose from, however this list should be a good starting point:
 
 \begin{itemize}
 \item \texttt{\textbf{200} OK}
     \begin{itemize}
-    \item GET Requests
+    \item GET / PUT / PATCH  Requests
     \item The Consumer requested data from the Server, and the Server found it for them (Idempotent)
+    \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
-\item \texttt{\textbf{201} ACCEPTED}
+\item \texttt{\textbf{201} CREATED}
     \begin{itemize}
-    \item POST / PUT / PATCH Requests
+    \item POST Requests
     \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
 \item \texttt{\textbf{204} NO CONTENT}
@@ -578,7 +564,7 @@ There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.
     \end{itemize}
 \end{itemize}
 
-\section{Status Code Ranges}
+\subsection{Status Code Ranges}
 
 The \textbf{1xx} range is reserved for low-level HTTP stuff, and you'll very likely go your entire career without manually sending one of these status codes.
 
@@ -591,17 +577,17 @@ The \textbf{4xx} range is reserved for responding to errors made by the Consumer
 The \textbf{5xx} range is reserved as a response when the Server makes a mistake. Often times, these errors are thrown by low-level functions even outside of the developers hands, to ensure a Consumer gets some sort of response. The Consumer can't possibly know the state of the server when a 5xx response is received, and so these should be avoidable.
 
 
-\chapter{Response Content Types}
+\section{Response Content Types}
 
 Currently, the most "exciting" of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, you name it. XML appears to have lost the war a while ago (except in large corporate environments). SOAP, thankfully, is all but dead, and we really don't see much APIs providing HTML to be consumed (unless, that is, you're building a scraper!)
 
-Here's a Google Trends graph comparing the terms JSON API, XML API, and SOAP API, which should give a good feel for how their popularity has changed over time:
+Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms JSON API, XML API, and SOAP API, which should give a good feel for how their popularity has changed over time:
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=110mm]{images/xml-vs-json-vs-soap-google-trends.png}
 \caption{Google Trends for JSON API, XML API, and SOAP API}
-\label{overflow}
+\label{fig:googletrends}
 \end{figure}
 
 Developers using popular languages and frameworks can very likely parse any valid data format you return to them. You can even provide data in any of the aforementioned data formats (not including SOAP) quite easily, if you're building a common response object and using a different serializer. What does matter though, is that you make use of the Accept header when responding with data.
@@ -609,11 +595,11 @@ Developers using popular languages and frameworks can very likely parse any vali
 Some API creators recommend adding a .json, .xml, or .html file extension to the URL (after the endpoint) for specifying the content type to be returned. With the different extensions added, we've now got different URLs for the same Resources. Use the Accept header, which is built into the HTTP spec for this purpose, and if you can't provide data in a format the Consumer wants, reply with a \texttt{406 Not Acceptable} response.
 
 
-\chapter{Expected Response Bodies}
+\section{Expected Response Bodies}
 
 When a Consumer makes a request to the Server, something needs to be returned in the response. Depending on the HTTP Verb being used, the response will be different. Here's a good list to adhere to:
 
-\subsection{GET /collection}
+\subsubsection{GET /collection}
 
 When performing a GET request to an entire collection of objects, the Consumer expects an array of every object being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogenous list of resources.
 
@@ -634,7 +620,7 @@ When performing a GET request to an entire collection of objects, the Consumer e
 ]
 \end{verbatim}
 
-\subsection{GET /collection/resource\_id}
+\subsubsection{GET /collection/resource\_id}
 
 When performing a GET request for a specific resource, the Consumer is expecting to receive the resource. In a simple RESTful API, this is just the resource object as a top level object.
 
@@ -649,7 +635,7 @@ When performing a GET request for a specific resource, the Consumer is expecting
 ]
 \end{verbatim}
 
-\subsection{POST /collection}
+\subsubsection{POST /collection}
 
 When performing a POST request to a Collection, the Consumer expects the object it just created to be returned. In the ideal academic REST API, the object being provided is exactly the same as the object being returned. However, there is very important information being returned to the Consumer which it doesn't already know, such as the resource\_id and other calculated attributes such as created timestamps.
 
@@ -662,7 +648,7 @@ When performing a POST request to a Collection, the Consumer expects the object 
 }
 \end{verbatim}
 
-\subsection{PUT /collection/resource\_id}
+\subsubsection{PUT /collection/resource\_id}
 
 The result of a PUT operation is the entirety of the Resource that was updated, as the root object of the document.
 
@@ -675,7 +661,7 @@ The result of a PUT operation is the entirety of the Resource that was updated, 
 }
 \end{verbatim}
 
-\subsection{PATCH /collection/resource\_id}
+\subsubsection{PATCH /collection/resource\_id}
 
 The result of a PATCH operation is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the Resource attributes, the entire Resource is returned.
 
@@ -688,12 +674,168 @@ The result of a PATCH operation is exactly the same as the result of a PUT opera
 }
 \end{verbatim}
 
-\subsection{DELETE /collection/resource\_id}
+\subsubsection{DELETE /collection/resource\_id}
 
 This is the easiest of the bodies to deal with. Once an object is deleted, you simply return an empty document. No need to return information about the deleted Resource or any of that.
 
 
-\chapter{Response Document Standards}
+\section{JSON Attributes}
+
+dates and types and stuff
+
+
+\chapter{API Ecosystem}
+
+
+\section{API Versioning}
+
+No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
+
+\begin{verbatim}
+https://api.example.org/v1/*
+\end{verbatim}
+
+Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
+
+As a side note, if you are simply ADDING new features to your API, such as new attributes on a Resource (which are not required and the Resource will function without), or if you are ADDING new Endpoints, you do not need to increment your API version number since these changes do not break backwards compatibility. You will want to update your API Documentation (your Contract), of course.
+
+Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to tell Consumers of your API that the older version will be removed on a specific date and that they should upgrade to a newer version.
+
+\begin{verbatim}
+Accept: application/json+v1;
+\end{verbatim}
+
+A good RESTful API will keep track of the version in the URL. The other most common solution is to put a version number in a request header, but after working with many different Third Party Developers, I can tell you that adding headers is no where near as easy as adding a URL Segment.
+
+
+\section{Authentication}
+
+There are two common paradigms your server may represent. In the three legged paradigm, a third-party API consumer is making requests on behalf of a user of your website / service. In a two-legged paradigm, there really isn't a user involved.
+
+\subsection{Two Legged Authentication}
+
+TODO: Something proprietary? Simple GET parameter?
+
+TODO: Research solutions
+
+\subsection{Three Legged Authentication}
+
+TODO: Mention things need to be revoked.
+
+Typically, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
+
+\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
+
+There are also \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth}, which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
+
+I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+
+
+\section{API Permissions}
+
+This is mostly applicable with Three Legged Authentication.
+
+Figure ~\ref{fig:twitteroauth} is a screen you've likely seen while using Twitter.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=90mm]{images/permissions-twitter.png}
+\caption{Twitter OAuth Permissions}
+\label{fig:twitteroauth}
+\end{figure}
+
+
+\section{API Analytics}
+
+Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should be made efficient.
+
+For the purposes of building an API which Third Party Developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated API features. This is the perfect way to remind them to upgrade before you kill the old API version.
+
+The process of Third Party Developer notification can be automated, e.g. mail the developer every time 10,000 requests to a deprecated feature are made.
+
+
+\section{Writing good Documentation}
+
+Honestly, if you don't conform 100\% to the criteria in this guide, your API will not necessarily be horrible. However, if you don't properly document your API, nobody is going to know how to use it, and it WILL be a horrible API.
+
+Make your Documentation available to unauthenticated developers.
+
+Do not use automatic documentation generators, or if you do, at least make sure you're doctoring it up and making it presentable.
+
+Do not truncate example request and response bodies; show the whole thing. Use a syntax highlighter in your documentation.
+
+Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those error messages.
+
+If you've got the spare time, build a developer API console so that developers can immediately experiment with your API. It's not as hard as you might think and developers (both internal and third party) will love you for it!
+
+Make sure your documentation can be printed; CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
+
+
+\section{Developer Console}
+
+Building a Developer Console will allow developers to quickly test API commands without having to run their applications over and over. If commands can be linked to from within the documentation, this is even better.
+
+Figure \ref{fig:devconsole} is an example of a developer console.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=110mm]{images/api-console.png}
+\caption{Example API Console}
+\label{fig:devconsole}
+\end{figure}
+
+
+\chapter{Advanced API Topics}
+
+\section{Hypermedia APIs: REST Evolved}
+
+Hypermedia APIs are very likely the future of RESTful API design. They're actually a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
+
+When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the Server and the Consumer. These Endpoints MUST be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the Server as intended. This, as you can assume, is quite a limitation.
+
+Now, API Consumers are of course not the only user agent making HTTP requests on the Internet. Far from it. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are. What makes humans so special? Well, they're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where they want to go. If a URL changes, a human is not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved data).
+
+The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important (or necessarily required), as long as a URL is provided.
+
+With the Consumer of a Hypermedia API crawling links and gathering information, URLs are always up-to-date within responses, and do not need to be known beforehand as part of a contract. If a URL is ever cached, and a subsequent request returns a 404, the Consumer can simply go back to the root and discover the content again.
+
+When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3xx redirect to the complete Resource.
+
+JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
+
+Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Now, imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. TODO
+
+Now, imagine that these amazing tools by different companies can all work with each other as tightly as these massive suite tools. The best of both worlds. Imagine it automatically working, them automatically discovering each other and configuring themselves to work together nicely. This is a future offered by hypermedia APIs. TODO
+
+\subsection{ATOM: An Early Hypermedia API}
+
+\begin{verbatim}
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Feed</title>
+  <subtitle>A subtitle.</subtitle>
+  <link href="http://example.org/feed/" rel="self" />
+  <link href="http://example.org/" />
+  <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
+  <updated>2003-12-13T18:30:02Z</updated>
+  <entry>
+    <title>Atom-Powered Robots Run Amok</title>
+    <link href="http://example.org/2003/12/13/atom03" />
+    <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
+    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
+    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
+    <updated>2003-12-13T18:30:02Z</updated>
+    <summary>Some text.</summary>
+      <author>
+        <name>John Doe</name>
+        <email>johndoe@example.com</email>
+      </author>
+  </entry>
+</feed>
+\end{verbatim}
+
+
+\section{Response Document Standards}
 
 When responding with a document representing a Collection, it is usually adaquate to return a top-level array containing each Resource object. Likewise, when responding with a document representing a Resource, simply returning a top-level object containing the Resource is good-enough.
 
@@ -701,11 +843,11 @@ However, there are some standards people have developed for encapsulating these 
 
 For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status Code, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
 
-\section{JSON Schema}
+\subsection{JSON Schema}
 
 \href{http://json-schema.org/}{JSON Schema} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, one could easily automate data validation and generation of CRUD forms.
 
-\subsection{Example JSON Schema Document}
+\subsubsection{Example JSON Schema Document}
 
 \begin{verbatim}
 {
@@ -728,13 +870,13 @@ For example, if making a filtered request limiting the Collection to containing 
 }
 \end{verbatim}
 
-\section{JSON API}
+\subsection{JSON API}
 
 The \href{http://jsonapi.org/}{JSON API} spec provided a standardized format for structuring the response documents provided by an API and also introduces some reserved words which have special meanings in the responses (e.g. an id must be used for identifying a Resource, a convention we've been otherwise following).
 
 An interesting feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating what the Consumer would want.
 
-\subsection{Example JSON API Document}
+\subsubsection{Example JSON API Document}
 
 \begin{verbatim}
 {
@@ -772,13 +914,13 @@ An interesting feature of JSON API is that is also provides a method for returni
 }
 \end{verbatim}
 
-\section{Siren}
+\subsection{Siren}
 
 The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standardized method for representing Resources and what actions can be performed on said Resources. It is a hypermedia API, meaning that whenever applicable, the URL for performing an action or linking to a Resource is provided in the document.
 
 TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that whole chapter with this chapter?
 
-\subsection{Example Siren Document}
+\subsubsection{Example Siren Document}
 
 \begin{verbatim}
 {
@@ -829,130 +971,9 @@ TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that wh
 \end{verbatim}
 
 
-\chapter{Authentication}
+\section{Alternatives to REST}
 
-There are two common paradigms your server may represent. In the three legged paradigm, a third-party API consumer is making requests on behalf of a user of your website / service. In a two-legged paradigm, there really isn't a user involved.
-
-\section{Two Legged Authentication}
-
-TODO: Something proprietary? Simple GET parameter?
-
-TODO: Research solutions
-
-\section{Three Legged Authentication}
-
-TODO: Mention things need to be revoked.
-
-Typically, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of someone.
-
-\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
-
-There are also \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth}, which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
-
-I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
-
-
-\chapter{API Permissions}
-
-This is mostly applicable with Three Legged Authentication.
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=90mm]{images/permissions-twitter.png}
-\caption{Twitter OAuth Permissions}
-\label{overflow}
-\end{figure}
-
-
-\chapter{API Analytics}
-
-Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should be made efficient.
-
-For the purposes of building an API which Third Party Developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated API features. This is the perfect way to remind them to upgrade before you kill the old API version.
-
-The process of Third Party Developer notification can be automated, e.g. mail the developer every time 10,000 requests to a deprecated feature are made.
-
-
-\chapter{Writing good Documentation}
-
-Honestly, if you don't conform 100\% to the criteria in this guide, your API will not necessarily be horrible. However, if you don't properly document your API, nobody is going to know how to use it, and it WILL be a horrible API.
-
-Make your Documentation available to unauthenticated developers.
-
-Do not use automatic documentation generators, or if you do, at least make sure you're doctoring it up and making it presentable.
-
-Do not truncate example request and response bodies; show the whole thing. Use a syntax highlighter in your documentation.
-
-Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those error messages.
-
-If you've got the spare time, build a developer API console so that developers can immediately experiment with your API. It's not as hard as you might think and developers (both internal and third party) will love you for it!
-
-Make sure your documentation can be printed; CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
-
-
-\chapter{Developer Console}
-
-Building a Developer Console will allow developers to quickly test API commands without having to run their applications over and over. If commands can be linked to from within the documentation, this is even better.
-
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=110mm]{images/api-console.png}
-\caption{Example API Console}
-\label{overflow}
-\end{figure}
-
-
-\chapter{Hypermedia APIs: REST Evolved}
-
-Hypermedia APIs are very likely the future of RESTful API design. They're actually a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
-
-When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the Server and the Consumer. These Endpoints MUST be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the Server as intended. This, as you can assume, is quite a limitation.
-
-Now, API Consumers are of course not the only user agent making HTTP requests on the Internet. Far from it. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are. What makes humans so special? Well, they're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where they want to go. If a URL changes, a human is not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved data).
-
-The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important (or necessarily required), as long as a URL is provided.
-
-With the Consumer of a Hypermedia API crawling links and gathering information, URLs are always up-to-date within responses, and do not need to be known beforehand as part of a contract. If a URL is ever cached, and a subsequent request returns a 404, the Consumer can simply go back to the root and discover the content again.
-
-When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3xx redirect to the complete Resource.
-
-JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
-
-Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Now, imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. TODO
-
-Now, imagine that these amazing tools by different companies can all work with each other as tightly as these massive suite tools. The best of both worlds. Imagine it automatically working, them automatically discovering each other and configuring themselves to work together nicely. This is a future offered by hypermedia APIs. TODO
-
-\section{ATOM: An Early Hypermedia API}
-
-\begin{verbatim}
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Example Feed</title>
-  <subtitle>A subtitle.</subtitle>
-  <link href="http://example.org/feed/" rel="self" />
-  <link href="http://example.org/" />
-  <id>urn:uuid:60a76c80-d399-11d9-b91C-0003939e0af6</id>
-  <updated>2003-12-13T18:30:02Z</updated>
-  <entry>
-    <title>Atom-Powered Robots Run Amok</title>
-    <link href="http://example.org/2003/12/13/atom03" />
-    <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
-    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
-    <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
-    <updated>2003-12-13T18:30:02Z</updated>
-    <summary>Some text.</summary>
-      <author>
-        <name>John Doe</name>
-        <email>johndoe@example.com</email>
-      </author>
-  </entry>
-</feed>
-\end{verbatim}
-
-
-\chapter{Alternatives to REST}
-
-\section{JSON RPC}
+\subsection{JSON RPC}
 
 \href{http://www.jsonrpc.org/specification}{JSON RPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't actually have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
 
@@ -968,21 +989,21 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 
 For more information about the JSON RPC Specification visit \href{http://www.jsonrpc.org/specification}{jsonrpc.org}.
 
-\subsection{Example JSON RPC Request}
+\subsubsection{Example JSON RPC Request}
 
 \begin{verbatim}
 {"jsonrpc": "2.0", "method": "subtract", "params": [42, 23],
   "id": 1}
 \end{verbatim}
 
-\subsection{Example JSON RPC Response}
+\subsubsection{Example JSON RPC Response}
 
 \begin{verbatim}
 {"jsonrpc": "2.0", "result": 19, "id": 1}
 \end{verbatim}
 
 
-\section{XML SOAP}
+\subsection{XML SOAP}
 
 This is a sort of example of Hypermedia API's gone wrong. Very complex. Also, nobody likes XML. Mention that I don't know much.
 

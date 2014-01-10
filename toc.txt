@@ -1,32 +1,32 @@
 Principles of Good RESTful API Design
 
-§1  INTRO
-    Introduction
+About People
+Table of Contents
+Introduction
+
+§1  HIGH LEVEL
     Data Design and Abstraction
     Raw HTTP Packet
         Request
         Response
-
-§2  REQUESTS
     API Root URL
-    API Versioning
+
+§2  API REQUESTS
     HTTP Verbs
     URL Endpoints
     Resource Filtering for GET Requests
     Attribute Filtering for GET Requests
     JSON Request Body for POST, PUT, and PATCH Resquests
 
-§3  RESPONSES
+§3  API RESPONSES
     HTTP Response Status Codes
         Status Code Ranges
     Response Content Types
     Expected Response Bodies
-    Response Document Standards
-        JSON Schema
-        JSON API
-        Siren
+    JSON Attributes
 
-§4  META
+§4  API ECOSYSTEM
+    API Versioning
     Authentication
         Two Legged
         Three Legged
@@ -34,12 +34,11 @@ Principles of Good RESTful API Design
     Writing good Documentation
     Developer Console
 
-§5  ALTERNATIVES
+§5  ADVANCED API TOPICS
     Hypermedia APIs
+    Response Document Standards
+        JSON Schema
+        JSON API
+        Siren
     JSON RPC
     XML SOAP
-
-§6  OUTRO
-    Links?
-    Glossary?
-    About People
