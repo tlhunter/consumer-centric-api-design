@@ -1,0 +1,50 @@
+<html>
+<body>
+</body>
+<script src="raphael.js"></script>
+<script>
+var c = {
+    x: 512,
+    y: 512
+};
+var black = "#000";
+var paper = Raphael(0, 0, 1024, 1024);
+var rad = Math.PI / 180;
+var circles = randrange(12, 20);
+var lines = randrange(40, 80);
+
+// draw circles
+for (var i = 0; i < circles; i++) {
+    paper.circle(c.x, c.y, randrange(100, 500)).attr("stroke", black);
+}
+
+// draw lines
+var angle, len;
+for (var i = 0; i < lines; i++) {
+    angle = randrange(0, 360);
+    len = randrange(0, 500);
+    
+    drawLine(len, angle);
+}
+
+
+function drawLine(r, angle) {
+    var x = c.x + r * Math.cos(angle * rad);
+    var y = c.y + r * Math.sin(angle * rad);
+    paper.path("M" + c.x + " " + c.y + "L" + x + " " + y + "");
+}
+
+function sector(r, startAngle, endAngle) {
+    var x1 = c.x + r * Math.cos(-startAngle * rad),
+        x2 = c.x + r * Math.cos(-endAngle * rad),
+        y1 = c.y + r * Math.sin(-startAngle * rad),
+        y2 = c.y + r * Math.sin(-endAngle * rad);
+    return paper.path(["M", c.x, c.y, "L", x1, y1, "A", r, r, 0, +(endAngle - startAngle > 180), 0, x2, y2, "z"]).attr("stroke", black);
+}
+
+function randrange(begin, end) {
+    return Math.floor(Math.random() * (end - begin)) + begin;
+}
+
+</script>
+</html>
