@@ -16,7 +16,7 @@
 
 \subsubsection*{Thomas Hunter II, Author}
 
-At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He's also given talks on the topic of API Design
+At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate/API Architect with Copy.com, where his main concern is getting a well-documented API into the hands of Third-Party Developers. While working at Quicken Loans, he evangelized a large, internal API facade to abstract backend disparity. He's also given talks on the topic of API Design. His previous book, \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -24,11 +24,13 @@ John is an API fanatic with over 15 years of experience working in a wide variet
 
 \subsubsection*{Kevin Swiber, Technical Reviewer}
 
-Senior software developer and Enterprise Architect with experience in multiple languages, platforms, and operating systems. Currently focused on cloud-based solutions and scalable, distributed systems. Leading the charge for open source development and inter-platform collaboration in the greater software development community.
+Kevin is a senior software developer and Enterprise Architect with experience in multiple languages, platforms, and operating systems. Currently focused on cloud-based solutions and scalable, distributed systems. Leading the charge for open source development and inter-platform collaboration in the greater software development community.
+
+TODO: Get Updated Second-Person Biography from Kevin
 
 \subsubsection*{Jason Marciak, Editor}
 
-Blah blah blah
+TODO: Get Biography from Jason
 
 \tableofcontents
 
@@ -821,7 +823,9 @@ Accept: text/html
 Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 \end{verbatim}
 
-Finally, the Server begins giving the User Agent the content which the user is expecting. This exact same Authorization header is sent with every subsequent request. It is worth noting that web browsers don't usually provide a mechanism for the user to log out. Also, web browsers typically keep using this authentication header for any request made at the current path or deeper.
+Finally, the Server begins giving the User Agent the content which the user is expecting. This exact same Authorization header is sent with every subsequent request.
+
+Introducing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be made as the Consumer would always know that it needs to be authorized, however, if the Consumer enters incorrect credentials, the server would still reply with a 401 Unauthorized response.
 
 \subsubsection{Alternatives to Basic Auth}
 
