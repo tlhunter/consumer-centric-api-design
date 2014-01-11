@@ -6,6 +6,7 @@
 \date{January 2014}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{epstopdf}
 
 \begin{document}
 
@@ -772,7 +773,14 @@ There are two common paradigms your server may represent. In the Two-Legged para
 
 \subsection{Two-Legged Authentication}
 
-When doing Two-Legged Authentication, nothing too fancy needs to be done. Essentially, the Third-Party needs a way to authenticate themselves with the Server. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.6]{images/two-legged.eps}
+\caption{Two-Legged Authentication}
+\label{fig:twolegged}
+\end{figure}
+
+As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication is quite simple. Essentially, the Third-Party needs a way to authenticate themselves with the Server. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
 
 Conveniently, the HTTP protocol makes use of a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do authorization, most of them make use of this header.
 
@@ -819,7 +827,14 @@ You can even invent your own method where you supply the Consumer with a single 
 
 \subsection{Three-Legged Authentication}
 
-Often, a Server will want to know exactly who is making which Requests. Some APIs provide endpoints to be consumed by the general (anonymous) public, but most of the time work is being perform on behalf of a user. This user probably trusts your Server with their username and password, but they don't trust the third-party consumer. The user would also like to one day revoke the third-parties access to their data on your Server, without the need to go around changing their username and password.
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=.6]{images/three-legged.eps}
+\caption{Three-Legged Authentication}
+\label{fig:threelegged}
+\end{figure}
+
+As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication is a bit more complex. While some APIs provide endpoints to be consumed by the general (anonymous) public, a lot of the time work is being perform on behalf of a user. This user probably trusts your Server with their username and password, but they don't trust the third-party consumer. The user would also like to one day revoke the third-parties access to their data on your Server, without the need to go around changing their username and password.
 
 The complexities of Three-Legged Authentication is far too complex to exemplify in this book, so you'll want to visit their websites to gain more information. At a high level, they provide a method for a Consumer to sign requests and to validate they are who they say they are. They also provide a method for Users to grant privilege to Consumers to access their data on your Server. Users can revoke permissions from Consumers whenever they'd like. At any point in time, the Server can revoke a Consumers privileges as well.
 
@@ -874,9 +889,7 @@ Make sure your documentation can be printed; CSS is a powerful thing; don't be a
 
 \section{Developer Console}
 
-Building a Developer Console will allow developers to quickly test API commands without having to run their applications over and over. If commands can be linked to from within the documentation, this is even better.
-
-Figure \ref{fig:devconsole} is an example of a developer console.
+Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow developers to quickly test API commands without having to build their own applications over and over. This allows them to get familiar with your API much quicker.
 
 \begin{figure}[ht!]
 \centering
@@ -884,6 +897,8 @@ Figure \ref{fig:devconsole} is an example of a developer console.
 \caption{Example API Console}
 \label{fig:devconsole}
 \end{figure}
+
+a
 
 
 \chapter{Beyond REST}

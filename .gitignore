@@ -1,5 +1,5 @@
 book.aux
 book.log
 book.out
-book.pdf
+*.pdf
 book.toc
