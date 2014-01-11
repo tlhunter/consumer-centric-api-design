@@ -937,8 +937,10 @@ Now, imagine that these amazing tools by different companies can all work with e
   <entry>
     <title>Atom-Powered Robots Run Amok</title>
     <link href="http://example.org/2003/12/13/atom03" />
-    <link rel="alternate" type="text/html" href="http://example.org/2003/12/13/atom03.html"/>
-    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
+    <link rel="alternate" type="text/html"
+        href="http://example.org/2003/12/13/atom03.html"/>
+    <link rel="edit"
+        href="http://example.org/2003/12/13/atom03/edit"/>
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
     <updated>2003-12-13T18:30:02Z</updated>
     <summary>Some text.</summary>
@@ -1060,7 +1062,7 @@ TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that wh
         "name": "Peter Joseph"
       },
       "links": [
-        { "rel": [ "self" ], "href": "http://api.x.io/customers/pj123" }
+        {"rel":["self"],"href":"http://api.x.io/customers/pj123"}
       ]
     }
   ],
@@ -1072,7 +1074,7 @@ TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that wh
       "href": "http://api.x.io/orders/42/items",
       "type": "application/x-www-form-urlencoded",
       "fields": [
-        { "name": "orderNumber", "type": "hidden", "value": "42" },
+        { "name": "orderNumber", "type": "hidden", "value":"42"},
         { "name": "productCode", "type": "text" },
         { "name": "quantity", "type": "number" }
       ]
@@ -1080,7 +1082,7 @@ TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that wh
   ],
   "links": [
     { "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
-    { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
+    { "rel": [ "previous" ], "href":"http://api.x.io/orders/41"},
     { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
   ]
 }
