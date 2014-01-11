@@ -1121,12 +1121,30 @@ For more information about the JSON RPC Specification visit \href{http://www.jso
 \end{verbatim}
 
 
-\subsection{XML SOAP}
+\subsection{SOAP}
 
-This is a sort of example of Hypermedia API's gone wrong. Very complex. Also, nobody likes XML. Mention that I don't know much.
+\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} is a term you've very likely heard of, and even if you've never used it, probably have strong negative opinions of it (and if you have used it, probably even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
 
-Big in corporate environments.
+SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you can probably guess, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
 
-Mention how it Sucks
+SOAP is useful for describing services exposed over the network, and is transport agnostic just like JSON RPC, although most implementations use it over HTTP. Partly due to the waning popularity of XML in comparison to JSON, SOAP is often looked down upon due to the verbosity and the bulkyness of document sizes.
+
+SOAP is mostly used in larger corporate environments.
+
+\subsubsection{Example SOAP Request}
+
+\begin{verbatim}
+<?xml version="1.0"?>
+<soap:Envelope
+    xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+  </soap:Header>
+  <soap:Body>
+    <m:GetStockPrice xmlns:m="http://www.example.org/stock">
+      <m:StockName>IBM</m:StockName>
+    </m:GetStockPrice>
+  </soap:Body>
+</soap:Envelope>
+\end{verbatim}
 
 \end{document}
