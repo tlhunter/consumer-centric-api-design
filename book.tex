@@ -12,11 +12,11 @@
 
 \maketitle
 
-\section*{About the Author, Reviewers, and Editor}
+\section*{The People Behind the Book}
 
 \subsubsection*{Thomas Hunter II, Author}
 
-At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He also recently co-hosted a talk at the Ann Arbor PHP MySQL meetup on the topic of RESTful API Design.
+At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate / API Architect with Copy.com, where his number one concern is getting a well-documented API into the hands of Consumers. He's also given talks on the topic of API Design
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -36,13 +36,11 @@ Blah blah blah
 
 \section{Introduction}
 
-An API represents a contract between data/business logic located on your Server and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
+An API represents a contract between the data/business logic located on your Server and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
 
 Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service / core application has the potential to become a platform from which other services grow. Look at the current huge tech companies: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as big as they are today if they hadn't opened up their data via API. In fact, an entire industry exists with the sole purpose of consuming data provided by said platforms.
 
-The easier your API is to consume, the more people that will consume it.
-
-The principles of this document, if followed while designing and operating your API, will ensure that Consumers will grok your API while substantially reducing support tickets. Developers will travel from tech conference to tech conference telling everyone what a pleasure working with your API is and convincing them to sign up.
+The principles of this document, if followed while designing and operating your API, will ensure that Consumers will grok your API while substantially reducing support tickets. Developers will travel from tech conference to tech conference touting what a pleasure working with your API is and getting more developers to sign up.
 
 \subsection{Approach}
 
@@ -207,7 +205,7 @@ Figure ~\ref{fig:wireshark} is an example of a heavier HTTP request of a form su
 \end{figure}
 
 
-\section{Choosing an API Root URL}
+\section{Choosing a Root URL}
 
 The root location of your API is important, believe it or not. When a developer (read as code archaeologist) inherits an old project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer calls out to. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
@@ -309,7 +307,14 @@ Typically, GET requests can be cached (and often are!) Browsers, for example, wi
 
 \section{URL Endpoints}
 
-An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources.
+\begin{figure}[ht!]
+\centering
+\includegraphics[scale=.5]{images/zoo-relationships.eps}
+\caption{Diagram of Relationships}
+\label{fig:zoorelationships}
+\end{figure}
+
+An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources. Typically RESTful APIs use a Plural naming convention for Collections.
 
 \subsection{Main Collections}
 
@@ -360,10 +365,6 @@ Notice how the relationships between data is displayed, specifically the many to
 Also, notice how the listing of Endpoints doesn't include every possible verb-to-resource combination. For example, a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
 
 There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
-
-\subsection{Plural or Singular?}
-
-The standard convention is to use plural endpoint names. The following big API providers all use a plural naming convention for their collecions: \href{http://developer.github.com/v3/}{GitHub}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{http://developer.netflix.com/docs/REST_API_Conventions}{Netflix}
 
 
 \section{Collection Resource Filtering}
@@ -583,7 +584,7 @@ The \textbf{5xx} range is reserved as a response when the Server makes a mistake
 
 Currently, the most "exciting" of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, you name it. XML appears to have lost the war a while ago (except in large corporate environments). SOAP, thankfully, is all but dead, and we really don't see much APIs providing HTML to be consumed (unless, that is, you're building a scraper!)
 
-Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms JSON API, XML API, and SOAP API, which should give a good feel for how their popularity has changed over time:
+Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emph{JSON API}, \emph{XML API}, and \emph{SOAP API}, which should give a good feel for how their popularity has changed over time.
 
 \begin{figure}[ht!]
 \centering
@@ -594,7 +595,7 @@ Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms JSON
 
 Developers using popular languages and frameworks can very likely parse any valid data format you return to them. You can even provide data in any of the aforementioned data formats (not including SOAP) quite easily, if you're building a common response object and using a different serializer. What does matter though, is that you make use of the Accept header when responding with data.
 
-Some API creators recommend adding a .json, .xml, or .html file extension to the URL (after the endpoint) for specifying the content type to be returned. With the different extensions added, we've now got different URLs for the same Resources. Use the Accept header, which is built into the HTTP spec for this purpose, and if you can't provide data in a format the Consumer wants, reply with a \texttt{406 Not Acceptable} response.
+Some API creators recommend adding a .json, .xml, or .html file extension to the URL (after the endpoint) for specifying the content type to be returned. With the different extensions added, we've now got different URLs for the same Resources. Use the \texttt{Accept} header, which is built into the HTTP spec for this purpose, and if you can't provide data in a format the Consumer wants, reply with a \texttt{406 Not Acceptable} response.
 
 
 \section{Expected Response Bodies}

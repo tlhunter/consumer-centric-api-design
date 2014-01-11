@@ -3,3 +3,4 @@ book.log
 book.out
 *.pdf
 book.toc
+*.dia.autosave
