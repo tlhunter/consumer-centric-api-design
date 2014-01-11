@@ -512,10 +512,6 @@ Content-Length: 24
 }
 \end{verbatim}
 
-\subsection{Accessing a JSON Response Body}
-
-TODO: Add some code samples for reading the body. PHP, Express.js.
-
 
 \chapter{API Responses}
 
@@ -927,9 +923,9 @@ When retrieving a list of Resources within a Collection, an attribute containing
 
 JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
 
-Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Now, imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. TODO
+Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user exeperience.
 
-Now, imagine that these amazing tools by different companies can all work with each other as tightly as these massive suite tools. The best of both worlds. Imagine it automatically working, them automatically discovering each other and configuring themselves to work together nicely. This is a future offered by hypermedia APIs. TODO
+Now, imagine that disparate tools created by different companies can all work with each other as tightly as these massive suites of tools. Often times, when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seemlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
 
 \subsection{ATOM: An Early Hypermedia API}
 
@@ -1043,8 +1039,6 @@ An interesting feature of JSON API is that is also provides a method for returni
 \subsection{Siren}
 
 The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standardized method for representing Resources and what actions can be performed on said Resources. It is a hypermedia API, meaning that whenever applicable, the URL for performing an action or linking to a Resource is provided in the document.
-
-TODO: Should this section be moved to the Hypermedia APIs chapter? Merge that whole chapter with this chapter?
 
 \subsubsection{Example Siren Document}
 
