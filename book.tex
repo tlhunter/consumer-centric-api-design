@@ -949,7 +949,7 @@ I can honestly tell you that OAuth 1.0a, while it is the most secure of the opti
 
 Permissions is a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
 
-When dealing with Two-Legged Authentication, the process for deciding Permissions is likely to be handled more simply. For example, if your Service is owned by a company, and this company trusts certain other companies and want to give them more privileges, your company would edit their account and allow access to much more data (for example user creation).
+When dealing with Two-Legged Authentication, the process for deciding Permissions is likely to be handled more simply. For example, if your Service is owned by a company, and this company trusts certain other companies and wants to give them more privileges, your company would edit their account and allow access to much more data (for example user creation).
 
 Now, with Three-Legged Authentication, the Consumer needs to be able to specify which types of data of the User they would like to interact with. When the user authorizes the Consumer, they are usually given a GUI where they can review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook or LinkedIn.
 
@@ -960,7 +960,25 @@ Now, with Three-Legged Authentication, the Consumer needs to be able to specify 
 \label{fig:twitteroauth}
 \end{figure}
 
-TODO: Example of permissions JSON payload, when to send
+Specifying permissions will vary depending on the Authorization mechanism you use. With OAuth, for example, the Server can accept an additional parameter called permissions during the Request Token generation phase. This parameter can be a JSON object which represent the permissions the Consumer is trying to get. By passing this parameter around during the Authorization step, a Consumer is able to get per-user permissions.
+
+Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their applicaion, they can specify the permissions ahead of time. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
+
+\subsection{Example Permissions Object}
+
+The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send them emails using the service (although not have access to their email address), and finally retreive the list of the users friends, add new friends, and remove existing friends.
+
+\begin{verbatim}
+{
+  "profile": [ "read", "write" ],
+  "email": [ "send" ],
+  "friends": [ "read", "add", "remove" ]
+}
+\end{verbatim}
+
+When the user authenticates the Consumer, they would see a list of each of the operations the Consumer is asking for. Some of them should probably be highlighted in red, such as adding and removing friends, and updating the users profile.
+
+Some services will allow a User to disable permissions (Facebook used to allow this), other services will require the permissions to be accepted completely or denied completely. You can choose whatever approach you'd like with your service, but keep in mind, Consumers which don't anticipate the permissions changing can break in weird ways.
 
 
 \section{API Analytics}
