@@ -985,30 +985,28 @@ Some services will allow a User to disable permissions (Facebook used to allow t
 
 Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should be made efficient.
 
-For the purposes of building an API which Third Party Developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated API features. This is the perfect way to remind them to upgrade before you kill the old API version.
+For the purpose of building an API which Third Party Developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated API features. This is the perfect way to remind them to upgrade before you kill the old API version.
 
 The process of Third Party Developer notification can be automated, e.g. mail the developer every time 10,000 requests to a deprecated feature are made.
 
-TODO: Talk more about Analytics
+If you can, try to keep track of a matrix worth of analytics data. For example, try to keep track of which endpoint is used, in which version of the API, and by which Consumer (and perhapes even which User for Three-Legged Authentication). If you get angry users telling you that certain features are broken, having this information will be very helpful for looking up problems
 
 
 \section{Writing good Documentation}
 
 Honestly, if you don't conform 100\% to the criteria in this guide, your API will not necessarily be horrible. However, if you don't properly document your API, nobody is going to know how to use it, and it WILL be a horrible API.
 
-Make your Documentation available to unauthenticated developers.
+Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Users won't be able to use Google for finding documentation, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
 
-Do not use automatic documentation generators, or if you do, at least make sure you're doctoring it up and making it presentable.
+Do not use automatic documentation generators, or if you do, at least make sure you're doctoring it up and making it presentable. Generated docs can be useful with libraries which code connects directly to, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected, but in general, generated docs just suck.
 
-Do not truncate example request and response bodies; show the whole thing. Use a syntax highlighter in your documentation.
+Do not truncate example request and response bodies, instead try to show the whole thing. Even specify which HTTP headers the Consumer should expect to see. Also, make use of a syntax highlighter in your documentation. Color-highlighted JSON is much easier on the eyes.
 
-Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those error messages.
-
-If you've got the spare time, build a developer API console so that developers can immediately experiment with your API. It's not as hard as you might think and developers (both internal and third party) will love you for it!
+Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those error messages. Keep a place where all anticipated error codes can be looked up as well.
 
 Make sure your documentation can be printed; CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
 
-TODO: Break up into many URLs? Always make public
+Documentation can either be split up into many different pages, or kept on one long page. However, if you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to the parts they want and share links with others.
 
 
 \section{Developer Console}
