@@ -1020,7 +1020,11 @@ Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow devel
 \label{fig:devconsole}
 \end{figure}
 
-TODO: Talk more about consoles, link to console from documentation
+Your server will need a website where Third-Party developers can register their applications, and get Authentication credentials, read documentation, etc. This is a great place to put the API Console.
+
+Whenever possible, make using the API console easy and efficient for the developer. Perhaps you provide them with a default user account which resets every hour using a CRON job. Or, maybe by clicking a single button the application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their applicaion.
+
+Also, if possible, use GET parameters for the API console form when it submits. This way, from within the documentation, a developer could click a link describing an API endpoint and immediately be taken to the console where they can test the endpoint out.
 
 
 \chapter{Beyond REST}
