@@ -751,7 +751,88 @@ JSON allows for any number of whitespace between keys and values, but if you are
 
 \section{Error Reporting}
 
-TODO: All bets are off, doesn't need to follow resource structure, track errors, don't use numeric error codes (simple strings are better)
+Errors are an inevitibility of inter-party communications. Users will fat finger an email address, Consumers will not read the tiny disclaimer you hid in your API documentation, and a database server will occasionally be unavailable. When this happens, the server will of course return a 4XX or 5XX HTTP status code, but the document body needs to have useful information included as well.
+
+When designing an error object, there isn't a specific standard that you need to follow. The examples that follow aren't a standard themselves, but feel free to use them as a starting point when designing your own error objects. Make sure that there is consistency between endpoints.
+
+There are essentially two classes of errors you can account for. The first one is simple errors, where it is easy to point to a certain attribute as being the problem. Let's refer to these as validation errors. The second class of errors are a bit more complex, and may not be easily interpreted by an API Consumer. Let's call these generic errors.
+
+\subsection{Validation Errors}
+
+When an error happens regarding a malformed attribute, provide the Consumer with a reference to the attribute causing the error, as well as a message about what is wrong. Assuming the Consumer is a providing a UI for the User to input their data, they can not only display the message for the user to read, but if you provide the attribute, the Consumer can provide some context for the User.
+
+\subsubsection{Erroneous Request}
+
+\begin{verbatim}
+PUT /v1/users/1
+
+{
+  "name": "Rupert Styx",
+  "age": "Twenty Eight"
+}
+\end{verbatim}
+
+\subsubsection{Error Response}
+
+\begin{verbatim}
+400 Bad Request
+
+{
+  "error_human": "Inputs not formatted as expected",
+  "error_code": "invalid_attributes",
+  "fields": [
+    {
+      "error_human": "Age must be a number between 1 and 100",
+      "error_code": "integer_validation",
+      "field": "age"
+    }
+  ]
+}
+\end{verbatim}
+
+\subsection{Generic Errors}
+
+When an error happens which can't be traced back to a single input attribute being incorrect, you'll want to return a more generic error construct.
+
+\subsubsection{Request}
+
+\begin{verbatim}
+POST /v1/animals
+
+{
+  "name": "Mittens",
+  "type": "kitten"
+}
+\end{verbatim}
+
+\subsubsection{Error Response}
+
+\begin{verbatim}
+503 Service Unavailable
+
+{
+  "error_human": "The Database is currently unavailable.",
+  "error_code": "database_unavailable"
+}
+\end{verbatim}
+
+\subsection{Handle All Server Errors}
+
+Make sure that you catch all errors which your server is capable of throwing, and ALWAYS return content to the Consumer in the format they are expecting!
+
+This sounds obvious, but it can actually be a lot harder than you'd think. In PHP, for example, extra care has to be made to catch all errors. By default, PHP, and many other web languages/frameworks, will return HTML errors.
+
+Consumers will throw all sorts of broken data your way. Do some experimentation with your Server and see what sort of errors you can get it to make. Try sending malformed JSON, upload a 100GB file, corrupt the HTTP headers, make 100k concurrent requests, even try removing the underlying code and see how your web server handles it.
+
+\subsection{A Word on Error Codes}
+
+You might have noticed from these examples the \texttt{error\_code} attributes, which contain a simple string as a value. In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even unicode symbols. These strings should never be compared. When I program in a language which supports both single or double quotes for strings, I'll surround these in double quotes.
+
+The other types of strings are computer readable strings. These are much simpler, often used for attributes (you wouldn't use "First Name" as a JSON key, would you?), and should be all lowercase and contain underscores (or, camelCase, if you're one of THOSE people). These strings could be the names of variables in most languages. I'll usually surround these strings in single quotes.
+
+Back to the point of error codes, it is important to provide the Consumer with BOTH a computer readable error code, as well as a human readable error message. The code can be looked up and have logic applied to it by the Consumer. The human readable message can change at any point if a translation changes or any type of rewrite happens.
+
+Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A Third-Party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
 
 
 \chapter{API Ecosystem}
