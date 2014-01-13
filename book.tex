@@ -47,50 +47,46 @@ TODO: Get Biography from Jason
 
 \section{Introduction}
 
-An API represents a contract between the data/business logic located on your Server and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken mobile apps. Designing a hard-to-use API will result in few or no Third-Party Consumers. On the other hand, building a great API and adhering to this contract will result in substantially more Third-Party Consumers and can elevate your service from a closed-source product to an open platform.
+An API represents a contract between the data and business-logic on your Server, and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
 
-Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service / core application has the potential to become a platform from which other services grow. Look at the current huge tech companies: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as big as they are today if they hadn't opened up their data via API. In fact, an entire industry exists with the sole purpose of consuming data provided by said platforms.
+Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/core-application has the potential to become a platform from which other services grow. Look at the current tech companies offering popular services: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as popular as they are today if they hadn't opened up their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
 
-The principles of this document, if followed while designing and operating your API, will ensure that Consumers will grok your API while substantially reducing support tickets. Developers will travel from tech conference to tech conference touting what a pleasure working with your API is and getting more developers to sign up.
+The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure it has been working with your API, getting more developers to signup along the way.
 
 \subsection{Approach}
 
-This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technical, and this book would make a good candidate for sitting on the back of your toilet.
-
-Any code samples will usually be written using more than one language, e.g. PHP and Node.js.
+This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technical, and this book would make a great candidate for sitting on the back of your toilet.
 
 \subsection{Intended Audience}
 
-The ideal reader of this book is someone who has built a couple websites, and is comfortable working with a language or framework and understands some of the intermediate features such as reading request headers and writing response headers.
+The ideal reader of this book is someone who has already built several websites, and is comfortable working with a web language or framework and has some intermediate knowledge such as how to read and write HTTP headers.
 
-While knowledge of any particular language is not a requirement of this book, an understanding of generic SQL will be really helpful for following along with some of the example queries.
+While knowledge of any particular language is not a requirement of this book, an understanding of basic SQL will be really helpful for following along with some of the example queries.
 
 \subsection{Goals of this Book}
 
-By the time you're done reading this book you'll have a high-level understanding of how to build a great RESTful API Ecosystem. This book will not cover the technical details of how to write code an API from scratch.
+By the time you're done reading this book you'll have a high-level understanding of how to build a RESTful API Ecosystem which third-party developers will love. This book will not cover the technical details of how to program an API from scratch.
 
 
 \chapter{High Level}
 
 \section{Data Design and Abstraction}
 
-Interacting with data using a REST API is all about boiling down all of the intricate business logic and data storage your service provides into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may have all sorts of complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+Interacting with a RESTful API is all about abstracting the intricate business-logic and database your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
-Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service / application will work. If you're doing \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy. If you're attaching an API to an existing project, you may need to provide more abstraction.
+Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service/application works. If you're following \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy! If you're bolting an API on to an existing project, you will have more work ahead of you.
 
-Occasionally, a Collection can represent a database table, and a Resource can represent a row within that table. However, this is not the usual case. In fact, your API should abstract away as much of your data and business logic as possible. It is very important that you don't overwhelm Third-Party Developers with any complex application data, if you do they won't want to use your API.
+If you're lucky, a Collection can represent a database table, and a Resource can represent a row within that table. Unfortunately this is often not the case, especially if the existing data-model is overly complex. It is very important that you don't overwhelm Third-Party Developers with any complex application data, otherwise they won't want to use your API.
 
-There are also many parts of your service which you SHOULD NOT expose via API at all. A common example is that many APIs will not allow third parties to create users.
+Keep in mind there will likely be parts of your service which you SHOULD NOT expose via API at all. A common example is that many APIs will not allow Consumers to create nor delete user accounts.
 
-Sometimes multiple tables should be represented as a single resource. Maybe even one table having multiple resources, if it makes sense (although, you may have made some poor database design decisions).
-
-The \href{https://dev.twitter.com/docs/api/1.1}{Twitter API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs. However, the \href{http://developer.github.com/v3/}{GitHub API} is a beautiful example of properly-abstracted RESTful API design.
+Sometimes multiple tables will be represented as a single resource (\texttt{JOIN} statements come in handy here). You might even find that one table should have multiple resources (although, you may have made some poor database design decisions if this is the case).
 
 \subsection{Examples of Abstraction}
 
-For both the good and bad abstraction example, we'll make use of the same fictional service. Pretend that you control a web service which sends messages to different users and messages can either be sent as a text message or an email, depending on the preferences for a particular user.
+For both the good and bad abstraction examples, we'll make use of the same fictional service. Pretend that you control a service which sends messages to different users, and messages can either be sent as a text message or an email. This is dependant on the preference of the particular user.
 
-Don't worry too much about the technical parts of the examples; we'll get to them in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
+Don't worry too much about the technical parts of the examples as we'll cover them with more detail in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
 
 \subsubsection{An Example of Bad Abstraction}
 
@@ -106,11 +102,11 @@ GET /get_user_preferences/12
 }
 \end{verbatim}
 
-This first API Endpoint is called \texttt{get\_user\_preference}, and is called by passing in the ID of the user whose preference we are looking for. The name of and Endpoint should just be a simple noun (or pair of nouns if need be). You should never add the action being performed (in this case \texttt{get}). The reason one should use a simple noun is that it tells you exactly what the following ID value represents. Does the \texttt{12} shown below represent user \texttt{12}? Or some user preference \texttt{12} concept which might not correlate 1:1 the same as users?
+This first API Endpoint is called \texttt{get\_user\_preferences}, and is called by passing in the ID of the user whose preference we are looking for (shown as \texttt{12}. The name of an Endpoint should be a simple noun (or pair of nouns if need be). You should never add the action (verb) being performed (in this case \texttt{get}). The reason one should use a simple noun is that this tells the Consumer exactly what the ID value represents. Does the \texttt{12} shown above represent user \texttt{12}? Or perhaps some user preference concept which might not correlate 1:1 to a user object?
 
-Another problem with this example is the response contains the integer \texttt{1}. Internally to the service, there is a fictional set of constants, where \texttt{1} refers to sending a text, and \texttt{2} refers to sending an email. Even if this value is written in the API documentation, a Consumer of the API is not going to remember the value, and every time they look it up they'll be annoyed and lose productivity.
+Another problem with this example is the response contains the integer \texttt{1}. Internally to this fictional service there are some constants where \texttt{1} refers to sending a text, and \texttt{2} refers to sending an email. Even if this value is documented in the API documentation, a third party developer is not going to remember the values. Each time they look up what the values mean they are losing productivity.
 
-Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. Something like this should have been merged with another endpoint for getting all the data about a particular user.
+Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. In general, you want to reduce the number of Endpoints in your API, and focus on making each one serve the Consumer better. Data like this could have been merged with another endpoint for getting data about a particular user, for example.
 
 \paragraph{\textbf{Sending a Text or Email (Two Endpoints)}}
 
@@ -124,13 +120,13 @@ POST /users/12/send_email
 }
 \end{verbatim}
 
-This second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these sorts of endpoints is very common.
+These second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these actionable endpoints is a common mistake among developers intending to build a RESTful API.
 
-Another issue with this is that the business logic for determining which method of notification is used is left to the Consumer to take care of! Sure, the Consumer can make a request to get the user preference for sending messages, but what if they ignore it? You're going to have some very annoyed users.
+Another issue with this example is that the business-logic for determining which method of notification to use is left for the Consumer to handle! Sure, the Consumer can make a request to get the user preference for sending messages, but what if they intentionally ignore it? Or, suppose the Consumer caches the preference and it becomes outdated? Either way users are bound to get annoyed.
 
-Whenever you find yourself creating two endpoints with the exact same expected request inputs and response outputs, there may be an issue with abstraction and the two might be better off combines.
+Whenever you find yourself creating two endpoints with the exact same expected request inputs and response outputs, there may be an issue with abstraction and the two may be better off combined into one endpoint.
 
-Also, there is no way to refer to previous instances of sending notifications to a user. Sure, the Consumer could record this information somewhere in a database, but it would be beneficial if the API made available a method for looking up previous notifications.
+Finally, there is no way to look up previous instances of notifications that have been sent to a user. Sure, the Consumer could record this information locally, but it would be beneficial if the API made available a method for looking up previous notifications.
 
 \subsubsection{An Example of Good Abstraction}
 
@@ -155,13 +151,22 @@ POST /notifications
 }
 \end{verbatim}
 
-In this example, only a single endpoint is needed for doing the same work as the previous three endpoints of the bad example. The first JSON document is the request and the second is the response. This endpoint is simply called \texttt{notifications}, and as a Consumer you are working with creating notification objects.
+In this example, only a single endpoint is needed for doing the same work as the previous three endpoints of the bad example. The first JSON document is the request and the second is the response. This endpoint is simply called \texttt{notifications}, and the Consumer functions by creating new notification objects.
 
-When the Consumer wants to notify a user, they are actually creating a new notification object, thereby abstracting the concept of performing an action to the concept of creating an object. Of course, an action can't be undone or changed, so the Consumer can't DELETE or PUT a notification object.
+When the Consumer wishes to notify a user, it is actually creating a new notification object, thereby abstracting the concept of performing an action with creating an object. Of course, an action like sending a message can't be undone or altered, so the Consumer can't DELETE or PUT a notification object.
 
-Another important concept with this example is that the business logic of determining which method for contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notification preference.
+Another important takeaway from this example is that the business-logic of determining which method of contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notification preference.
 
-In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbiage should be correct).
+In the example response, we do have a \texttt{medium} attribute which represents the method of notifying the user, but that can be hidden entirely depending on if your Consumers would ever need to know this information (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbiage should be correct). Then again, this could be a privacy concern.
+
+\subsection{Real World Examples}
+
+TODO
+
+The \href{https://dev.twitter.com/docs/api/1.1}{Twitter API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs.
+
+However, the \href{http://developer.github.com/v3/}{GitHub API} is a beautiful example of properly-abstracted RESTful API design.
+
 
 \section{Anatomy of an HTTP Packet}
 
