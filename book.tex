@@ -55,7 +55,7 @@ The principles of this document, if followed while designing and operating your 
 
 \subsection{Approach}
 
-This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technica, and this book would make a good candidate for sitting on the back of your toilet.
+This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technical, and this book would make a good candidate for sitting on the back of your toilet.
 
 Any code samples will usually be written using more than one language, e.g. PHP and Node.js.
 
@@ -63,7 +63,7 @@ Any code samples will usually be written using more than one language, e.g. PHP 
 
 The ideal reader of this book is someone who has built a couple websites, and is comfortable working with a language or framework and understands some of the intermediate features such as reading request headers and writing response headers.
 
-While knowloedge of any particular language is not a requirement of this book, an understanding of generic SQL will be really helpful for following along with some of the example queries.
+While knowledge of any particular language is not a requirement of this book, an understanding of generic SQL will be really helpful for following along with some of the example queries.
 
 \subsection{Goals of this Book}
 
@@ -159,9 +159,9 @@ In this example, only a single endpoint is needed for doing the same work as the
 
 When the Consumer wants to notify a user, they are actually creating a new notification object, thereby abstracting the concept of performing an action to the concept of creating an object. Of course, an action can't be undone or changed, so the Consumer can't DELETE or PUT a notification object.
 
-Another important concept with this example is that the business logic of determining which method for contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notificaiton preference.
+Another important concept with this example is that the business logic of determining which method for contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notification preference.
 
-In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbage should be correct).
+In the example response, we do have a medium attribute which represents the notification method, but that can be hidden entirely depending on if your Consumers would ever need to know it (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbiage should be correct).
 
 \section{Anatomy of an HTTP Packet}
 
@@ -235,7 +235,7 @@ If you anticipate your API will never grow to be that large, or you want a much 
 
 Also, notice the HTTPS prefix. As a good RESTful API, you MUST host your API behind HTTPS.
 
-Don't use a different TLD (Top Level Domain) for hosting your API than you do for hosting your website. This may sound tempting, as your main domain could be \textbf{example.com}, and your API and developer documentation be entirely located on \textbf{example.io}. However, there is no logical relationship between these two domains and an adversary could have purchased \textbf{example.io} and is posing as a legitamate counterpart to \textbf{example.com}. Also, the "code archeologist" might only have knowledge of one domain and not the other. Finally, if you \emph{do} want to share some cookies between the two websites (e.g. an authenticated user on \textbf{example.com} can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or subdirectory.
+Don't use a different TLD (Top Level Domain) for hosting your API than you do for hosting your website. This may sound tempting, as your main domain could be \textbf{example.com}, and your API and developer documentation be entirely located on \textbf{example.io}. However, there is no logical relationship between these two domains and an adversary could have purchased \textbf{example.io} and is posing as a legitimate counterpart to \textbf{example.com}. Also, the "code archaeologist" might only have knowledge of one domain and not the other. Finally, if you \emph{do} want to share some cookies between the two websites (e.g. an authenticated user on \textbf{example.com} can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or subdirectory.
 
 \subsection{Content Located at the Root}
 
@@ -261,7 +261,7 @@ Chances are you already know about GET and POST requests. These are the two most
 
 There are, however, four and a half HTTP verbs that you need to know about when building a RESTful API. I say "and a half" because the PATCH verb is very similar to the PUT verb, and two two are often combined into one by many an API developer.
 
-You've undoubtedly heard of the phrase "CRUD" when refering to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a command. CRUD stands for Create, Read, Update, Delete, and short of handling any business logic, can be usred for handling 100\% of data entry.
+You've undoubtedly heard of the phrase "CRUD" when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a command. CRUD stands for Create, Read, Update, Delete, and short of handling any business logic, can be used for handling 100\% of data entry.
 
 Here is the list of the verbs, as well as which CRUD operation they represent, and if your service were to represent a simple database, the associated SQL statement:
 
@@ -342,7 +342,7 @@ Each piece of data separated by slashes is a URL Segment. Try to keep these as s
 
 \subsection{Specific Endpoints}
 
-When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zookeeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
+When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
 
 \begin{itemize}
 \item \texttt{GET /zoos}: List all Zoos (ID and Name, not too much detail)
@@ -360,7 +360,7 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Verb
 \item \texttt{GET /animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
 \item \texttt{GET /animal\_types/ATID}: Retrieve an entire Animal Type object
 \item \texttt{GET /employees}: Retrieve an entire list of Employees
-\item \texttt{GET /employees/EID}: Retreive a specific Employee
+\item \texttt{GET /employees/EID}: Retrieve a specific Employee
 \item \texttt{GET /zoos/ZID/employees}: Retrieve a listing of Employees at this Zoo
 \item \texttt{POST /employees}: Create a new Employee
 \item \texttt{POST /zoos/ZID/employees}: Hire an Employee at a specific Zoo
@@ -392,16 +392,16 @@ Filtering is mostly useful for performing GETs on Collections of resources. Sinc
 \item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute (\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some of these filterings can be redundant with endpoint URLS. In the Endpoints chapter we mentioned \texttt{GET /zoo/ZID/animals}. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
+Some of this filtering can be redundant with endpoint URLs. In the Endpoints chapter we mentioned \texttt{GET /zoo/ZID/animals}. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
 
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\section{Whitelisting Attributes on Resources}
+\section{White-listing Attributes on Resources}
 
-Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unneccesary database \texttt{JOIN}.
+Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unnecessary database \texttt{JOIN}.
 
-Again, since we're dealing with GET requests, you'll want to accept a URL parameter for whitelisting parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
+Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
@@ -463,9 +463,9 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 
 \section{JSON Request Body}
 
-There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framwork for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multipart Form Data (required for file uploads), as well as Form URL Encoded.
+There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framework for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multi-part Form Data (required for file uploads), as well as Form URL Encoded.
 
-Below you'll see examples of both of those methods just so that you understand how the browser and server usually upload data. Unfortunately, neither of them are adaquate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
+Below you'll see examples of both of those methods just so that you understand how the browser and server usually upload data. Unfortunately, neither of them are adequate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
 
 \subsection{Example Form URL Encoded Request}
 
@@ -481,7 +481,7 @@ Content-Type: application/x-www-form-urlencoded
 username=root&password=Zion0101
 \end{verbatim}
 
-\subsection{Example Multipart Form Data Request}
+\subsection{Example Multi-part Form Data Request}
 
 This method is used by Websites for accepting more complex data from a web browser, such as file uploads.
 
@@ -528,7 +528,7 @@ Content-Length: 24
 
 It is very important that as a RESTful API, you make use of the proper HTTP Status Codes; they are a standard after all! Various network equipment is able to read these status codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out lots of 50x errors. Client libraries know if a request has succeeded or failed depending on the Status Code.
 
-The Status Code is on the first line of information returned back to the Consumer. It is preceeded by the version of HTTP, and includes both the numerical status code as well as a human-readable version of the code:
+The Status Code is on the first line of information returned back to the Consumer. It is preceded by the version of HTTP, and includes both the numerical status code as well as a human-readable version of the code:
 
 \begin{verbatim}
 HTTP/1.1 200 OK
@@ -563,7 +563,7 @@ There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.
 \item \texttt{\textbf{404} Not Found}
     \begin{itemize}
     \item All Requests
-    \item The Consumer referenced an inexistant Resource or Collection, and the Server did nothing (Idempotent)
+    \item The Consumer referenced an inexistent Resource or Collection, and the Server did nothing (Idempotent)
     \end{itemize}
 \item \texttt{\textbf{500} Internal Server Error}
     \begin{itemize}
@@ -609,7 +609,7 @@ When a Consumer makes a request to the Server, something needs to be returned in
 
 \subsubsection{GET /collection}
 
-When performing a GET request to an entire collection of objects, the Consumer expects an array of every object being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogenous list of resources.
+When performing a GET request to an entire collection of objects, the Consumer expects an array of every object being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogeneous list of resources.
 
 \begin{verbatim}
 [
@@ -751,7 +751,7 @@ JSON allows for any number of whitespace between keys and values, but if you are
 
 \section{Error Reporting}
 
-Errors are an inevitibility of inter-party communications. Users will fat finger an email address, Consumers will not read the tiny disclaimer you hid in your API documentation, and a database server will occasionally be unavailable. When this happens, the server will of course return a 4XX or 5XX HTTP status code, but the document body needs to have useful information included as well.
+Errors are an inevitability of inter-party communications. Users will fat finger an email address, Consumers will not read the tiny disclaimer you hid in your API documentation, and a database server will occasionally be unavailable. When this happens, the server will of course return a 4XX or 5XX HTTP status code, but the document body needs to have useful information included as well.
 
 When designing an error object, there isn't a specific standard that you need to follow. The examples that follow aren't a standard themselves, but feel free to use them as a starting point when designing your own error objects. Make sure that there is consistency between endpoints.
 
@@ -826,7 +826,7 @@ Consumers will throw all sorts of broken data your way. Do some experimentation 
 
 \subsection{A Word on Error Codes}
 
-You might have noticed from these examples the \texttt{error\_code} attributes, which contain a simple string as a value. In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even unicode symbols. These strings should never be compared. When I program in a language which supports both single or double quotes for strings, I'll surround these in double quotes.
+You might have noticed from these examples the \texttt{error\_code} attributes, which contain a simple string as a value. In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even Unicode symbols. These strings should never be compared. When I program in a language which supports both single or double quotes for strings, I'll surround these in double quotes.
 
 The other types of strings are computer readable strings. These are much simpler, often used for attributes (you wouldn't use "First Name" as a JSON key, would you?), and should be all lowercase and contain underscores (or, camelCase, if you're one of THOSE people). These strings could be the names of variables in most languages. I'll usually surround these strings in single quotes.
 
@@ -962,11 +962,11 @@ Now, with Three-Legged Authentication, the Consumer needs to be able to specify 
 
 Specifying permissions will vary depending on the Authorization mechanism you use. With OAuth, for example, the Server can accept an additional parameter called permissions during the Request Token generation phase. This parameter can be a JSON object which represent the permissions the Consumer is trying to get. By passing this parameter around during the Authorization step, a Consumer is able to get per-user permissions.
 
-Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their applicaion, they can specify the permissions ahead of time. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
+Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions ahead of time. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
 
 \subsection{Example Permissions Object}
 
-The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send them emails using the service (although not have access to their email address), and finally retreive the list of the users friends, add new friends, and remove existing friends.
+The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send them emails using the service (although not have access to their email address), and finally retrieve the list of the users friends, add new friends, and remove existing friends.
 
 \begin{verbatim}
 {
@@ -989,7 +989,7 @@ For the purpose of building an API which Third Party Developers will love, the m
 
 The process of Third Party Developer notification can be automated, e.g. mail the developer every time 10,000 requests to a deprecated feature are made.
 
-If you can, try to keep track of a matrix worth of analytics data. For example, try to keep track of which endpoint is used, in which version of the API, and by which Consumer (and perhapes even which User for Three-Legged Authentication). If you get angry users telling you that certain features are broken, having this information will be very helpful for looking up problems
+If you can, try to keep track of a matrix worth of analytics data. For example, try to keep track of which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for Three-Legged Authentication). If you get angry users telling you that certain features are broken, having this information will be very helpful for looking up problems
 
 
 \section{Writing good Documentation}
@@ -1022,7 +1022,7 @@ Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow devel
 
 Your server will need a website where Third-Party developers can register their applications, and get Authentication credentials, read documentation, etc. This is a great place to put the API Console.
 
-Whenever possible, make using the API console easy and efficient for the developer. Perhaps you provide them with a default user account which resets every hour using a CRON job. Or, maybe by clicking a single button the application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their applicaion.
+Whenever possible, make using the API console easy and efficient for the developer. Perhaps you provide them with a default user account which resets every hour using a CRON job. Or, maybe by clicking a single button the application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their application.
 
 Also, if possible, use GET parameters for the API console form when it submits. This way, from within the documentation, a developer could click a link describing an API endpoint and immediately be taken to the console where they can test the endpoint out.
 
@@ -1045,9 +1045,9 @@ When retrieving a list of Resources within a Collection, an attribute containing
 
 JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
 
-Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user exeperience.
+Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
 
-Now, imagine that disparate tools created by different companies can all work with each other as tightly as these massive suites of tools. Often times, when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seemlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
+Now, imagine that disparate tools created by different companies can all work with each other as tightly as these massive suites of tools. Often times, when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
 
 \subsection{ATOM: An Early Hypermedia API}
 
@@ -1081,7 +1081,7 @@ Now, imagine that disparate tools created by different companies can all work wi
 
 \section{Response Document Standards}
 
-When responding with a document representing a Collection, it is usually adaquate to return a top-level array containing each Resource object. Likewise, when responding with a document representing a Resource, simply returning a top-level object containing the Resource is good-enough.
+When responding with a document representing a Collection, it is usually adequate to return a top-level array containing each Resource object. Likewise, when responding with a document representing a Resource, simply returning a top-level object containing the Resource is good-enough.
 
 However, there are some standards people have developed for encapsulating these items in a standardized envelope to help give the Consumer some context when parsing the responses.
 
@@ -1249,7 +1249,7 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 
 SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you can probably guess, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
 
-SOAP is useful for describing services exposed over the network, and is transport agnostic just like JSON RPC, although most implementations use it over HTTP. Partly due to the waning popularity of XML in comparison to JSON, SOAP is often looked down upon due to the verbosity and the bulkyness of document sizes.
+SOAP is useful for describing services exposed over the network, and is transport agnostic just like JSON RPC, although most implementations use it over HTTP. Partly due to the waning popularity of XML in comparison to JSON, SOAP is often looked down upon due to the verbosity and the bulkiness of document sizes.
 
 SOAP is mostly used in larger corporate environments.
 
