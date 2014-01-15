@@ -383,7 +383,7 @@ Also, notice how the listing of Endpoints doesn't include every possible verb-to
 There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
 
 
-\section{Filtering Resources within Collections}
+\section{Filtering Resources}
 
 When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
@@ -402,7 +402,7 @@ Some of this filtering can be redundant with endpoint URLs. In the Endpoints cha
 Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\section{White-listing Attributes on Resources}
+\section{White-listing Attributes}
 
 Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unnecessary database \texttt{JOIN}.
 
@@ -410,24 +410,24 @@ Again, since we're dealing with GET requests, you'll want to accept a URL parame
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
-\subsection{Example Unfiltered Single-Resource Request}
+\subsection{Example Unfiltered Request}
 
 In this example request, the default representation of a user object includes data from two tables joined together. One of the tables is the obvious user table, and another table contains some textual data related to a user called user\_descriptions.
 
-\subsubsection{Request URL}
+\paragraph{\textbf{Request URL}}
 
 \begin{verbatim}
 GET http://api.example.org/user/12
 \end{verbatim}
 
-\subsubsection{Resulting SQL Query}
+\paragraph{\textbf{Resulting SQL Query}}
 
 \begin{verbatim}
 SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
   WHERE user.id = 12;
 \end{verbatim}
 
-\subsubsection{Response Body}
+\paragraph{\textbf{Response Body}}
 
 \begin{verbatim}
 {
@@ -439,23 +439,23 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
 }
 \end{verbatim}
 
-\subsection{Example Filtered Single-Resource Request}
+\subsection{Example Filtered Request}
 
 In this next example, the consumer has requested a filtered list of attributes. So, we're returning less data. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort may be involved.
 
-\subsubsection{Request URL}
+\paragraph{\textbf{Request URL}}
 
 \begin{verbatim}
 GET http://api.example.org/user/12?whitelist=id,name,email
 \end{verbatim}
 
-\subsubsection{Resulting SQL Query}
+\paragraph{\textbf{Resulting SQL Query}}
 
 \begin{verbatim}
 SELECT id, name, email FROM user WHERE user.id = 12;
 \end{verbatim}
 
-\subsubsection{Response Body}
+\paragraph{\textbf{Response Body}}
 
 \begin{verbatim}
 {
@@ -610,7 +610,7 @@ Some API creators recommend adding a .json, .xml, or .html file extension to the
 
 \section{Expected Response Bodies}
 
-When a Consumer makes a request to the Server, something needs to be returned in the response. Depending on the HTTP Verb being used, the response will be different. Here's a good list to adhere to:
+When a Consumer makes a request to the Server, something needs to be returned in the response. Depending on the HTTP Verb being used, the response will be different.
 
 \subsubsection{GET /collection}
 
@@ -704,6 +704,12 @@ Whenever you represent different Resources, each attribute should remain of the 
 
 There are some exceptions, such as when a value shouldn't exist, it can be represented as a null. However, in general, keeping the attributes of the same data type will make your API easier for consumers using statically typed languages (e.g. JavaScript and PHP is more forgiving than C).
 
+\subsection{Booleans}
+
+It may be tempting to name your Booleans with a prefix or postfix to symbolize the purpose of the attribute. Common examples of this would be to prefix the variable with \texttt{is\_} or end it in \texttt{\_flag}. This really isn't necessary as attribute names are often self-documenting. For example, if there is an attribute on your User Resource called \texttt{administrator}, it should be pretty obvious that using a number or a string isn't intended.
+
+Another tip with Booleans is that they should usually be a \emph{positive} or \emph{happy} word, as opposed to their negative counterparts. This sounds silly, but it will prevent developers form having to do a quick double-negative in their head. For example, use \texttt{enabled} instead of \texttt{disabled}, \texttt{public} instead of \texttt{private}, or \texttt{active} instead of \texttt{purge}.
+
 \subsection{Dates}
 
 JSON is a subset of JavaScript, and JavaScript does have a format for writing dates. The format of these dates looks a little something like this:
@@ -712,7 +718,7 @@ JSON is a subset of JavaScript, and JavaScript does have a format for writing da
 "Thu Jan 09 2014 22:06:17 GMT-0500 (EST)"
 \end{verbatim}
 
-That format is as much verbose as it is ugly.
+That format is as much verbose as it is ugly. Who cares what day of the week it was?
 
 If you wanted something much more terse, you could represent the date as the number of seconds since the Unix Epoch, and it can be stored as an integer:
 
@@ -722,13 +728,21 @@ If you wanted something much more terse, you could represent the date as the num
 
 Now that format is a bit too terse. Just looking at it, we have no idea what is going on! Linux and Unix machines and open source languages can parse that format very easily, but people in Microsoft land will be clueless!
 
+Here is another common date format. This is what happens when a developer takes TIMESTAMP data directly from their database and outputs it into the response:
+
+\begin{verbatim}
+2014-01-10 03:06:17
+\end{verbatim}
+
+The problem with this format is that the Consumer has no idea what timezone the data is in! You may be tempted to use this format, and document the timezone of the server. However, developers will probbaly not remember it, and users of their application will wonder why their newly uploaded image has a modified time of five hours and three seconds.
+
 A much better standard for representing dates is the ISO 8601 standard, and it looks a bit like this:
 
 \begin{verbatim}
 "2014-01-10T03:06:17.396Z"
 \end{verbatim}
 
-\subsection{Resource Identifiers (Numeric or Otherwise)}
+\subsection{Resource Identifiers}
 
 Whenever dealing with Resource identifiers, you should store them as a String (even if they are numeric). This may sound counterintuitive at first.
 
@@ -766,7 +780,7 @@ There are essentially two classes of errors you can account for. The first one i
 
 When an error happens regarding a malformed attribute, provide the Consumer with a reference to the attribute causing the error, as well as a message about what is wrong. Assuming the Consumer is a providing a UI for the User to input their data, they can not only display the message for the user to read, but if you provide the attribute, the Consumer can provide some context for the User.
 
-\subsubsection{Erroneous Request}
+\paragraph{\textbf{Erroneous Request}}
 
 \begin{verbatim}
 PUT /v1/users/1
@@ -777,7 +791,7 @@ PUT /v1/users/1
 }
 \end{verbatim}
 
-\subsubsection{Error Response}
+\paragraph{\textbf{Error Response}}
 
 \begin{verbatim}
 400 Bad Request
@@ -799,7 +813,7 @@ PUT /v1/users/1
 
 When an error happens which can't be traced back to a single input attribute being incorrect, you'll want to return a more generic error construct.
 
-\subsubsection{Request}
+\paragraph{\textbf{Request}}
 
 \begin{verbatim}
 POST /v1/animals
@@ -810,7 +824,7 @@ POST /v1/animals
 }
 \end{verbatim}
 
-\subsubsection{Error Response}
+\paragraph{\textbf{Error Response}}
 
 \begin{verbatim}
 503 Service Unavailable
@@ -838,6 +852,68 @@ The other types of strings are computer readable strings. These are much simpler
 Back to the point of error codes, it is important to provide the Consumer with BOTH a computer readable error code, as well as a human readable error message. The code can be looked up and have logic applied to it by the Consumer. The human readable message can change at any point if a translation changes or any type of rewrite happens.
 
 Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A Third-Party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
+
+
+\section{Responses should resemble Requests}
+
+As a general rule of thumb, the Response Resources should closely resemble the Request Resources. This means that the same attribute names and values are used for Requests as well as Responses.
+
+There are of course a few exceptions. A PATCH, for example, only affects a partial document. A POST won't have certain server-calculated attributes (e.g. an ID or a created date). PATCH and PUTs won't have certain read-only attributes (e.g. created and modified times). These differences in attributes should be minimized whenever possible.
+
+Whenever dealing with the values of attributes, they should always be the same.
+
+\subsection{Example of a Bad Discrepency}
+
+In this example, during a POST to the users endpoint, there is a \texttt{role} attribute, which is a string containing possible user roles, such as \texttt{administrator} or \texttt{normal}. However, in the response, that same data becomes a Boolean of whether or not the user is an administrator. This doubles the amount of attribute names the Consumer needs to keep track of.
+
+\paragraph{\textbf{Request}}
+
+\begin{verbatim}
+POST /users
+
+{
+  "role": "administrator",
+  "name": "Rupert Styx"
+}
+\end{verbatim}
+
+\paragraph{\textbf{Response}}
+
+\begin{verbatim}
+{
+  "id": 12,
+  "administrator": true,
+  "name": "Rupert Styx"
+}
+\end{verbatim}
+
+\subsection{Example of an Acceptable Discrepency}
+
+In this example, the differences between the Request and the Response documents are minimal. Some of the values are read-only, and calculated on the server (e.g. \texttt{id}, \texttt{modified}, and \texttt{created}). Some of the attributes have default values (e.g. \texttt{enabled}), which is fine too, as long as these are documented.
+
+\paragraph{\textbf{Request}}
+
+\begin{verbatim}
+POST /users
+
+{
+  "role": "administrator",
+  "name": "Rupert Styx"
+}
+\end{verbatim}
+
+\paragraph{\textbf{Response}}
+
+\begin{verbatim}
+{
+  "id": 12,
+  "role": "administrator",
+  "created": "2014-01-15T02:40:46.049Z",
+  "modified": null,
+  "name": "Rupert Styx",
+  "enabled": true
+}
+\end{verbatim}
 
 
 \chapter{API Ecosystem}
