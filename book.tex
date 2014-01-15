@@ -161,11 +161,23 @@ In the example response, we do have a \texttt{medium} attribute which represents
 
 \subsection{Real World Examples}
 
-TODO
+Let's look at some real-world examples of how popular APIs do their data abstraction.
 
-The \href{https://dev.twitter.com/docs/api/1.1}{Twitter API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs.
+\subsubsection{Twitter: A Bad Example}
 
-However, the \href{http://developer.github.com/v3/}{GitHub API} is a beautiful example of properly-abstracted RESTful API design.
+The current \href{https://dev.twitter.com/docs/api/1.1}{Twitter v1.1 API} has bad abstraction of their data and business logic for being a RESTful API. Every request is either GET or POST, and endpoints contain verbs.
+
+One such example is \texttt{POST statuses/destroy/SID}, used for deleting a status. The RESTful version of this endpoint would be \texttt{DELETE statuses/SID}. Another interesting point is their differentiation of \texttt{POST statuses/update\_with\_media} and \texttt{POST statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior example allows the addition of media. These two endpoints should be combined into \texttt{POST statuses}, with the media being optional.
+
+These endpoints are also an example of a bad naming convention. Users of twitter don't think that they are updating their status, they think they are tweeting. The Collection used by the aforementioned Endpoints would be better off named \texttt{tweets}.
+
+\subsubsection{GitHub: A Good Example}
+
+The current \href{http://developer.github.com/v3/}{GitHub v3 API} is a beautiful example of properly-abstracted RESTful API design. I often refer to the GitHub API when other ask for examples of how to RESTfully do something.
+
+Collections are a properly-abstracted representation of the data and business-logic on their servers. Each of the popular HTTP verbs are used whenever applicable. URLs don't have verbs in them, so working with an endpoint feels like one is working with objects, instead of performing actions.
+
+An example of a good endpoint is \texttt{GET /repos/UID/REPO/notifications}. This is the endpoint used for getting a list of notifications for a particular users repo. The UID/REPO method for grabbing a repository is one understood by all users of GitHub (repo's aren't globally unique, only unique to the current user). The only possible thing that could be improved may be the shortening of repositories to repos and organizations to orgs in the names of endpoints.
 
 
 \section{Anatomy of an HTTP Packet}
