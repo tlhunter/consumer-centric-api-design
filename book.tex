@@ -270,48 +270,48 @@ Here's a truncated example of the content provided by the \href{https://api.gith
 
 \chapter{API Requests}
 
-\section{HTTP Verbs}
+\section{HTTP Methods}
 
-Chances are you already know about GET and POST requests. These are the two most commonly used requests when a web browser visits different websites. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
+You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses webpages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
-There are, however, four and a half HTTP verbs that you need to know about when building a RESTful API. I say "and a half" because the PATCH verb is very similar to the PUT verb, and two two are often combined into one by many an API developer.
+There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say "and a half" because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many API Servers.
 
-You've undoubtedly heard of the phrase "CRUD" when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a command. CRUD stands for Create, Read, Update, Delete, and short of handling any business logic, can be used for handling 100\% of data entry.
+You've likely heard of the phrase "CRUD" when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a terminal command. CRUD stands for Create, Read, Update, and Delete, and short of handling any business logic, can be used for handling all data entry.
 
-Here is the list of the verbs, as well as which CRUD operation they represent, and if your service were to represent a simple database, the associated SQL statement:
+Here is the list of HTTP Methods, as well as which CRUD operation they represent, and if your service were to represent a simple database, the associated SQL command:
 
 \begin{itemize}
 \item \textbf{GET} (Read)
     \begin{itemize}
     \item Retrieve a specific Resource from the Server
     \item Retrieve a Collection of Resources from the Server
-    \item Corresponds to a SQL SELECT statement
+    \item Corresponds to a SQL SELECT command
     \end{itemize}
 \item \textbf{POST} (Create)
     \begin{itemize}
     \item Creates a new Resource on the Server
-    \item Corresponds to a SQL INSERT statement
+    \item Corresponds to a SQL INSERT command
     \end{itemize}
 \item \textbf{PUT} (Update)
     \begin{itemize}
-    \item Update a Resource on the Server
+    \item Updates a Resource on the Server
     \item Provide the entire Resource
-    \item Corresponds to a SQL UPDATE statement providing null values for missing columns
+    \item Corresponds to a SQL UPDATE command, providing null values for missing columns
     \end{itemize}
 \item \textbf{PATCH} (Update)
     \begin{itemize}
-    \item Update a Resource on the Server
+    \item Updates a Resource on the Server
     \item Provide only changed attributes
-    \item Corresponds to a SQL UPDATE statement specifying only columns being updated
+    \item Corresponds to a SQL UPDATE command, specifying only columns being updated
     \end{itemize}
 \item \textbf{DELETE} (Delete)
     \begin{itemize}
-    \item Remove a Resource from the Server
-    \item Corresponds to a SQL DELETE statement
+    \item Destroys a Resource on the Server
+    \item Corresponds to a SQL DELETE command
     \end{itemize}
 \end{itemize}
 
-Here are two lesser known HTTP verbs. Feel free to use them in your API, but they aren't 100\% necessary.
+Here are two lesser-known HTTP Methods. Feel free to use them in your API, however they aren't a requirement to good RESTful API design.
 
 \begin{itemize}
 \item \textbf{HEAD}
@@ -326,9 +326,11 @@ Here are two lesser known HTTP verbs. Feel free to use them in your API, but the
     \end{itemize}
 \end{itemize}
 
-A good RESTful API will make use of the four and a half HTTP verbs for allowing third parties to interact with its data, and will never include actions / verbs as URL segments.
+A good RESTful API will make use of the four and a half HTTP Methods for allowing third parties to interact with its data, and will never include actions/verbs as URL segments.
 
-Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on cache headers), and will go as far as prompt the user if they attempt to POST for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
+Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on cache headers), and will go as far as alert the user if they attempt to POST data for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
+
+If you plan on allowing JavaScript Consumers running in web browsers, and making requests from different domains, the OPTIONS method will need to be supported. This is called \href{https://en.wikipedia.org/wiki/Cross-origin_resource_sharing}{Cross Origin Resource Sharing (CORS)}, and is a fairly-new concept. Basically, it provides a set of request and response headers for defining which domains can access data and which HTTP Methods they can utilize.
 
 
 \section{URL Endpoints}
@@ -344,7 +346,7 @@ An Endpoint is a URL within your API which points to a specific Resource or a Co
 
 \subsection{Main Collections}
 
-If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple zoos) and keeping track of the species of each animal, you might have the following endpoints:
+If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple Zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
 \begin{itemize}
 \item \texttt{https://api.example.com/v1/\textbf{zoos}}
@@ -353,27 +355,27 @@ If you were building a fictional API to represent several different Zoo's, each 
 \item \texttt{https://api.example.com/v1/\textbf{employees}}
 \end{itemize}
 
-Each piece of data separated by slashes is a URL Segment. Try to keep these as simple as possible.
+Each piece of data separated by a slash is a URL Segment. Try to keep these as simple as possible.
 
 \subsection{Specific Endpoints}
 
-When referring to what each endpoint can do, you'll want to list valid HTTP Verb and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that I've preceded each endpoint with the HTTP Verb, as this is the same notation used within an HTTP Request header.
+When referring to what each endpoint can do, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that each endpoint is preceeded with the HTTP Method, as this is the same notation used within an HTTP Request header.
 
 \begin{itemize}
-\item \texttt{GET /zoos}: List all Zoos (ID and Name, not too much detail)
+\item \texttt{GET /zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
 \item \texttt{POST /zoos}: Create a new Zoo
-\item \texttt{GET /zoos/ZID}: Retrieve an entire Zoo object
-\item \texttt{PUT /zoos/ZID}: Update a Zoo (entire object)
-\item \texttt{PATCH /zoos/ZID}: Update a Zoo (partial object)
+\item \texttt{GET /zoos/ZID}: Retrieve an entire Zoo resource
+\item \texttt{PUT /zoos/ZID}: Update a Zoo (entire resource)
+\item \texttt{PATCH /zoos/ZID}: Update a Zoo (partial resource)
 \item \texttt{DELETE /zoos/ZID}: Delete a Zoo
-\item \texttt{GET /zoos/ZID/animals}: Retrieve a listing of Animals (ID and Name).
-\item \texttt{GET /animals}: List all Animals (ID and Name).
+\item \texttt{GET /zoos/ZID/animals}: Retrieve a listing of Animals (ID and Name)
+\item \texttt{GET /animals}: List all Animals (ID and Name)
 \item \texttt{POST /animals}: Create a new Animal
-\item \texttt{GET /animals/AID}: Retrieve an Animal object
-\item \texttt{PUT /animals/AID}: Update an Animal (entire object)
-\item \texttt{PATCH /animals/AID}: Update an Animal (partial object)
+\item \texttt{GET /animals/AID}: Retrieve an Animal resource
+\item \texttt{PUT /animals/AID}: Update an Animal (entire resource)
+\item \texttt{PATCH /animals/AID}: Update an Animal (partial resource)
 \item \texttt{GET /animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
-\item \texttt{GET /animal\_types/ATID}: Retrieve an entire Animal Type object
+\item \texttt{GET /animal\_types/ATID}: Retrieve an entire Animal Type resource
 \item \texttt{GET /employees}: Retrieve an entire list of Employees
 \item \texttt{GET /employees/EID}: Retrieve a specific Employee
 \item \texttt{GET /zoos/ZID/employees}: Retrieve a listing of Employees at this Zoo
@@ -382,24 +384,24 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Verb
 \item \texttt{DELETE /zoos/ZID/employees/EID}: Fire an Employee from a specific Zoo
 \end{itemize}
 
-In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID, and ATID means Animal Type ID. Having a key in your documentation for whatever convention you choose is a good idea.
+In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID, and ATID means Animal Type ID. Keep a key in your documentation of whatever convention you choose.
 
-I've left out the common API URL prefix in the above examples for brevity. While this can be fine during communications, in your actual API documentation, you should always display the full URL to each endpoint (e.g. GET http://api.example.com/v1/animal\_type/ATID).
+The Root API URL has been omitted in the above examples for brevity. While this can be fine during communications (or books with lazy authors), in your actual API documentation you should display the full URL to each endpoint (e.g. GET http://api.example.com/v1/animal\_type/ATID).
 
-Notice how the relationships between data is displayed, specifically the many to many relationships between employees and zoos. By adding an additional URL segment, one can perform more specific interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
+Notice how the relationships between data is conveyed, for example the many-to-many relationships between Employees and Zoos. By adding an additional URL segment, one can perform relationship interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
 
-Also, notice how the listing of Endpoints doesn't include every possible verb-to-resource combination. For example, a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
+Also notice how the listing of Endpoints doesn't include every possible method-to-resource combination. For example a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
 
-There's nothing wrong with this, as every facet of data manipulation your service offers doesn't necessarily need to be exposed in a public API. Just keep in mind though, developers will sometimes wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover the feature by brute force.
+There's nothing wrong with not supporting every method-to-resource combination, as every facet of data manipulation your service offers doesn't necessarily need to be exposed via API. Just keep in mind though, developers will wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover a feature by brute force.
 
 
 \section{Filtering Resources}
 
-When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single object matching the requested criteria. This list could be massive. But, it is important that you don't perform any arbitrary limitations of the data. It is these arbitrary limits which make it hard for a third party developer to know what is going on. If they request a certain Collection, and iterate over the results, and they never see more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
+When a Consumer makes a GET request for a Collection, it is important that you give them a list of every single Resource matching the requested criteria. This list could be massive. Always minimize arbitrary limitations imposed on Consumers. These arbitrary limits make it harder for a third party developer to grok the API. If they request a certain Collection, and iterate over the results, never seeing more than 100 items, it is now their job to figure out where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large packets?
 
-You do want to offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer gets their results back as soon as possible. Another reason for this is the Consumer may be lazy, and if the Server can do filtering and pagination for them, all the better. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the request will be less resource intensive.
+You do want to offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer gets their results back as soon as possible. Another reason for this is the Consumer may be lazy and wants the Server to do filtering and pagination. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the response-generation will require less resources.
 
-Filtering is mostly useful for performing GETs on Collections of resources. Since these are GET requests, filtering information should be passed via the URL. Here are some examples of the types of filtering you could conceivably add to your API:
+Filtering is applicable when performing GETs on Collections. Since these are GET requests, filtering information should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API:
 
 \begin{itemize}
 \item \texttt{?limit=10\&offset=20}: Pagination of results (\texttt{LIMIT 20, 10})
@@ -407,22 +409,22 @@ Filtering is mostly useful for performing GETs on Collections of resources. Sinc
 \item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute (\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some of this filtering can be redundant with endpoint URLs. In the Endpoints chapter we mentioned \texttt{GET /zoo/ZID/animals}. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints being made available to the Consumer will make their lives easier, this is especially true with requests you anticipate they will make a lot. In the documentation, mention this redundancy so that Third Party Developers aren't left wondering if differences exist.
+Some filtering can be redundant with endpoint URLs. In the Endpoints secion we had a \texttt{GET /zoo/ZID/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints will make the lives easier of developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
 
-Also, this goes without saying, but whenever you perform filtering or sorting of data, make sure you white-list the columns for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
+Also, this may go without saying, but whenever filtering or sorting of data happens, be sure to white-list the column names for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
 
-\section{White-listing Attributes}
+\section{White-Listing Attributes}
 
-Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not care about all of the attributes belonging to the resource. Having so much data could be a network bottleneck. Responding with less data can also reduce the overhead on your server, for example it may prevent an unnecessary database \texttt{JOIN}.
+Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not need all attributes belonging to the resource(s). Having so much data could also be a network bottleneck. Responding with less data can also reduce the overhead on the Server, e.g. it may prevent an unnecessary database \texttt{JOIN}.
 
-Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources over time (since additions are backwards compatible) the Consumer ends up receiving data it doesn't want.
+Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources (as additions are backwards compatible), the Consumer ends up receiving data it doesn't want.
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
 \subsection{Example Unfiltered Request}
 
-In this example request, the default representation of a user object includes data from two tables joined together. One of the tables is the obvious user table, and another table contains some textual data related to a user called user\_descriptions.
+In this example request, the default representation of a user resource includes data from two database tables joined together. One of the tables is the obvious \texttt{user} table, and another table contains some textual data related to a user called \texttt{user\_descriptions}.
 
 \paragraph{\textbf{Request URL}}
 
@@ -451,7 +453,7 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
 
 \subsection{Example Filtered Request}
 
-In this next example, the consumer has requested a filtered list of attributes. So, we're returning less data. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort may be involved.
+In this next example, the Consumer has requested a filtered list of attributes. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort will be involved.
 
 \paragraph{\textbf{Request URL}}
 
@@ -478,9 +480,11 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 
 \section{JSON Request Body}
 
-There are two common ways a Web Browser will send data to a Web Server. If you're using a common web language/framework for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods. Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will usually work with your programming language to provide data in one easy to consume format. The two methods are called Multi-part Form Data (required for file uploads), as well as Form URL Encoded.
+There are two common methods a Web Browser will use when send data to a web server. If you're using a common web language/framework for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods.
 
-Below you'll see examples of both of those methods just so that you understand how the browser and server usually upload data. Unfortunately, neither of them are adequate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
+Web Servers (e.g. Apache or NGINX) abstract the differences of these two methods and will work with your programming language to provide data in one easy to consume manner. The two methods are called Multi-part Form Data (required for file uploads), and Form URL Encoded (most forms work this way).
+
+Below you'll see examples of both of those methods so you understand how the browser and server usually upload data. Unfortunately, neither of them are adequate for sending complex data to a RESTful server. The third example is the method you should be accepting data as.
 
 \subsection{Example Form URL Encoded Request}
 
@@ -498,7 +502,7 @@ username=root&password=Zion0101
 
 \subsection{Example Multi-part Form Data Request}
 
-This method is used by Websites for accepting more complex data from a web browser, such as file uploads.
+This method is used by Websites for accepting more complex data from a web browser, such as file uploads. The boundary is a random string and should not be contained within the file.
 
 \begin{verbatim}
 POST /file_upload HTTP/1.1
