@@ -21,11 +21,11 @@
 \newpage
 
 
-\section*{The People Behind the Book}
+\section*{The People behind the Book}
 
 \subsubsection*{Thomas Hunter II, Author}
 
-At the time of this writing, \href{http://thomashunter.name}{Thomas Hunter II} works as a Developer Advocate/API Architect with Copy.com, where his main concern is getting a well-documented API into the hands of Third-Party Developers. While working at Quicken Loans, he evangelized a large, internal API facade to abstract backend disparity. He's also given talks on the topic of API Design. His previous book, \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
+\href{http://thomashunter.name}{Thomas Hunter II} previously worked as a Developer Advocate/API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given verious talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -47,7 +47,7 @@ TODO: Get Biography from Jason
 
 \section{Introduction}
 
-An API represents a contract between the data and business-logic on your Server, and Consumers who wish to interact with your data. Breaking this contract will result in angry emails from developers and sad sad users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
+An API represents a contract between data and business-logic stored on your Server, and Consumers who wish to interact with this data. Breaking this contract will result in angry emails from developers and sad sad users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
 
 Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/core-application has the potential to become a platform from which other services grow. Look at the current tech companies offering popular services: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as popular as they are today if they hadn't opened up their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
 
@@ -55,13 +55,13 @@ The principles of this book, if followed while designing and maintaining your AP
 
 \subsection{Approach}
 
-This book will take a language-agnostic approach to showing you good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is going on. In fact, many of the topics are more philosophical than technical, and this book would make a great candidate for sitting on the back of your toilet.
+This book will take a language-agnostic approach to demonstrating good API design. While there will be a few code examples here and there, you won't actually need to run any of them to understand what is happening. In fact, many of the topics are more philosophical than technical, and this book will make a great candidate for sitting on the back of your toilet.
 
 \subsection{Intended Audience}
 
-The ideal reader of this book is someone who has already built several websites, and is comfortable working with a web language or framework and has some intermediate knowledge such as how to read and write HTTP headers.
+The ideal reader of this book is someone who has already built several websites and is comfortable working with a web language or framework, as well as having some intermediate knowledge such as how to read and write HTTP headers.
 
-While knowledge of any particular language is not a requirement of this book, an understanding of basic SQL will be really helpful for following along with some of the example queries.
+While knowledge of any particular language is not a requirement of this book, an understanding of basic SQL will be beneficial for understanding the example queries.
 
 \subsection{Goals of this Book}
 
@@ -478,7 +478,7 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 \end{verbatim}
 
 
-\section{JSON Request Body}
+\section{Request Bodies}
 
 There are two common methods a Web Browser will use when send data to a web server. If you're using a common web language/framework for building an API, such as PHP or Express.js or Ruby on Rails, you're already consuming data using these two methods.
 
@@ -859,7 +859,7 @@ POST /v1/animals
 }
 \end{verbatim}
 
-\subsection{Handle All Server Errors}
+\subsection{Always Handle Server Errors}
 
 Make sure that you catch all errors your server is capable of producing, and \emph{always} return content to the Consumer in the format they are expecting!
 
@@ -867,7 +867,7 @@ This sounds obvious, but it can actually be a lot harder than you think. In PHP,
 
 Consumers will throw all sorts of broken data your way. Experiment with your Server and see what sort of errors you can get it to produce. Try sending malformed JSON, upload a 100GB file, corrupt the HTTP headers, make 100k concurrent requests, even try removing the underlying code and see how your web server handles it.
 
-\subsection{A Word on Error Codes}
+\subsection{String-Based Error Codes}
 
 You might have noticed from these examples that the \texttt{error\_code} attributes contain a simple string as a value. In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even Unicode symbols. These strings should never be compared. When I program in a language which supports both single or double quotes for strings, I'll surround these in double quotes.
 
@@ -878,7 +878,7 @@ Back to the point of error codes, it is important to provide the Consumer with \
 Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
 
 
-\section{Responses should resemble Requests}
+\section{Responses Should Resemble Requests}
 
 As a general rule of thumb, a Response resource should closely resemble the equivalent Request resource. This means that the same attribute names and values are used for Requests as well as Responses.
 
@@ -1122,7 +1122,7 @@ For the purpose of building an API which developers will love, the most importan
 If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for \emph{3LA}). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
 
 
-\section{Writing good Documentation}
+\section{Writing Good Documentation}
 
 Writing good documentation is vital to the success of any API. If consumers don't know how to use an API, they won't use an API.
 
