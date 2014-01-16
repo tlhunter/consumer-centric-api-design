@@ -940,32 +940,57 @@ POST /users
 \end{verbatim}
 
 
-\chapter{API Ecosystem}
+\chapter{The API Ecosystem}
 
 \section{API Versioning}
 
-No matter what you are building, no matter how much planning you do beforehand, your core application is going to change, your data relationships will change, attributes will invariably be added and removed from your Resources. This is just how software development works, and is especially true if your project is alive and used by many people (which is likely the case if you're building an API).
+No matter what you are building, no matter how much planning you do beforehand, your core application will change, your company will pivot, your data relationships will alter, and attributes will be added and removed from resources. This is just how software development works, and is especially true if your project is alive and used by many people.
+
+Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they will use somebody elses service instead. To ensure your application continually evolves AND you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
+
+As a side note, if you are simply ADDING new features to your API, such as new attributes on a resource (assuming they are not required to be set), or if you are ADDING new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation of course.
+
+Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to alert developers that the older version will be removed on a specific date and that they should upgrade to a newer version.
+
+\subsection{Requesting Specific Versions}
+
+There are three common methods RESTful APIs use for communicating which version of the API to use. 
+
+\subsubsection{Versioning via the Accept Header}
+
+One method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
+
+The Accpet header offers a way to specify generic and less generic content types, as well as specifying fallbacks. In the example below, we are requesting a more specific version of JSON, specifically, Version 1 of the API JSON.
+
+\begin{verbatim}
+Accept: application/json+v1
+\end{verbatim}
+
+\subsubsection{Versioning via a Custom Header}
+
+Another method is to use a custom header. This is quite similar to the method above. Consumers would still use the normal Accept header they've been using.
+
+\begin{verbatim}
+X-Api-Version: 1
+\end{verbatim}
+
+\subsubsection{Versioning via a URL Segment (Preferred)}
+
+The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing for developers to do.
+
+The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLS likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
 
 \begin{verbatim}
 https://api.example.org/v1/*
 \end{verbatim}
 
-Remember than an API is a published contract between a Server and a Consumer. If you make changes to the Servers API and these changes break backwards compatibility, you will break things for your Consumer and they will resent you for it. Do it enough, and they will leave. To ensure your application evolves AND you keep your Consumers happy, you need to occasionally introduce new versions of the API while still allowing old versions to be accessible.
+It is customary to use the letter \textbf{v} followed by an integer when versioning this way. Due to the nature of APIs, changing versions often is discouraged, and point releases usually aren't needed.
 
-As a side note, if you are simply ADDING new features to your API, such as new attributes on a Resource (which are not required and the Resource will function without), or if you are ADDING new Endpoints, you do not need to increment your API version number since these changes do not break backwards compatibility. You will want to update your API Documentation (your Contract), of course.
+\section{Authentication and Authorization}
 
-Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to tell Consumers of your API that the older version will be removed on a specific date and that they should upgrade to a newer version.
+There are two common paradigms in which your API may authorize Consumers. Using the Two-Legged paradigm, there are two parties involved, a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who probably has an account with both services.
 
-\begin{verbatim}
-Accept: application/json+v1;
-\end{verbatim}
-
-A good RESTful API will keep track of the version in the URL. The other most common solution is to put a version number in a request header, but after working with many different Third Party Developers, I can tell you that adding headers is no where near as easy as adding a URL Segment.
-
-
-\section{Authentication}
-
-There are two common paradigms your server may represent. In the Two-Legged paradigm, there are two parties involved, a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who probably has an account with both services.
+In theory, your API could use both methods of authorization for different areas. Also, there may be some sections of the API which can be accessed anonymously and can entirely bypass the authorization process.
 
 \subsection{Two-Legged Authentication}
 
@@ -976,9 +1001,11 @@ There are two common paradigms your server may represent. In the Two-Legged para
 \label{fig:twolegged}
 \end{figure}
 
-As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication is quite simple. Essentially, the Third-Party needs a way to authenticate themselves with the Server. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
+As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication (\emph{2LA}) is quite simple. Essentially, the Consumer needs a way to authenticate themselves with the API. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
 
-Conveniently, the HTTP protocol makes use of a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do authorization, most of them make use of this header.
+Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via a cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with), but the method we will use is essentially the same thing.
+
+The HTTP protocol conveniently gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
 
 \subsubsection{Basic HTTP Authentication}
 
@@ -989,7 +1016,7 @@ Conveniently, the HTTP protocol makes use of a header called \texttt{Authorizati
 \label{fig:basichhtpauth}
 \end{figure}
 
-The "classical" way of doing authentication is called \href{https://tools.ietf.org/html/rfc2617}{Basic HTTP Auth}, where a User Agent first makes a GET request to a protected resource. The Server responds with Unauthorized, and the User Agent displays a dialog to the user prompting them for a username and password.
+The "classical" method of performing authentication is called \href{https://tools.ietf.org/html/rfc2617}{Basic HTTP Auth}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog to the user prompting the user for a username and password.
 
 \paragraph{\textbf{First Request}}
 
@@ -1007,9 +1034,9 @@ Date: Thu, 9 Jan 2014 23:35:00 GMT
 WWW-Authenticate: Basic realm="Example"
 \end{verbatim}
 
-At this point, the user either clicks cancel and sees a not-very-useful screen and chooses to go away, or they enter correct credentials and click Authorize.
+At this point, the user either clicks cancel and is taken to a not-very-useful screen and chooses to go somewhere else, or they enter correct credentials and click Authorize. Entering the wrong credentials typically results in the Server sending back the same Unauthorized status.
 
-The credentials the user supplies are sent as follows: The username (which cannon contain ":") is concatenated with ":", and then concatenated with the password. This text is then Base64 encoded and sent inside of the Authorization header. As you can probably guess, this is extremely insecure if done over HTTP, and perfectly fine if sent over HTTPS.
+The credentials the user supplies are transmitted as follows: The username (which cannot contain ":") is concatenated with ":", and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
 
 \paragraph{\textbf{Authorized Request}}
 
@@ -1022,13 +1049,13 @@ Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 
 Finally, the Server begins giving the User Agent the content which the user is expecting. This exact same Authorization header is sent with every subsequent request.
 
-Introducing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be made as the Consumer would always know that it needs to be authorized, however, if the Consumer enters incorrect credentials, the server would still reply with a 401 Unauthorized response.
+Introducing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be performed as the Consumer should know that it needs to first be authorized, however, if the Consumer does provide incorrect credentials, the server would still reply with a \texttt{401 Unauthorized} status.
 
 \subsubsection{Alternatives to Basic Auth}
 
-You don't necessarily need to rely on this approach for doing authentication. OAuth (which you'll read about in the next section) provides some methods for doing Two-Legged authentication.
+You can invent your own method of auth where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this concept is often referred to as an \emph{Auth Token}). Third parties may want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration interface so developers can provision and revoke these tokens themselves.
 
-You can even invent your own method where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this is often referred to as an Auth Token). Third parties will likely want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration system so that developers can provision these tokens themselves.
+OAuth, which is most commonly used for performing Three-Legged Authentication, provides some methods for doing \emph{2LA}. Typically developers prefer using standards, although auth is usually pretty simple.
 
 \subsection{Three-Legged Authentication}
 
@@ -1039,24 +1066,24 @@ You can even invent your own method where you supply the Consumer with a single 
 \label{fig:threelegged}
 \end{figure}
 
-As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication is a bit more complex. While some APIs provide endpoints to be consumed by the general (anonymous) public, a lot of the time work is being perform on behalf of a user. This user probably trusts your Server with their username and password, but they don't trust the third-party consumer. The user would also like to one day revoke the third-parties access to their data on your Server, without the need to go around changing their username and password.
+As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\emph{3LA}) is a bit more complex. A user likely trusts your application with their username and password, however they don't trust a third-party consumer. The user would also like to one day revoke the third-parties access to their data stored on your Server, without the need to change their username and password.
 
-The complexities of Three-Legged Authentication is far too complex to exemplify in this book, so you'll want to visit their websites to gain more information. At a high level, they provide a method for a Consumer to sign requests and to validate they are who they say they are. They also provide a method for Users to grant privilege to Consumers to access their data on your Server. Users can revoke permissions from Consumers whenever they'd like. At any point in time, the Server can revoke a Consumers privileges as well.
+The complexities of \emph{3LA} is far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate Consumers are who they say they are. They also provide a method for users to grant privileges to Consumers to access specific data from your API. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
 
-\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing this. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing Users to revoke access from a Consumer, all without the need for a third-party consumer to know the Users login credentials.
+\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
 
-There are also \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth}, which fill the same space. Whichever method you choose, make sure it is something common and well documented with many different libraries written for the languages/platforms which your Consumers will likely be using.
+There are also the \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0a} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth} standards, which solve mostly the same problems. Whichever method you do choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
 
-I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is a huge pain in the ass to implement. I was surprised by the number of Third Party Developers who had to implement their own library since one didn't exist for their language already. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. I was surprised by the number of developers who had to implement their own library since one didn't exist for their language already. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevent by sending data over HTTPS. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
 
 \section{Consumer Permissions}
 
-Permissions is a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
+Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
 
-When dealing with Two-Legged Authentication, the process for deciding Permissions is likely to be handled more simply. For example, if your Service is owned by a company, and this company trusts certain other companies and wants to give them more privileges, your company would edit their account and allow access to much more data (for example user creation).
+When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by Company X, and this company trusts Company Y with certain features of the API, X will probably manually assign Y with more permissive permissions. However, Company Z, which is otherwise unknown to X, will get the default, less permissive permissions.
 
-Now, with Three-Legged Authentication, the Consumer needs to be able to specify which types of data of the User they would like to interact with. When the user authorizes the Consumer, they are usually given a GUI where they can review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook or LinkedIn.
+Regarding \emph{3LA}, the Consumer needs to be able to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
 
 \begin{figure}[ht!]
 \centering
@@ -1065,13 +1092,13 @@ Now, with Three-Legged Authentication, the Consumer needs to be able to specify 
 \label{fig:twitteroauth}
 \end{figure}
 
-Specifying permissions will vary depending on the Authorization mechanism you use. With OAuth, for example, the Server can accept an additional parameter called permissions during the Request Token generation phase. This parameter can be a JSON object which represent the permissions the Consumer is trying to get. By passing this parameter around during the Authorization step, a Consumer is able to get per-user permissions.
+Specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a, for example, the Server can accept an additional parameter called permissions (or whatever you choose) during the Request Token generation phase. This parameter can be a JSON object which represent the permissions the Consumer is trying to be granted. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
 
-Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions ahead of time. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
+Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions once. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
 
 \subsection{Example Permissions Object}
 
-The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send them emails using the service (although not have access to their email address), and finally retrieve the list of the users friends, add new friends, and remove existing friends.
+The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send the user emails using the service (although not have access to their email address), and finally retrieve the list of the users friends, add new friends, and remove existing friends.
 
 \begin{verbatim}
 {
@@ -1081,42 +1108,40 @@ The following permissions object could represent a common social media website. 
 }
 \end{verbatim}
 
-When the user authenticates the Consumer, they would see a list of each of the operations the Consumer is asking for. Some of them should probably be highlighted in red, such as adding and removing friends, and updating the users profile.
+When the user authenticates the Consumer, they would see a list of each of the operations the Consumer is asking for. Some of them which grant destructive or powerful capabilities should probably be highlighted, such as adding and removing friends, and updating the users profile.
 
-Some services will allow a User to disable permissions (Facebook used to allow this), other services will require the permissions to be accepted completely or denied completely. You can choose whatever approach you'd like with your service, but keep in mind, Consumers which don't anticipate the permissions changing can break in weird ways.
+Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whatever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing can break in weird ways.
 
 
 \section{API Analytics}
 
-Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should be made efficient.
+Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should have their database queries optimized to reduce server load.
 
-For the purpose of building an API which Third Party Developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated API features. This is the perfect way to remind them to upgrade before you kill the old API version.
+For the purpose of building an API which developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated features. This is the perfect way to remind them to upgrade before you kill the old version.
 
-The process of Third Party Developer notification can be automated, e.g. mail the developer every time 10,000 requests to a deprecated feature are made.
-
-If you can, try to keep track of a matrix worth of analytics data. For example, try to keep track of which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for Three-Legged Authentication). If you get angry users telling you that certain features are broken, having this information will be very helpful for looking up problems
+If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for \emph{3LA}). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
 
 
 \section{Writing good Documentation}
 
-Honestly, if you don't conform 100\% to the criteria in this guide, your API will not necessarily be horrible. However, if you don't properly document your API, nobody is going to know how to use it, and it WILL be a horrible API.
+Writing good documentation is vital to the success of any API. If consumers don't know how to use an API, they won't use an API.
 
-Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Users won't be able to use Google for finding documentation, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
+Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Developers won't be able to use Google for finding documentation, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
 
-Do not use automatic documentation generators, or if you do, at least make sure you're doctoring it up and making it presentable. Generated docs can be useful with libraries which code connects directly to, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected, but in general, generated docs just suck.
+Do not use automatic documentation generators! But if you do, at least make sure you're cleaning up the output and making it presentable. Generated docs can be useful with libraries where code connects directly to it, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected. However, automatically-generated documentation typically sucks.
 
-Do not truncate example request and response bodies, instead try to show the whole thing. Even specify which HTTP headers the Consumer should expect to see. Also, make use of a syntax highlighter in your documentation. Color-highlighted JSON is much easier on the eyes.
+Do not truncate example request and response bodies, instead show the whole thing. Even specify which HTTP headers the Consumer should expect to see. Make use of a syntax highlighter in your documentation as color-highlighted JSON is much easier to parse with human eyes.
 
-Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those error messages. Keep a place where all anticipated error codes can be looked up as well.
+Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those errors to happen. Keep a place where all anticipated error codes can be looked up as well.
 
-Make sure your documentation can be printed; CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
+Make sure your documentation can be printed. CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
 
-Documentation can either be split up into many different pages, or kept on one long page. However, if you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to the parts they want and share links with others.
+Documentation can either be split into many different pages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others.
 
 
 \section{Developer Console}
 
-Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow developers to quickly test API commands without having to build their own applications over and over. This allows them to get familiar with your API much quicker.
+Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow developers to quickly test API commands without having paste sample code into their own application. This allows them to get familiar with your API much quicker.
 
 \begin{figure}[ht!]
 \centering
@@ -1125,36 +1150,40 @@ Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow devel
 \label{fig:devconsole}
 \end{figure}
 
-Your server will need a website where Third-Party developers can register their applications, and get Authentication credentials, read documentation, etc. This is a great place to put the API Console.
+Your server will need a website where third-party developers can register their applications, get authentication credentials, read documentation, etc. This is a great place to put the API Console.
 
-Whenever possible, make using the API console easy and efficient for the developer. Perhaps you provide them with a default user account which resets every hour using a CRON job. Or, maybe by clicking a single button the application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their application.
+Ensure using the Developer Console is easy and efficient for the developer to use. Perhaps even provide them with a default user account which resets every hour using a CRON job. Maybe by clicking a single button their application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their application.
 
-Also, if possible, use GET parameters for the API console form when it submits. This way, from within the documentation, a developer could click a link describing an API endpoint and immediately be taken to the console where they can test the endpoint out.
+If possible use GET parameters for the Developer Console HTML form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
 
 
 \chapter{Beyond REST}
 
 \section{Hypermedia APIs: REST Evolved}
 
-Hypermedia APIs are very likely the future of RESTful API design. They're actually a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
+Hypermedia APIs seem to be the future of RESTful API design. They're a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
 
-When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the Server and the Consumer. These Endpoints MUST be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the Server as intended. This, as you can assume, is quite a limitation.
+When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the API and the Consumer. These Endpoints must be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the API as intended.
 
-Now, API Consumers are of course not the only user agent making HTTP requests on the Internet. Far from it. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are. What makes humans so special? Well, they're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where they want to go. If a URL changes, a human is not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved data).
+API Consumers are of course far from being the only user agent making HTTP requests on the Internet. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are.
 
-The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important (or necessarily required), as long as a URL is provided.
+What makes humans so special? Well, we're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where we want to go. If a URL changes, we're not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved article).
 
-With the Consumer of a Hypermedia API crawling links and gathering information, URLs are always up-to-date within responses, and do not need to be known beforehand as part of a contract. If a URL is ever cached, and a subsequent request returns a 404, the Consumer can simply go back to the root and discover the content again.
+The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important as long as a URL to the resource is provided.
 
-When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3xx redirect to the complete Resource.
+With the Consumer of a Hypermedia API crawling links and gathering information, URLs are always up-to-date within responses and do not need to be known as part of a contract. If a URL is ever cached, and a subsequent request returns a 404, the Consumer can simply go back to the root and discover the content again.
 
-JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information. We may very well see our APIs coming full circle and returning back to consuming HTML. Considering how far we've come with CSS, one day we may even see  it be common practice for APIs and Websites to use the exact same URLs and content.
+When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3XX redirect to the complete resource.
 
-Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messenger. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, like you see offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
+JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information! We may very well see our APIs come full circle and return back to consuming HTML. Considering how far we've come with CSS, one day it may be common practice for APIs and Websites to use the exact same URLs and HTML content.
 
-Now, imagine that disparate tools created by different companies can all work with each other as tightly as these massive suites of tools. Often times, when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
+Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messengers. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, such as what is offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
+
+Now, imagine that these disparate tools created by different companies can work with each other as tightly as these massive suites of tools. Often times when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
 
 \subsection{ATOM: An Early Hypermedia API}
+
+ATOM, a relative to RSS, is likely one of the first mainstream Hypermedia APIs (except for HTML itself). ATOM is valid XML, and therefore is very easy to parse. Links to other documents use a \texttt{link} tag, and specify both the URL (using a \texttt{href} attribute), as well as the documents relation to the current document (using the \texttt{rel} attribute).
 
 \begin{verbatim}
 <?xml version="1.0" encoding="utf-8"?>
@@ -1186,11 +1215,11 @@ Now, imagine that disparate tools created by different companies can all work wi
 
 \section{Response Document Standards}
 
-When responding with a document representing a Collection, it is usually adequate to return a top-level array containing each Resource object. Likewise, when responding with a document representing a Resource, simply returning a top-level object containing the Resource is good-enough.
+When responding with a document representing a Collection, it is usually adequate to return a top-level array containing each resource object. Likewise, when responding with a document representing a resource, simply returning a top-level object containing the resource is good-enough.
 
-However, there are some standards people have developed for encapsulating these items in a standardized envelope to help give the Consumer some context when parsing the responses.
+However, there are some standards which smart people have developed for encapsulating these items in a standardized envelope to help give the Consumer some context when parsing the responses.
 
-For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status Code, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
+For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
 
 \subsection{JSON Schema}
 
@@ -1221,7 +1250,7 @@ For example, if making a filtered request limiting the Collection to containing 
 
 \subsection{JSON API}
 
-The \href{http://jsonapi.org/}{JSON API} spec provided a standardized format for structuring the response documents provided by an API and also introduces some reserved words which have special meanings in the responses (e.g. an id must be used for identifying a Resource, a convention we've been otherwise following).
+The \href{http://jsonapi.org/}{JSON API} spec provided a standardized format for structuring response documents by introducing some reserved words which have special meanings (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
 
 An interesting feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating what the Consumer would want.
 
@@ -1265,7 +1294,7 @@ An interesting feature of JSON API is that is also provides a method for returni
 
 \subsection{Siren}
 
-The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standardized method for representing Resources and what actions can be performed on said Resources. It is a hypermedia API, meaning that whenever applicable, the URL for performing an action or linking to a Resource is provided in the document.
+The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standard method for representing resources and what actions can be performed on said resources. It is a Hypermedia API so the URL for performing an action or linking to a Resource is provided in the document.
 
 \subsubsection{Example Siren Document}
 
@@ -1322,17 +1351,17 @@ The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standardized m
 
 \subsection{JSON RPC}
 
-\href{http://www.jsonrpc.org/specification}{JSON RPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't actually have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
+\href{http://www.jsonrpc.org/specification}{JSON RPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
 
-Unlike REST which requires an abstraction of the Server functionality of business logic and data into simple objects which can be acted upon using CRUD, JSON RPC calls typically map to existing functions within your application.
+Unlike REST which requires an abstraction of Server business-logic and data into simple objects which can be acted upon using CRUD, JSON RPC calls will typically map to existing functions within your application.
 
 When a client makes a call using JSON RPC, they specify the name of a function to execute, as well as arguments to the function. Arguments can be in the form of either ordered parameters (using a JSON Array), or named parameters (using a JSON Object).
 
-A big part of the specification is the envelope which the data being sent through adheres to. The concept of a URL doesn't really exist (if you're using JSON RPC over HTTP, there's probably a single URL all requests are sent through, and every request is likely sent as POST requests).
+The important part of the specification is the envelope which the data being sent through adheres to. The concept of a URL doesn't really exist (if you're using JSON RPC over HTTP, there's probably a single URL all requests are sent through, and each request is likely sent as a POST).
 
-JSON RPC is mostly useful for situations where you don't have an HTTP server, for example multiplayer games or embedded systems. If you already have an HTTP server for your product or service, REST is probably the correct solution.
+JSON RPC is mostly useful for situations where you don't have an HTTP server, for example multiplayer games or embedded systems or simple communication applications. If you already have an HTTP Server for your product or service, REST is likely the correct solution for you.
 
-When dealing with HTTP, every Request and Response is guaranteed to be paired together correctly. Due to the asynchronous nature of sockets and other such communication protocols, requests need to provide a unique ID value, and the corresponding response needs to provide the same ID.
+When dealing with HTTP, every Request and Response is guaranteed to be paired together correctly. Due to the asynchronous nature of sockets and other such communication protocols, Requests need to provide a unique ID value, and the corresponding Response needs to provide the same ID.
 
 \subsubsection{Example JSON RPC Request}
 
@@ -1350,9 +1379,9 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 
 \subsection{SOAP}
 
-\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} is a term you've very likely heard of, and even if you've never used it, probably have strong negative opinions of it (and if you have used it, probably even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
+\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} is a term you've very likely heard of, and even if you've never used it, you'll likely have strong negative opinions of it (and if you have used it, perhaps even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
 
-SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you can probably guess, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
+SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you've probably guessed, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
 
 SOAP is useful for describing services exposed over the network, and is transport agnostic just like JSON RPC, although most implementations use it over HTTP. Partly due to the waning popularity of XML in comparison to JSON, SOAP is often looked down upon due to the verbosity and the bulkiness of document sizes.
 
