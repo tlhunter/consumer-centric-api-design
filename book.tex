@@ -51,7 +51,7 @@ An API represents a contract between the data and business-logic on your Server,
 
 Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/core-application has the potential to become a platform from which other services grow. Look at the current tech companies offering popular services: Facebook, Twitter, Google, GitHub, Amazon, Netflix... None of them would be nearly as popular as they are today if they hadn't opened up their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
 
-The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure it has been working with your API, getting more developers to signup along the way.
+The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure it has been working with your API, getting more developers to sign-up along the way.
 
 \subsection{Approach}
 
@@ -84,7 +84,7 @@ Sometimes multiple tables will be represented as a single resource (\texttt{JOIN
 
 \subsection{Examples of Abstraction}
 
-For both the good and bad abstraction examples, we'll make use of the same fictional service. Pretend that you control a service which sends messages to different users, and messages can either be sent as a text message or an email. This is dependant on the preference of the particular user.
+For both the good and bad abstraction examples, we'll make use of the same fictional service. Pretend that you control a service which sends messages to different users, and messages can either be sent as a text message or an email. This is dependent on the preference of the particular user.
 
 Don't worry too much about the technical parts of the examples as we'll cover them with more detail in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
 
@@ -272,7 +272,7 @@ Here's a truncated example of the content provided by the \href{https://api.gith
 
 \section{HTTP Methods}
 
-You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses webpages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
+You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses web-pages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
 There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say "and a half" because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many API Servers.
 
@@ -359,7 +359,7 @@ Each piece of data separated by a slash is a URL Segment. Try to keep these as s
 
 \subsection{Specific Endpoints}
 
-When referring to what each endpoint can do, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that each endpoint is preceeded with the HTTP Method, as this is the same notation used within an HTTP Request header.
+When referring to what each endpoint can do, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that each endpoint is preceded with the HTTP Method, as this is the same notation used within an HTTP Request header.
 
 \begin{itemize}
 \item \texttt{GET /zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
@@ -409,7 +409,7 @@ Filtering is applicable when performing GETs on Collections. Since these are GET
 \item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute (\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some filtering can be redundant with endpoint URLs. In the Endpoints secion we had a \texttt{GET /zoo/ZID/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints will make the lives easier of developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
+Some filtering can be redundant with endpoint URLs. In the Endpoints section we had a \texttt{GET /zoo/ZID/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints will make the lives easier of developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
 
 Also, this may go without saying, but whenever filtering or sorting of data happens, be sure to white-list the column names for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
 
@@ -593,7 +593,7 @@ There are a plethora of \href{http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.
 
 \subsection{Status Code Ranges}
 
-The \textbf{1XX} range is reserved for low-level HTTP stuff, and you'll very likely go your entire career without manually sending one of these status codes. An example of this is when upgrading a connection from HTTP to WebSockets.
+The \textbf{1XX} range is reserved for low-level HTTP stuff, and you'll very likely go your entire career without manually sending one of these status codes. An example of this is when upgrading a connection from HTTP to Web Sockets.
 
 The \textbf{2XX} range is reserved for successful messages where all goes as planned. Do your best to ensure your Server sends as many of these to the Consumer as possible.
 
@@ -744,7 +744,7 @@ If you wanted something much more terse, you could represent the date as the num
 1389323177396
 \end{verbatim}
 
-That format, on the otherhand, is a bit too terse. As a human looking at it, you have no idea what date and time it represents! Linux and Unix machines and open source languages can parse that format very easily, however developers in Microsoft land will be clueless.
+That format, on the other hand, is a bit too terse. As a human looking at it, you have no idea what date and time it represents! Linux and Unix machines and open source languages can parse that format very easily, however developers in Microsoft land will be clueless.
 
 Here is another common date format. This is what happens when a developer takes a TIMESTAMP directly from the database and outputs it into the response:
 
@@ -886,7 +886,7 @@ There are of course a few exceptions. A PATCH, for example, only affects a parti
 
 Whenever dealing with the values of attributes, they should always be the same format.
 
-\subsection{Example of a Bad Discrepency}
+\subsection{Example of a Bad Discrepancy}
 
 In this example, during a POST to the \texttt{users} endpoint, there is a \texttt{role} attribute, which is a string containing possible user roles, such as \texttt{administrator} or \texttt{moderator}. However, in the response, that same data becomes a Boolean of whether or not the user is an administrator. This doubles the amount of attribute names the Consumer needs to keep track of.
 
@@ -911,7 +911,7 @@ POST /users
 }
 \end{verbatim}
 
-\subsection{Example of an Acceptable Discrepency}
+\subsection{Example of an Acceptable Discrepancy}
 
 In this example, the differences between the Request and the Response documents are minimal. Some of the values are read-only, and calculated on the server (e.g. \texttt{id}, \texttt{modified}, and \texttt{created}). Some of the attributes have default values (e.g. \texttt{enabled}), which is fine too, as long as these are documented.
 
@@ -946,7 +946,7 @@ POST /users
 
 No matter what you are building, no matter how much planning you do beforehand, your core application will change, your company will pivot, your data relationships will alter, and attributes will be added and removed from resources. This is just how software development works, and is especially true if your project is alive and used by many people.
 
-Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they will use somebody elses service instead. To ensure your application continually evolves AND you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
+Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they will use somebody else's service instead. To ensure your application continually evolves AND you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
 
 As a side note, if you are simply ADDING new features to your API, such as new attributes on a resource (assuming they are not required to be set), or if you are ADDING new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation of course.
 
@@ -960,7 +960,7 @@ There are three common methods RESTful APIs use for communicating which version 
 
 One method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
 
-The Accpet header offers a way to specify generic and less generic content types, as well as specifying fallbacks. In the example below, we are requesting a more specific version of JSON, specifically, Version 1 of the API JSON.
+The Accept header offers a way to specify generic and less generic content types, as well as specifying fall-backs. In the example below, we are requesting a more specific version of JSON, specifically, Version 1 of the API JSON.
 
 \begin{verbatim}
 Accept: application/json+v1
@@ -978,7 +978,7 @@ X-Api-Version: 1
 
 The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing for developers to do.
 
-The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLS likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
+The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLs likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
 
 \begin{verbatim}
 https://api.example.org/v1/*
@@ -1074,7 +1074,7 @@ The complexities of \emph{3LA} is far too intricate to exemplify in this book, s
 
 There are also the \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0a} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth} standards, which solve mostly the same problems. Whichever method you do choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
 
-I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. I was surprised by the number of developers who had to implement their own library since one didn't exist for their language already. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevent by sending data over HTTPS. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. I was surprised by the number of developers who had to implement their own library since one didn't exist for their language already. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevant by sending data over HTTPS. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
 
 \section{Consumer Permissions}
