@@ -8,18 +8,28 @@
 \usepackage{hyperref}
 \usepackage{epstopdf}
 \usepackage{wallpaper}
+\usepackage{geometry}
 
 \begin{document}
 
-\ThisURCornerWallPaper{2.4}{images/cover.eps}
+\newgeometry{left=1cm,bottom=3cm,right=1cm,top=3cm}
+\ThisCenterWallPaper{0.6}{images/cover.eps}
 \thispagestyle{empty}
+\begin{center}
+
+\LARGE{\textbf{A Consumer-Centric Approach to RESTful API Design}}
+
 \null
 \vfill
 
-\paragraph{\Large{A\newline{}Consumer-Centric\newline{}Approach to\newline{}RESTful API Design\newline{}}}
+\Large{Thomas Hunter II}
+
+\large{January 2014}
+
+\end{center}
 
 \newpage
-
+\restoregeometry
 
 \section*{The People behind the Book}
 
@@ -404,9 +414,9 @@ You do want to offer the ability for a Consumer to specify some sort of filterin
 Filtering is applicable when performing GETs on Collections. Since these are GET requests, filtering information should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API:
 
 \begin{itemize}
-\item \texttt{?limit=10\&offset=20}: Pagination of results (\texttt{LIMIT 20, 10})
-\item \texttt{?animal\_type\_id=1}: Filter records which match the following condition (\texttt{WHERE animal\_type\_id = 1})
-\item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute (\texttt{ORDER BY name ASC})
+\item \texttt{?limit=10\&offset=20}: Pagination of results\newline{}(\texttt{LIMIT 20, 10})
+\item \texttt{?animal\_type\_id=1}: Filter records which match the following condition\newline{}(\texttt{WHERE animal\_type\_id = 1})
+\item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute\newline{}(\texttt{ORDER BY name ASC})
 \end{itemize}
 
 Some filtering can be redundant with endpoint URLs. In the Endpoints section we had a \texttt{GET /zoo/ZID/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=ZID}. Dedicated endpoints will make the lives easier of developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
@@ -435,8 +445,7 @@ GET http://api.example.org/user/12
 \paragraph{\textbf{Resulting SQL Query}}
 
 \begin{verbatim}
-SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id
-  WHERE user.id = 12;
+SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id = 12;
 \end{verbatim}
 
 \paragraph{\textbf{Response Body}}
@@ -1199,8 +1208,7 @@ ATOM, a relative to RSS, is likely one of the first mainstream Hypermedia APIs (
     <link href="http://example.org/2003/12/13/atom03" />
     <link rel="alternate" type="text/html"
         href="http://example.org/2003/12/13/atom03.html"/>
-    <link rel="edit"
-        href="http://example.org/2003/12/13/atom03/edit"/>
+    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
     <updated>2003-12-13T18:30:02Z</updated>
     <summary>Some text.</summary>
@@ -1340,7 +1348,7 @@ The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standard metho
   ],
   "links": [
     { "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
-    { "rel": [ "previous" ], "href":"http://api.x.io/orders/41"},
+    { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
     { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
   ]
 }
@@ -1366,8 +1374,7 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 \subsubsection{Example JSON RPC Request}
 
 \begin{verbatim}
-{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23],
-  "id": 1}
+{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23], "id": 1}
 \end{verbatim}
 
 \subsubsection{Example JSON RPC Response}
