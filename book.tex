@@ -275,9 +275,12 @@ Here's a truncated example of the content provided by the \href{https://api.gith
   "current_user_url": "https://api.github.com/user",
   "authorizations_url": "https://api.github.com/authorizations",
   "emails_url": "https://api.github.com/user/emails",
+  "starred_url": "https://api.github.com/user/starred{/owner}{/repo}",
   ...
 }
 \end{verbatim}
+
+TODO: You can also put info about the currently-authenticated user in the root.
 
 
 \chapter{API Requests}
@@ -376,35 +379,35 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Meth
 \begin{itemize}
 \item \texttt{GET /zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
 \item \texttt{POST /zoos}: Create a new Zoo
-\item \texttt{GET /zoos/ZID}: Retrieve an entire Zoo resource
-\item \texttt{PUT /zoos/ZID}: Update a Zoo (entire resource)
-\item \texttt{PATCH /zoos/ZID}: Update a Zoo (partial resource)
-\item \texttt{DELETE /zoos/ZID}: Delete a Zoo
-\item \texttt{GET /zoos/ZID/animals}: Retrieve a listing of Animals (ID and Name)
+\item \texttt{GET /zoos/\{zoo\_id\}}: Retrieve an entire Zoo resource
+\item \texttt{PUT /zoos/\{zoo\_id\}}: Update a Zoo (entire resource)
+\item \texttt{PATCH /zoos/\{zoo\_id\}}: Update a Zoo (partial resource)
+\item \texttt{DELETE /zoos/\{zoo\_id\}}: Delete a Zoo
+\item \texttt{GET /zoos/\{zoo\_id\}/animals}: Retrieve a listing of Animals (ID and Name)
 \item \texttt{GET /animals}: List all Animals (ID and Name)
 \item \texttt{POST /animals}: Create a new Animal
-\item \texttt{GET /animals/AID}: Retrieve an Animal resource
-\item \texttt{PUT /animals/AID}: Update an Animal (entire resource)
-\item \texttt{PATCH /animals/AID}: Update an Animal (partial resource)
+\item \texttt{GET /animals/\{animal\_id\}}: Retrieve an Animal resource
+\item \texttt{PUT /animals/\{animal\_id\}}: Update an Animal (entire resource)
+\item \texttt{PATCH /animals/\{animal\_id\}}: Update an Animal (partial resource)
 \item \texttt{GET /animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
-\item \texttt{GET /animal\_types/ATID}: Retrieve an entire Animal Type resource
+\item \texttt{GET /animal\_types/\{animaltype\_id\}}: Retrieve an entire Animal Type resource
 \item \texttt{GET /employees}: Retrieve an entire list of Employees
-\item \texttt{GET /employees/EID}: Retrieve a specific Employee
-\item \texttt{GET /zoos/ZID/employees}: Retrieve a listing of Employees at this Zoo
+\item \texttt{GET /employees/\{employee\_id\}}: Retrieve a specific Employee
+\item \texttt{GET /zoos/\{zoo\_id\}/employees}: Retrieve a listing of Employees at this Zoo
 \item \texttt{POST /employees}: Create a new Employee
-\item \texttt{POST /zoos/ZID/employees}: Hire an Employee at a specific Zoo
-\item \texttt{DELETE /zoos/ZID/employees/EID}: Fire an Employee from a specific Zoo
+\item \texttt{POST /zoos/\{zoo\_id\}/employees}: Hire an Employee at a specific Zoo
+\item \texttt{DELETE /zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a specific Zoo
 \end{itemize}
 
-In the above list, ZID means Zoo ID, AID means Animal ID, EID means Employee ID, and ATID means Animal Type ID. Keep a key in your documentation of whatever convention you choose.
+The syntax used to describe these URLs is called a \href{http://tools.ietf.org/html/rfc6570}{URI Template (RFC6570)} and is a nice, standardized method for describing your URLs to developers.
 
-The Root API URL has been omitted in the above examples for brevity. While this can be fine during communications (or books with lazy authors), in your actual API documentation you should display the full URL to each endpoint (e.g. GET http://api.example.com/v1/animal\_type/ATID).
+The Root API URL has been omitted in the above examples for brevity. While this can be fine during communications (or books with lazy authors), in your actual API documentation you should display the full URL to each endpoint (e.g. \texttt{GET /animal\_type/\{animaltype\_id\}}).
 
 Notice how the relationships between data is conveyed, for example the many-to-many relationships between Employees and Zoos. By adding an additional URL segment, one can perform relationship interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
 
-Also notice how the listing of Endpoints doesn't include every possible method-to-resource combination. For example a Consumer is unable to POST or DELETE to the animal\_types Endpoints. In this fictional situation, only administrators would be able to add new animal\_types using some mechanism outside of the API.
+Also notice how the listing of Endpoints doesn't include every possible method-to-resource combination. For example a Consumer is unable to POST or DELETE to the \texttt{animal\_types} Endpoints. In this fictional situation, only administrators would be able to add new \texttt{animal\_types} using some mechanism outside of the API.
 
-There's nothing wrong with not supporting every method-to-resource combination, as every facet of data manipulation your service offers doesn't necessarily need to be exposed via API. Just keep in mind though, developers will wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an animal\_type). Know that if the functionality isn't documented, a developer may still discover a feature by brute force.
+There's nothing wrong with not supporting every method-to-resource combination, as every facet of data manipulation your service offers doesn't necessarily need to be exposed via API. Just keep in mind though, developers will wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an \texttt{animal\_type}). Know that if the functionality isn't documented, a developer may still discover a feature by brute force.
 
 
 \section{Filtering Resources}
@@ -660,7 +663,7 @@ When performing a GET request to an entire Collection, the Consumer expects an a
 ]
 \end{verbatim}
 
-\subsubsection{GET /collection/resource\_id}
+\subsubsection{GET /collection/\{resource\_id\}}
 
 When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple RESTful API, this is just the resource object as a top level JSON object.
 
@@ -686,7 +689,7 @@ When performing a POST request to a Collection, the Consumer expects the resourc
 }
 \end{verbatim}
 
-\subsubsection{PUT /collection/resource\_id}
+\subsubsection{PUT /collection/\{resource\_id\}}
 
 The result of a PUT operation is the entirety of the resource that was updated, as the root JSON object.
 
@@ -699,7 +702,7 @@ The result of a PUT operation is the entirety of the resource that was updated, 
 }
 \end{verbatim}
 
-\subsubsection{PATCH /collection/resource\_id}
+\subsubsection{PATCH /collection/\{resource\_id\}}
 
 The result of a PATCH request is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the resource attributes, the entire resource is returned.
 
@@ -712,7 +715,7 @@ The result of a PATCH request is exactly the same as the result of a PUT operati
 }
 \end{verbatim}
 
-\subsubsection{DELETE /collection/resource\_id}
+\subsubsection{DELETE /collection/\{resource\_id\}}
 
 This is the easiest of the bodies to deal with. Once a resource is deleted, you simply return an empty document. No need to return information about the deleted resource. As no body is present, omit the \texttt{Content-Type} header.
 

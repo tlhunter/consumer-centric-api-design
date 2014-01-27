@@ -20,7 +20,7 @@ FIXED   - We debated internally what to call an HTTP request/response pair. The 
         - The first line in a response is not a header, it's the status line: http://pretty-rfc.herokuapp.com/RFC2616#status-line Same for the request line.
             Different semantics than the headers.
 
-        - I would suggest using an existing format for your URL template examples: http://tools.ietf.org/html/rfc6570  
+FIXED   - I would suggest using an existing format for your URL template examples: http://tools.ietf.org/html/rfc6570  
 
         - I would more strongly emphasize that you don't want to use the same domain for your API as your web site because of the cookie thing.
             You should also not listen on port 80, to avoid credentials leaking if you forget to use HTTPS
@@ -34,4 +34,4 @@ FIXED   - 3.3.0.2 incorrectly returns the results in an array
 
         - OAuth2 doesn't mention scopes for permissions
 
-        - READ: More API design thoughts: http://john-sheehan.com/blog/dont-build-the-best-rest-api-build-the-best-http-api 
+READ    - READ: More API design thoughts: http://john-sheehan.com/blog/dont-build-the-best-rest-api-build-the-best-http-api 
