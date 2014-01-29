@@ -303,13 +303,15 @@ There are, however, four and a half HTTP Methods that you need to know about whe
 
 You've likely heard of the phrase "CRUD" when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a terminal command. CRUD stands for Create, Read, Update, and Delete, and short of handling any business logic, can be used for handling all data entry.
 
-Here is the list of HTTP Methods, as well as which CRUD operation they represent, and if your service were to represent a simple database, the associated SQL command:
+Here is the list of HTTP Methods, as well as which CRUD operation they represent, and if your service were to represent an extremely simple database, the associated SQL command:
 
 \begin{itemize}
 \item \textbf{GET} (Read)
     \begin{itemize}
     \item Retrieve a specific Resource from the Server
     \item Retrieve a Collection of Resources from the Server
+    \item Considered \emph{Safe}: this request should not alter server state
+    \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \item Corresponds to a SQL SELECT command
     \end{itemize}
 \item \textbf{POST} (Create)
@@ -321,6 +323,7 @@ Here is the list of HTTP Methods, as well as which CRUD operation they represent
     \begin{itemize}
     \item Updates a Resource on the Server
     \item Provide the entire Resource
+    \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \item Corresponds to a SQL UPDATE command, providing null values for missing columns
     \end{itemize}
 \item \textbf{PATCH} (Update)
@@ -332,6 +335,7 @@ Here is the list of HTTP Methods, as well as which CRUD operation they represent
 \item \textbf{DELETE} (Delete)
     \begin{itemize}
     \item Destroys a Resource on the Server
+    \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \item Corresponds to a SQL DELETE command
     \end{itemize}
 \end{itemize}
@@ -343,11 +347,15 @@ Here are two lesser-known HTTP Methods. Feel free to use them in your API, howev
     \begin{itemize}
     \item Retrieve meta data about a Resource (just the headers)
     \item E.g. a hash of the data or when it was last updated
+    \item Considered \emph{Safe}: this request should not alter server state
+    \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \end{itemize}
 \item \textbf{OPTIONS}
     \begin{itemize}
     \item Retrieve information about what the Consumer can do with the Resource
     \item Corresponds to a SQL EXPLAIN statement
+    \item Considered \emph{Safe}: this request should not alter server state
+    \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \end{itemize}
 \end{itemize}
 
@@ -593,8 +601,8 @@ There are a plethora of HTTP Status Codes \cite{RFC2616} to choose from, however
 \item \texttt{\textbf{200} OK}
     \begin{itemize}
     \item GET / PUT / PATCH  Requests
-    \item The Consumer requested data from the Server, and the Server found it for them (Idempotent)
-    \item The Consumer gave the Server data, and the Server accepted it (Idempotent)
+    \item The Consumer requested data from the Server, and the Server found it for them
+    \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
 \item \texttt{\textbf{201} Created}
     \begin{itemize}
@@ -604,17 +612,17 @@ There are a plethora of HTTP Status Codes \cite{RFC2616} to choose from, however
 \item \texttt{\textbf{204} No Content}
     \begin{itemize}
     \item DELETE Requests
-    \item The Consumer asked the Server to delete a Resource, and the Server deleted it (Idempotent)
+    \item The Consumer asked the Server to delete a Resource, and the Server deleted it
     \end{itemize}
 \item \texttt{\textbf{400} Invalid Request}
     \begin{itemize}
     \item POST / PUT / PATCH Requests
-    \item The Consumer gave bad data to the Server, and the Server did nothing with it (Idempotent)
+    \item The Consumer gave bad data to the Server, and the Server did nothing with it
     \end{itemize}
 \item \texttt{\textbf{404} Not Found}
     \begin{itemize}
     \item All Requests
-    \item The Consumer referenced an inexistent Resource or Collection, and the Server did nothing (Idempotent)
+    \item The Consumer referenced an inexistent Resource or Collection, and the Server did nothing
     \end{itemize}
 \item \texttt{\textbf{500} Internal Server Error}
     \begin{itemize}
@@ -670,7 +678,7 @@ Use the \texttt{Accept} header, which is built into the HTTP spec for this purpo
 
 When a Consumer makes a request to the Server, something needs to be returned as a response. Depending on the HTTP Method being used, the response will be different.
 
-\subsubsection{GET /\{collection\_name\}}
+\subsubsection{GET /\{collection\}}
 
 When performing a GET request to an entire Collection, the Consumer expects an array of every Resource being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogeneous list of resources.
 
@@ -691,7 +699,7 @@ When performing a GET request to an entire Collection, the Consumer expects an a
 ]
 \end{verbatim}
 
-\subsubsection{GET /\{collection\_name\}/\{resource\_id\}}
+\subsubsection{GET /\{collection\}/\{resource\_id\}}
 
 When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple RESTful API, this is just the resource object as a top level JSON object.
 
@@ -704,7 +712,7 @@ When performing a GET request for a specific resource, the Consumer is expecting
 }
 \end{verbatim}
 
-\subsubsection{POST /\{collection\_name\}}
+\subsubsection{POST /\{collection\}}
 
 When performing a POST request to a Collection, the Consumer expects the resource it just created to be returned. In the ideal academic REST API, the object being provided is exactly the same as the object being returned. However, there is very important information being returned to the Consumer which it doesn't already know, such as the \texttt{resource\_id} and other calculated attributes such as timestamps.
 
@@ -717,7 +725,7 @@ When performing a POST request to a Collection, the Consumer expects the resourc
 }
 \end{verbatim}
 
-\subsubsection{PUT /\{collection\_name\}/\{resource\_id\}}
+\subsubsection{PUT /\{collection\}/\{resource\_id\}}
 
 The result of a PUT operation is the entirety of the resource that was updated, as the root JSON object.
 
@@ -730,7 +738,7 @@ The result of a PUT operation is the entirety of the resource that was updated, 
 }
 \end{verbatim}
 
-\subsubsection{PATCH /\{collection\_name\}/\{resource\_id\}}
+\subsubsection{PATCH /\{collection\}/\{resource\_id\}}
 
 The result of a PATCH request is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the resource attributes, the entire resource is returned.
 
@@ -743,7 +751,7 @@ The result of a PATCH request is exactly the same as the result of a PUT operati
 }
 \end{verbatim}
 
-\subsubsection{DELETE /\{collection\_name\}/\{resource\_id\}}
+\subsubsection{DELETE /\{collection\}/\{resource\_id\}}
 
 This is the easiest of the bodies to deal with. Once a resource is deleted, you simply return an empty document. No need to return information about the deleted resource. As no body is present, omit the \texttt{Content-Type} header.
 
@@ -1056,7 +1064,7 @@ The HTTP protocol conveniently gives us a header called \texttt{Authorization} f
 \label{fig:basichhtpauth}
 \end{figure}
 
-The "classical" method of performing authentication is called \href{https://tools.ietf.org/html/rfc2617}{Basic HTTP Auth}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog to the user prompting the user for a username and password.
+The "classical" method of performing authentication is called Basic HTTP Auth \cite{RFC2617}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog to the user prompting the user for a username and password.
 
 \paragraph{\textbf{First Request}}
 
@@ -1095,7 +1103,7 @@ Introducing HTTP Basic Authorization to your API is just as easy, except that in
 
 You can invent your own method of auth where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this concept is often referred to as an \emph{Auth Token}). Third parties may want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration interface so developers can provision and revoke these tokens themselves.
 
-OAuth, which is most commonly used for performing Three-Legged Authentication, provides some methods for doing \emph{2LA}. Typically developers prefer using standards, although auth is usually pretty simple.
+OAuth, which is most commonly used for performing Three-Legged Authentication, provides some methods for doing \emph{2LA}. Typically developers prefer using standards, although \emph{2LA} is usually pretty simple.
 
 \subsection{Three-Legged Authentication}
 
@@ -1179,13 +1187,13 @@ Make sure your documentation can be printed. CSS is a powerful thing; don't be a
 Documentation can either be split into many different pages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others.
 
 
-\section{Developer Experimentation}
+\section{Convenience of Developer Experimentation}
 
-TODO
+Providing convenient tools will allow developers to quickly test API commands without having paste sample code into their own application. This allows them to get familiar with your API much quicker.
 
 \subsection{Web-Based Developer Console}
 
-Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow developers to quickly test API commands without having paste sample code into their own application. This allows them to get familiar with your API much quicker.
+A Web-based developer console, e.g. Figure \ref{fig:devconsole}, will allow developers to test API commands without ever leaving the documentation website.
 
 \begin{figure}[ht!]
 \centering
@@ -1202,9 +1210,9 @@ If possible use GET parameters for the Developer Console HTML form when it submi
 
 \subsection{Provide Example cURL Commands}
 
-cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). TODO
+cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). You may have installed cURL as a dependency for another project which deals with making HTTP requests.
 
-Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, Stripe, etc., provide sample cURL queries. When doing 2LA, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
+Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, \href{https://stripe.com/docs/connect/oauth}{Stripe}, etc., provide sample cURL queries. When doing \emph{2LA}, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
 
 \subsubsection{Example cURL Command}
 

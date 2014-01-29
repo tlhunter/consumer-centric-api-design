@@ -13,7 +13,7 @@ PARTIAL - There are a lot of big conceptual leaps. I kept getting the feeling yo
 FIXED   - We debated internally what to call an HTTP request/response pair. The spec uses 'message'.
             I would avoid 'packet' since that's a TCP term and a different thing. http://pretty-rfc.herokuapp.com/RFC2616#httpmessage
 
-        - PUT can be used for idempotent creates, including with the ID (it's awesome for retry-creates). Idempotency doesn't get a mention until page 23. It's a pretty important topic.
+FIXED   - PUT can be used for idempotent creates, including with the ID (it's awesome for retry-creates). Idempotency doesn't get a mention until page 23. It's a pretty important topic.
 
 ???     - .json or .xml in the URL for selecting a format does not create new resources. It returns different representations of a resource (e.g. an instance of a class).
 
@@ -25,11 +25,11 @@ FIXED   - I would suggest using an existing format for your URL template example
 FIXED   - I would more strongly emphasize that you don't want to use the same domain for your API as your web site because of the cookie thing.
             You should also not listen on port 80, to avoid credentials leaking if you forget to use HTTPS
 
-        - The root URL is a good place to return info about the current user to validate they are auth'd correctly
+???     - The root URL is a good place to return info about the current user to validate they are auth'd correctly
 
 FIXED   - 3.3.0.2 incorrectly returns the results in an array
 
-        - 4.2.1.2 key passing is a fine option for auth. In transit it's no more or less secure than HTTP basic and it's easier to link to things.
+OK      - 4.2.1.2 key passing is a fine option for auth. In transit it's no more or less secure than HTTP basic and it's easier to link to things.
             If you have a read-only API that might be more important.
 
         - OAuth2 doesn't mention scopes for permissions
