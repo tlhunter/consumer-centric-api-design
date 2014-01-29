@@ -35,7 +35,7 @@
 
 \subsubsection*{Thomas Hunter II, Author}
 
-\href{http://thomashunter.name}{Thomas Hunter II} previously worked as a Developer Advocate/API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given verious talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
+\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate/API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given verious talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -53,7 +53,7 @@ TODO: Get Biography from Jason
 
 \subsubsection*{Jon Kuperman, Influence}
 
-I'd also like to make a special thanks to \href{https://twitter.com/thecodeplanet}{Jon Kuperman} who once told me, "Tom, you should turn that API blog post into a book."
+I'd also like to make a special thanks to \href{https://twitter.com/thecodeplanet}{Jon} who once told me, "Tom, you should turn that \href{http://codeplanet.io/principles-good-restful-api-design/}{API blog post} into a book."
 
 \tableofcontents
 
@@ -232,7 +232,16 @@ Cache-Control: no-cache
 
 \subsection{Debugging HTTP Traffic}
 
-While designing and debugging your API, you should be able to work with tools which allow you to look at raw HTTP packets. The most popular tool for doing this is probably \href{https://www.wireshark.org}{Wireshark}. You will also want to use a framework/web server which allows you to read and change as many of these headers as possible.
+\href{http://getpostman.com/}{Postman} (a Google Chrome extension) is an excellent tool for interacting with a RESTful API. As seen in Figure ~\ref{fig:postman}, Postman provides an easy-to-use interface for building API requests, as well as debugging the content of API responses. It also provides many advanced features regarding authentication (which we'll cover in later chapters).
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/postman.png}
+\caption{Postman Screenshot}
+\label{fig:postman}
+\end{figure}
+
+While designing and debugging your API you will sometimes need to debug packets at lower level than HTTP. The most popular tool for doing this is probably \href{https://www.wireshark.org}{Wireshark}. You will also want to use a framework/web server which allows you to read and change as many of these headers as possible.
 
 Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form submission on a website. Notice all of the data sent back and forth via HTTP headers. The data passed around by browsers and web servers is often more chaotic and noisy than an API Consumer and Server will use.
 
@@ -243,20 +252,18 @@ Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form 
 \label{fig:wireshark}
 \end{figure}
 
-TODO: Mention POSTman for debugging.
-
 
 \section{Choosing a Root URL}
 
 The root location of your API is important, believe it or not. When a developer (aka \emph{code archaeologist}) inherits a project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer communicates with. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
-\subsection{Root API URL}
+\subsection{Choosing a Root API Location}
 
 Here are two common URL schemes that developers use when building an API. These are also sometimes called API entry points.
 
 \begin{itemize}
-\item \texttt{https://api.example.com/*} -- Preferred
-\item \texttt{https://example.org/api/*} -- Security Implications
+\item \texttt{https://api.example.com/*} -- \emph{Preferred}
+\item \texttt{https://example.org/api/*} -- \emph{Security Implications}
 \end{itemize}
 
 First, notice the HTTPS prefix. As a good RESTful API, you MUST host your API behind HTTPS. To not host your API behind HTTPS is to not care about the privacy of your Consumers. TODO: Citation
@@ -1172,7 +1179,11 @@ Make sure your documentation can be printed. CSS is a powerful thing; don't be a
 Documentation can either be split into many different pages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others.
 
 
-\section{Developer Console}
+\section{Developer Experimentation}
+
+TODO
+
+\subsection{Web-Based Developer Console}
 
 Building a Developer Console, e.g. Figure \ref{fig:devconsole}, will allow developers to quickly test API commands without having paste sample code into their own application. This allows them to get familiar with your API much quicker.
 
@@ -1188,6 +1199,25 @@ Your server will need a website where third-party developers can register their 
 Ensure using the Developer Console is easy and efficient for the developer to use. Perhaps even provide them with a default user account which resets every hour using a CRON job. Maybe by clicking a single button their application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their application.
 
 If possible use GET parameters for the Developer Console HTML form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
+
+\subsection{Provide Example cURL Commands}
+
+cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). TODO
+
+Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, Stripe, etc., provide sample cURL queries. When doing 2LA, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
+
+\subsubsection{Example cURL Command}
+
+This is the example cURL command displayed on the Mailgun homepage. The provided API key is even functional, so by pasting this command into a terminal, a developer can immediately make real API calls.
+
+\begin{verbatim}
+curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
+    https://api.mailgun.net/v2/samples.mailgun.org/messages \
+    -F from='Excited User <excited@samples.mailgun.org>' \
+    -F to='devs@mailgun.net' \
+    -F subject='Hello' \
+    -F text='Testing some Mailgun awesomeness!'
+\end{verbatim}
 
 
 \chapter{Beyond REST}
