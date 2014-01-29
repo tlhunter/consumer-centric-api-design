@@ -82,13 +82,13 @@ By the time you're done reading this book you'll have a high-level understanding
 
 \section{Data Design and Abstraction}
 
-Interacting with a RESTful API is all about abstracting the intricate business-logic and database your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+Interacting with a \href{http://en.wikipedia.org/wiki/Restful}{RESTful API} is all about abstracting the intricate business-logic and database your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
 Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service/application works. If you're following \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy! If you're bolting an API on to an existing project, you will have more work ahead of you.
 
 If you're lucky, a Collection can represent a database table, and a Resource can represent a row within that table. Unfortunately this is often not the case, especially if the existing data-model is overly complex. It is very important that you don't overwhelm Third-Party Developers with any complex application data, otherwise they won't want to use your API.
 
-Keep in mind there will likely be parts of your service which you SHOULD NOT expose via API at all. A common example is that many APIs will not allow Consumers to create nor delete user accounts.
+Keep in mind there will likely be parts of your service which you \emph{should not} expose via API at all. A common example is that many APIs will not allow Consumers to create nor delete user accounts.
 
 Sometimes multiple tables will be represented as a single resource (\texttt{JOIN} statements come in handy here). You might even find that one table should have multiple resources (although, you may have made some poor database design decisions if this is the case).
 
@@ -1017,6 +1017,10 @@ As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authent
 
 Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via a cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with), but the method we will use is essentially the same thing.
 
+\begin{quote}
+The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{acmv2n2}
+\end{quote}
+
 The HTTP protocol conveniently gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
 
 \subsubsection{Basic HTTP Authentication}
@@ -1412,5 +1416,8 @@ SOAP is mostly used in larger corporate environments.
   </soap:Body>
 </soap:Envelope>
 \end{verbatim}
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
 
 \end{document}
