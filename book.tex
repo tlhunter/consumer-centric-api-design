@@ -904,6 +904,8 @@ Back to the point of error codes, it is important to provide the Consumer with \
 
 Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
 
+The Stripe API \cite[\#Errors]{stripe_api} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
+
 
 \section{Responses Should Resemble Requests}
 
