@@ -451,6 +451,32 @@ Again, since we're dealing with GET requests, you'll want to accept a URL parame
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
+\subsection{Example Filtered Request}
+
+In this next example, the Consumer has requested a filtered list of attributes. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort will be involved.
+
+\paragraph{\textbf{Request URL}}
+
+\begin{verbatim}
+GET http://api.example.org/user/12?whitelist=id,name,email
+\end{verbatim}
+
+\paragraph{\textbf{Resulting SQL Query}}
+
+\begin{verbatim}
+SELECT id, name, email FROM user WHERE user.id = 12;
+\end{verbatim}
+
+\paragraph{\textbf{Response Body}}
+
+\begin{verbatim}
+{
+  "id": "12",
+  "name": "Thomas Hunter II",
+  "email": "me@thomashunter.name"
+}
+\end{verbatim}
+
 \subsection{Example Unfiltered Request}
 
 In this example request, the default representation of a user resource includes data from two database tables joined together. One of the tables is the obvious \texttt{user} table, and another table contains some textual data related to a user called \texttt{user\_desc}.
@@ -476,32 +502,6 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id =
   "age": 27,
   "email": "me@thomashunter.name",
   "description": "Blah blah blah blah blah."
-}
-\end{verbatim}
-
-\subsection{Example Filtered Request}
-
-In this next example, the Consumer has requested a filtered list of attributes. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort will be involved.
-
-\paragraph{\textbf{Request URL}}
-
-\begin{verbatim}
-GET http://api.example.org/user/12?whitelist=id,name,email
-\end{verbatim}
-
-\paragraph{\textbf{Resulting SQL Query}}
-
-\begin{verbatim}
-SELECT id, name, email FROM user WHERE user.id = 12;
-\end{verbatim}
-
-\paragraph{\textbf{Response Body}}
-
-\begin{verbatim}
-{
-  "id": "12",
-  "name": "Thomas Hunter II",
-  "email": "me@thomashunter.name"
 }
 \end{verbatim}
 
