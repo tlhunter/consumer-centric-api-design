@@ -9,6 +9,7 @@
 \usepackage{epstopdf}
 \usepackage{wallpaper}
 \usepackage{geometry}
+\renewcommand\bibname{References}
 
 \begin{document}
 
@@ -257,7 +258,7 @@ Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form 
 
 The root location of your API is important, believe it or not. When a developer (aka \emph{code archaeologist}) inherits a project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer communicates with. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
-\subsection{Choosing a Root API Location}
+\subsection{Common Root API Locations}
 
 Here are two common URL schemes that developers use when building an API. These are also sometimes called API entry points.
 
@@ -395,26 +396,26 @@ Each piece of data separated by a slash is a URL Segment. Try to keep these as s
 When referring to what each endpoint can do, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that each endpoint is preceded with the HTTP Method, as this is the same notation used within an HTTP Request header.
 
 \begin{itemize}
-\item \texttt{GET /zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
-\item \texttt{POST /zoos}: Create a new Zoo
-\item \texttt{GET /zoos/\{zoo\_id\}}: Retrieve an entire Zoo resource
-\item \texttt{PUT /zoos/\{zoo\_id\}}: Update a Zoo (entire resource)
-\item \texttt{PATCH /zoos/\{zoo\_id\}}: Update a Zoo (partial resource)
-\item \texttt{DELETE /zoos/\{zoo\_id\}}: Delete a Zoo
-\item \texttt{GET /zoos/\{zoo\_id\}/animals}: Retrieve a listing of Animals (ID and Name)
-\item \texttt{GET /animals}: List all Animals (ID and Name)
-\item \texttt{POST /animals}: Create a new Animal
-\item \texttt{GET /animals/\{animal\_id\}}: Retrieve an Animal resource
-\item \texttt{PUT /animals/\{animal\_id\}}: Update an Animal (entire resource)
-\item \texttt{PATCH /animals/\{animal\_id\}}: Update an Animal (partial resource)
-\item \texttt{GET /animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
-\item \texttt{GET /animal\_types/\{animaltype\_id\}}: Retrieve an entire Animal Type resource
-\item \texttt{GET /employees}: Retrieve an entire list of Employees
-\item \texttt{GET /employees/\{employee\_id\}}: Retrieve a specific Employee
-\item \texttt{GET /zoos/\{zoo\_id\}/employees}: Retrieve a listing of Employees at this Zoo
-\item \texttt{POST /employees}: Create a new Employee
-\item \texttt{POST /zoos/\{zoo\_id\}/employees}: Hire an Employee at a specific Zoo
-\item \texttt{DELETE /zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a specific Zoo
+\item \texttt{GET v1/zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
+\item \texttt{POST v1/zoos}: Create a new Zoo
+\item \texttt{GET v1/zoos/\{zoo\_id\}}: Retrieve an entire Zoo resource
+\item \texttt{PUT v1/zoos/\{zoo\_id\}}: Update a Zoo (entire resource)
+\item \texttt{PATCH v1/zoos/\{zoo\_id\}}: Update a Zoo (partial resource)
+\item \texttt{DELETE v1/zoos/\{zoo\_id\}}: Delete a Zoo
+\item \texttt{GET v1/zoos/\{zoo\_id\}/animals}: Retrieve a listing of Animals (ID and Name)
+\item \texttt{GET v1/animals}: List all Animals (ID and Name)
+\item \texttt{POST v1/animals}: Create a new Animal
+\item \texttt{GET v1/animals/\{animal\_id\}}: Retrieve an Animal resource
+\item \texttt{PUT v1/animals/\{animal\_id\}}: Update an Animal (entire resource)
+\item \texttt{PATCH v1/animals/\{animal\_id\}}: Update an Animal (partial resource)
+\item \texttt{GET v1/animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
+\item \texttt{GET v1/animal\_types/\{animaltype\_id\}}: Retrieve an entire Animal Type resource
+\item \texttt{GET v1/employees}: Retrieve an entire list of Employees
+\item \texttt{GET v1/employees/\{employee\_id\}}: Retrieve a specific Employee
+\item \texttt{GET v1/zoos/\{zoo\_id\}/employees}: Retrieve a listing of Employees at this Zoo
+\item \texttt{POST v1/employees}: Create a new Employee
+\item \texttt{POST v1/zoos/\{zoo\_id\}/employees}: Hire an Employee at a specific Zoo
+\item \texttt{DELETE v1/zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a Zoo
 \end{itemize}
 
 The syntax used to describe these URLs seen above (save for the request method) is called a URI Template and is a human-readable and machine-parsable standard for describing URLs. This is a great way to convey URLs in both your API documentation, as well as the API responses themselves. GitHub makes use of this technique when conveying Hypermedia URLs in their responses.
@@ -778,13 +779,13 @@ Another tip with Booleans is that they should usually be a \emph{positive} or \e
 
 \subsection{Dates}
 
-The ideal standard for representing dates is the \textbf{ISO 8601} standard, and it looks a bit like this:
+The ideal standard for representing dates is the \textbf{ISO 8601} \cite{ISO8601} standard, and it looks a bit like this:
 
 \begin{verbatim}
 "2014-01-10T03:06:17.396Z"
 \end{verbatim}
 
-This format is human readable, lacks redundant information, has variable precision (the microseconds on the end is optional), conveys timezone information, and is the most popular of standardized date formats. TODO: Citation
+This format is human readable, lacks redundant information, has variable precision (the microseconds on the end is optional), conveys timezone information, and is the most popular of standardized date formats.
 
 JSON is a subset of JavaScript, and JavaScript does have a default format for parsing dates. The format of these dates looks a little something like this:
 
