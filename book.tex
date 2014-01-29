@@ -399,7 +399,11 @@ When referring to what each endpoint can do, you'll want to list valid HTTP Meth
 \item \texttt{DELETE /zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a specific Zoo
 \end{itemize}
 
-The syntax used to describe these URLs is called a \href{http://tools.ietf.org/html/rfc6570}{URI Template (RFC6570)} and is a nice, standardized method for describing your URLs to developers.
+The syntax used to describe these URLs seen above (save for the request method) is called a URI Template and is a human-readable and machine-parsable standard for describing URLs. This is a great way to convey URLs in both your API documentation, as well as the API responses themselves. GitHub makes use of this technique when conveying Hypermedia URLs in their responses.
+
+\begin{quote}
+A URI Template is a compact sequence of characters for describing a range of Uniform Resource Identifiers through variable expansion.\cite{RFC6570}
+\end{quote}
 
 The Root API URL has been omitted in the above examples for brevity. While this can be fine during communications (or books with lazy authors), in your actual API documentation you should display the full URL to each endpoint (e.g. \texttt{GET /animal\_type/\{animaltype\_id\}}).
 
