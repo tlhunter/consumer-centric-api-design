@@ -1,7 +1,7 @@
         - You make a lot of unsubstantiated "you should"s. It's ok to have an opinion, but many of them were unjustified.
             In many cases there was no illustration or explanation of the 'why', just the 'what'.
 
-        - There are a lot of big conceptual leaps. I kept getting the feeling you knew too much and that you assumed a lot about what the reader knows.
+PARTIAL - There are a lot of big conceptual leaps. I kept getting the feeling you knew too much and that you assumed a lot about what the reader knows.
             As an example, you start of by talking about abstraction (good) but then go right to an example of a bad one. I don't think it logically follows.
             I would start with a very simple and good abstraction, slowly build on it, and once you reach a point (like describing an action endpoint) where
             someone might think "I'll do it this way that seems obvious!" is when you educate them on why that's not the best course.
@@ -17,7 +17,7 @@ FIXED   - We debated internally what to call an HTTP request/response pair. The 
 
 ???     - .json or .xml in the URL for selecting a format does not create new resources. It returns different representations of a resource (e.g. an instance of a class).
 
-        - The first line in a response is not a header, it's the status line: http://pretty-rfc.herokuapp.com/RFC2616#status-line Same for the request line.
+FIXED   - The first line in a response is not a header, it's the status line: http://pretty-rfc.herokuapp.com/RFC2616#status-line Same for the request line.
             Different semantics than the headers.
 
 FIXED   - I would suggest using an existing format for your URL template examples: http://tools.ietf.org/html/rfc6570  
