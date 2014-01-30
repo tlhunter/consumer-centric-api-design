@@ -1119,11 +1119,46 @@ As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\em
 
 The complexities of \emph{3LA} is far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate Consumers are who they say they are. They also provide a method for users to grant privileges to Consumers to access specific data from your API. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
 
-OAuth 2.0 \cite{RFC6749} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
+OAuth 2.0 \cite{RFC6749} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials. OAuth 2.0 is used by 
 
-There are also the OAuth 1.0a \cite{RFC5849} and xAuth \cite{XAUTH} standards, which solve mostly the same problems. Whichever method you do choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
+There is also the older OAuth 1.0a \cite{RFC5849} standard, which solves mostly the same problems. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevant by sending data over HTTPS. Whichever method you ultimately choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
 
-I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. I was surprised by the number of developers who had to implement their own library since one didn't exist for their language already. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevant by sending data over HTTPS. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
+\begin{quote}
+I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. While maintaining an OAuth 1.0a provider, I was surprised by the number of developers who had to implement their own library since one didn't already exist for their language. After spending many hours debugging cryptic "invalid signature" errors, I must recommend you choose an alternative.
+\end{quote}
+
+\subsection{Real-World Examples}
+
+Choosing which authentication mechanism to use for your service may be made easier by looking at what other services use, and the reasoning by choosing each method.
+
+\begin{itemize}
+\item \textbf{Twitter}: OAuth 1.0a, \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth} (proprietary), OAuth 2.0
+    \begin{itemize}
+        \item OAuth 1.0a is kept around to support legacy Consumers
+        \item xAuth was created to bring some OAuth 2.0 features to OAuth 1.0a (e.g. desktop login)
+    \end{itemize}
+\item \href{http://developer.github.com/v3/#authentication}{\textbf{GitHub}}: OAuth 2.0, Basic Auth
+    \begin{itemize}
+        \item Basic Auth will leak user credentials to third-parties
+        \item Basic Auth likely chosen for developers testing their own apps
+        \item Github users \emph{are} developers after all
+    \end{itemize}
+\item \href{http://documentation.mailgun.com/quickstart.html#authentication}{\textbf{Mailgun}}: Basic Auth
+    \begin{itemize}
+        \item Mailgun is purely \emph{2LA}, so Basic Auth is a fine choice
+        \item Using Basic Auth makes it easier for novice developers to test the API
+    \end{itemize}
+\item \href{https://developers.facebook.com/docs/reference/dialogs/oauth/}{\textbf{Facebook Graph}}: OAuth 2.0
+    \begin{itemize}
+        \item The userbase is Facebooks greatest asset, and is definitely a \emph{3LA} servce
+        \item Facebook is a big target for hackers
+    \end{itemize}
+\item \href{https://www.dropbox.com/developers/core/docs}{\textbf{Dropbox}}: OAuth 1.0a, OAuth 2.0
+    \begin{itemize}
+        \item OAuth 1.0a is for supporting legacy Consumers
+        \item OAuth 2.0 is the preferred method for authenticating with Dropbox
+    \end{itemize}
+\end{itemize}
 
 
 \section{Consumer Permissions}
