@@ -441,7 +441,7 @@ When a Consumer makes a GET request for a Collection, provide them a list of eve
 
 Do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer gets their results back as soon as possible. Another reason for this is the Consumer may be lazy and wants the Server to do filtering and pagination. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the response-generation will require less resources.
 
-Filtering is applicable when performing GETs on Collections. Since these are GET requests, filtering information should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API:
+Filtering is applicable when performing GETs on Collections. Since these are GET requests, filtering information should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API, and if your API were a simple representation of a Relational Database, the correlating SQL clause.
 
 \begin{itemize}
 \item \texttt{?limit=10\&offset=20}: Pagination of results\newline{}(\texttt{LIMIT 20, 10})
@@ -461,6 +461,8 @@ Often times, when a Consumer is making a GET request to a specific Resource or C
 Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources (as additions are backwards compatible), the Consumer ends up receiving data it doesn't want.
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
+
+The SQL queries are just an over-simplified example of what could be generated if your API represented a simple Relational Database application.
 
 \subsection{Example Filtered Request}
 
@@ -633,6 +635,8 @@ There are a plethora of HTTP Status Codes \cite{RFC2616} to choose from, however
 \end{itemize}
 
 \subsection{Status Code Ranges}
+
+The first digit of the status code is the most significant, and provides a generalization of what the entire code is for.
 
 \subsubsection{1XX - Informational}
 
