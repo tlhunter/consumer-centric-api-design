@@ -89,7 +89,7 @@ By the time you're done reading this book you'll have a high-level understanding
 
 Interacting with a \href{http://en.wikipedia.org/wiki/Restful}{RESTful API} is all about abstracting the intricate business-logic and database your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
-Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service/application works. If you're following \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} this should be easy! If you're bolting an API on to an existing project, you will have more work ahead of you.
+Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service/application works. If you're following \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} \cite{APIFIRST} this should be easy! If you're bolting an API on to an existing project, you will have more work ahead of you.
 
 If you're lucky, a Collection can represent a database table, and a Resource can represent a row within that table. Unfortunately this is often not the case, especially if the existing data-model is overly complex. It is very important that you don't overwhelm Third-Party Developers with any complex application data, otherwise they won't want to use your API.
 
@@ -179,13 +179,13 @@ Let's look at some real-world examples of how popular APIs do their data abstrac
 
 \subsubsection{GitHub: A Good Example}
 
-The current \href{http://developer.github.com/v3/}{GitHub v3 API} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used whenever applicable. URLs don't have verbs in them. Working with an endpoint feels like one is working with objects, instead of performing actions.
+The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used whenever applicable. URLs don't have verbs in them. Working with an endpoint feels like one is working with objects, instead of performing actions.
 
 An example of a good endpoint is \texttt{GET /repos/UID/REPO/notifications}. This is obviously the endpoint used for getting a list of notifications of a particular repository. The \texttt{UID/REPO} method for grabbing a repository is one understood by all users of GitHub (repository names aren't globally unique, only unique to the current user). The only possible thing that could be improved may be not shortening repositories to repos and organizations to orgs in the names of endpoints, although repo is well understood.
 
 \subsubsection{Twitter: A Bad Example}
 
-The current \href{https://dev.twitter.com/docs/api/1.1}{Twitter v1.1 API} has some pretty bad abstraction of their data and business-logic, as far as being a RESTful API is concerned. The API only makes use of the GET and POST HTTP verbs for interacting with data. Due to this shortcoming, most endpoints are a concatenation of a noun and a verb.
+The current Twitter v1.1 API \cite{TWITTERAPI} has some pretty bad abstraction of their data and business-logic, as far as being a RESTful API is concerned. The API only makes use of the GET and POST HTTP verbs for interacting with data. Due to this shortcoming, most endpoints are a concatenation of a noun and a verb.
 
 One such example is \texttt{POST statuses/destroy/SID}, used for deleting a status. The RESTful version of this endpoint would be \texttt{DELETE statuses/SID}. Also worth noting is their differentiation of \texttt{POST statuses/update\_with\_media} and \texttt{POST statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior allows the addition of media. These two endpoints should be combined into a single \texttt{POST statuses}, with the media-related attributes being optional.
 
@@ -920,7 +920,7 @@ Back to the point of error codes, it is important to provide the Consumer with \
 
 Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
 
-The Stripe API \cite[\#Errors]{STRIPE} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
+The Stripe API \cite[\#Errors]{STRIPEAPI} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
 
 
 \section{Responses Should Resemble Requests}
@@ -1042,7 +1042,7 @@ In theory, your API could use both methods of authorization for different areas.
 \begin{figure}[!htb]
 \centering
 \includegraphics[scale=.6]{images/two-legged.eps}
-\caption{Two-Legged Authentication}
+\caption{Two-Legged Authentication (2LA)}
 \label{fig:twolegged}
 \end{figure}
 
@@ -1111,7 +1111,7 @@ OAuth, which is most commonly used for performing Three-Legged Authentication, p
 \begin{figure}[!htb]
 \centering
 \includegraphics[scale=.6]{images/three-legged.eps}
-\caption{Three-Legged Authentication}
+\caption{Three-Legged Authentication (3LA)}
 \label{fig:threelegged}
 \end{figure}
 
@@ -1217,7 +1217,7 @@ Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mail
 
 \subsubsection{Example cURL Command}
 
-This is the example cURL command displayed on the Mailgun homepage. The provided API key is even functional, so by pasting this command into a terminal, a developer can immediately make real API calls.
+This is the example cURL command displayed on the Mailgun homepage \cite{MAILGUNHOME}. The provided API key is even functional, so by pasting this command into a terminal, a developer can immediately make real API calls.
 
 \begin{verbatim}
 curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
@@ -1255,7 +1255,7 @@ Now, imagine that these disparate tools created by different companies can work 
 
 \subsection{ATOM: An Early Hypermedia API}
 
-ATOM, a relative to RSS, is likely one of the first mainstream Hypermedia APIs (except for HTML itself). ATOM is valid XML, and therefore is very easy to parse. Links to other documents use a \texttt{link} tag, and specify both the URL (using a \texttt{href} attribute), as well as the documents relation to the current document (using the \texttt{rel} attribute).
+\href{https://en.wikipedia.org/wiki/Atom\_\%28standard\%29}{ATOM} \cite{HYPERATOM}, a relative to RSS, is likely one of the first mainstream Hypermedia APIs (except for HTML itself). ATOM is valid XML, and therefore is very easy to parse. Links to other documents use a \texttt{link} tag, and specify both the URL (using a \texttt{href} attribute), as well as the documents relation to the current document (using the \texttt{rel} attribute).
 
 \begin{verbatim}
 <?xml version="1.0" encoding="utf-8"?>
@@ -1294,7 +1294,7 @@ For example, if making a filtered request limiting the Collection to containing 
 
 \subsection{JSON Schema}
 
-\href{http://json-schema.org/}{JSON Schema} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, one could easily automate data validation and generation of CRUD forms.
+\href{http://json-schema.org/}{JSON Schema} \cite{JSONSCHEMA} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, one could easily automate data validation and generation of CRUD forms.
 
 \subsubsection{Example JSON Schema Document}
 
@@ -1321,7 +1321,7 @@ For example, if making a filtered request limiting the Collection to containing 
 
 \subsection{JSON API}
 
-The \href{http://jsonapi.org/}{JSON API} spec provided a standardized format for structuring response documents by introducing some reserved words which have special meanings (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
+The \href{http://jsonapi.org/}{JSON API} \cite{JSONAPI} spec provided a standardized format for structuring response documents by introducing some reserved words which have special meanings (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
 
 An interesting feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating what the Consumer would want.
 
@@ -1365,7 +1365,7 @@ An interesting feature of JSON API is that is also provides a method for returni
 
 \subsection{Siren}
 
-The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standard method for representing resources and what actions can be performed on said resources. It is a Hypermedia API so the URL for performing an action or linking to a Resource is provided in the document.
+The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a standard method for representing resources and what actions can be performed on said resources. It is a Hypermedia API so the URL for performing an action or linking to a Resource is provided in the document.
 
 \subsubsection{Example Siren Document}
 
@@ -1422,7 +1422,7 @@ The \href{http://sirenspec.org}{Siren Hypermedia} spec provides a standard metho
 
 \subsection{JSON RPC}
 
-\href{http://www.jsonrpc.org/specification}{JSON RPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
+\href{http://www.jsonrpc.org/specification}{JSON RPC} \cite{JSONRPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
 
 Unlike REST which requires an abstraction of Server business-logic and data into simple objects which can be acted upon using CRUD, JSON RPC calls will typically map to existing functions within your application.
 
@@ -1449,7 +1449,7 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 
 \subsection{SOAP}
 
-\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} is a term you've very likely heard of, and even if you've never used it, you'll likely have strong negative opinions of it (and if you have used it, perhaps even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
+\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} \cite{SOAP} is a term you've very likely heard of, and even if you've never used it, you'll likely have strong negative opinions of it (and if you have used it, perhaps even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
 
 SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you've probably guessed, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
 
