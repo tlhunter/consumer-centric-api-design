@@ -32,6 +32,6 @@ FIXED   - 3.3.0.2 incorrectly returns the results in an array
 OK      - 4.2.1.2 key passing is a fine option for auth. In transit it's no more or less secure than HTTP basic and it's easier to link to things.
             If you have a read-only API that might be more important.
 
-        - OAuth2 doesn't mention scopes for permissions
+FIXED   - OAuth2 doesn't mention scopes for permissions
 
 READ    - READ: More API design thoughts: http://john-sheehan.com/blog/dont-build-the-best-rest-api-build-the-best-http-api 

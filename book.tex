@@ -1165,9 +1165,11 @@ Choosing which authentication mechanism to use for your service may be made easi
 
 Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
 
-When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by Company X, and this company trusts Company Y with certain features of the API, X will probably manually assign Y with more permissive permissions. However, Company Z, which is otherwise unknown to X, will get the default, less permissive permissions.
+When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by Company X, and this company trusts Company Y with certain features of the API, X will probably manually assign Y with more permissive permissions. However, Company Z, which is otherwise unknown to X, will get the default, less permissive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
 
 Regarding \emph{3LA}, the Consumer needs to be able to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
+
+Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whatever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing can break in weird ways.
 
 \begin{figure}[ht!]
 \centering
@@ -1176,11 +1178,9 @@ Regarding \emph{3LA}, the Consumer needs to be able to specify which resources b
 \label{fig:twitteroauth}
 \end{figure}
 
-Specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a, for example, the Server can accept an additional parameter called permissions (or whatever you choose) during the Request Token generation phase. This parameter can be a JSON object which represent the permissions the Consumer is trying to be granted. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
-
-Alternatively, at the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions once. Ideally, your Server could allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions).
-
 \subsection{Example Permissions Object}
+
+Specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a a standard didn't exist as part of the spec. The Server can accept an additional parameter called \texttt{scope} (or whatever you choose) during the Request Token generation phase. This parameter could be a JSON object which represent the permissions the Consumer is trying to be granted. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
 
 The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send the user emails using the service (although not have access to their email address), and finally retrieve the list of the users friends, add new friends, and remove existing friends.
 
@@ -1194,7 +1194,19 @@ The following permissions object could represent a common social media website. 
 
 When the user authenticates the Consumer, they would see a list of each of the operations the Consumer is asking for. Some of them which grant destructive or powerful capabilities should probably be highlighted, such as adding and removing friends, and updating the users profile.
 
-Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whatever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing can break in weird ways.
+\subsection{Real World Example}
+
+Here's another example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions and use a simple list of keywords representing permissions spearated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
+
+\begin{verbatim}
+https://coinbase.com/oauth/authorize?response_type=code
+    &client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_CALLBACK_URL
+    &scope=buy+sell+send+request
+\end{verbatim}
+
+\subsection{Default Consumer Permissions}
+
+At the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions once. Ideally, your Server could even allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions). This gives developers the greatest amount of control and convenience.
 
 
 \section{API Analytics}
