@@ -194,9 +194,9 @@ These endpoints are also an example of a bad nomenclature. Users of Twitter don'
 
 \section{Anatomy of an HTTP Message}
 
-Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP messages. It's surprising how many developers, who have been building websites for years, don't know what an HTTP message looks like! When the Consumer sends a Request to the Server, it provides a set of Key/Value pairs, called a Header. For POST, PUT, and PATCH requests it also provides two newline characters and then the the request body. Both sets of information are sent in the same HTTP request (although this can be broken up into multiple network packets if the body is large enough).
+Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP messages. It's surprising how many developers, who have been building websites for years, don't know what an HTTP message looks like! When the Consumer sends a Request to the Server, it provides a Request-Line and a set of Key/Value header pairs called headers. For POST, PUT, and PATCH requests it also provides two newlines and then the the request body. Both sets of information are sent in the same HTTP request (although this can be broken up into multiple network packets if the body is large enough).
 
-The Server then replies with the same header format, and typically two newlines followed by a body (although the body is optional, as you'll find out later). HTTP is very much a request/response protocol; there is no "Push" support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
+The Server then replies with a similar format, first with a Status-Line and a set of headers, and typically two newlines followed by a body (the body technically optional, as you'll find out later). HTTP is very much a request/response protocol; there is no "Push" support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
 
 \subsection{Example HTTP Request}
 
@@ -920,7 +920,7 @@ Back to the point of error codes, it is important to provide the Consumer with \
 
 Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
 
-The Stripe API \cite[\#Errors]{stripe_api} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
+The Stripe API \cite[\#Errors]{STRIPE} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
 
 
 \section{Responses Should Resemble Requests}
@@ -1051,7 +1051,7 @@ As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authent
 Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via a cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with), but the method we will use is essentially the same thing.
 
 \begin{quote}
-The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{acmv2n2}
+The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{ACMV2N2}
 \end{quote}
 
 The HTTP protocol conveniently gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
@@ -1119,9 +1119,9 @@ As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\em
 
 The complexities of \emph{3LA} is far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate Consumers are who they say they are. They also provide a method for users to grant privileges to Consumers to access specific data from your API. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
 
-\href{https://tools.ietf.org/html/rfc6749}{OAuth 2.0} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
+OAuth 2.0 \cite{RFC6749} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
 
-There are also the \href{http://tools.ietf.org/html/rfc5849}{OAuth 1.0a} and \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth} standards, which solve mostly the same problems. Whichever method you do choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
+There are also the OAuth 1.0a \cite{RFC5849} and xAuth \cite{XAUTH} standards, which solve mostly the same problems. Whichever method you do choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. I was surprised by the number of developers who had to implement their own library since one didn't exist for their language already. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevant by sending data over HTTPS. I've spent enough hours debugging cryptic "invalid signature" errors to recommend you choose an alternative.
 
@@ -1473,7 +1473,7 @@ SOAP is mostly used in larger corporate environments.
 </soap:Envelope>
 \end{verbatim}
 
-\bibliographystyle{plain}
+\bibliographystyle{unsrt}
 \bibliography{bibliography}
 
 \end{document}
