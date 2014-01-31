@@ -280,7 +280,7 @@ Do not use a different Top Level Domain (TLD) for hosting your API than for host
 
 It's beneficial to Consumers to have content at the root of your API. For example, accessing the root of GitHub's API returns a listing of endpoints. Personally I'm a fan of having the root URL give information which a lost developer would find useful, like how to get to the developer documentation.
 
-Here's a truncated list of the content provided by the \href{https://api.github.com/}{GitHub API Entrypoint}. Notice how it's both easily readable by a human and easily parsable by a machine (using the URI Template \cite{RFC6570} syntax), and as it lists all endpoints, is a comprehensive guide for the lost developer.
+Here's a truncated list of the content provided by the \href{https://api.github.com/}{GitHub API Entrypoint}.
 
 \begin{verbatim}
 {
@@ -292,6 +292,12 @@ Here's a truncated list of the content provided by the \href{https://api.github.
 }
 \end{verbatim}
 
+The syntax used to describe these URLs is called a URI Template and is a human-readable and machine-parsable standard for describing URLs. This is a great way to convey URLs in both your API documentation, as well as the API responses themselves.
+
+\begin{quote}
+A URI Template is a compact sequence of characters for describing a range of Uniform Resource Identifiers through variable expansion. \cite{RFC6570}
+\end{quote}
+
 Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate. If you take a similar approach to what GitHub does, one of the keys could be \texttt{current\_user}, and the value could be a URL
 
 It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these would contradict the existing RESTful URL patterns the rest of the API adheres to.
@@ -301,13 +307,13 @@ It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users
 
 \section{HTTP Methods}
 
-You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses web-pages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
+You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses webpages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
-There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say "and a half" because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many API Servers.
+There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say "and a half" because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many APIs.
 
-You've likely heard of the phrase "CRUD" when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD "Scaffolding" for the developer as a result of running a terminal command. CRUD stands for Create, Read, Update, and Delete, and short of handling any business logic, can be used for handling all data entry.
+You've likely heard of the phrase \emph{CRUD} when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD \emph{Scaffolding} for the developer as a result of running a simple terminal command. CRUD stands for Create, Read, Update, and Delete, and short of handling any business-logic, can be used for handling all data entry.
 
-Here is the list of HTTP Methods, as well as which CRUD operation they represent, and if your service were to represent an extremely simple database, the associated SQL command:
+Here is a list of HTTP Methods, as well as which CRUD operation they represent, and if your service were to represent an extremely simple database, the associated SQL command.
 
 \begin{itemize}
 \item \textbf{GET} (Read)
@@ -344,12 +350,12 @@ Here is the list of HTTP Methods, as well as which CRUD operation they represent
     \end{itemize}
 \end{itemize}
 
-Here are two lesser-known HTTP Methods. Feel free to use them in your API, however they aren't a requirement to good RESTful API design.
+Here are two lesser-known HTTP Methods. Feel free to use them in your API, however if they are not present in the API, nobody is going to miss them.
 
 \begin{itemize}
 \item \textbf{HEAD}
     \begin{itemize}
-    \item Retrieve meta data about a Resource (just the headers)
+    \item Retrieve metadata about a Resource (just the headers)
     \item E.g. a hash of the data or when it was last updated
     \item Considered \emph{Safe}: this request should not alter server state
     \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
@@ -357,20 +363,23 @@ Here are two lesser-known HTTP Methods. Feel free to use them in your API, howev
 \item \textbf{OPTIONS}
     \begin{itemize}
     \item Retrieve information about what the Consumer can do with the Resource
-    \item Corresponds to a SQL EXPLAIN statement
     \item Considered \emph{Safe}: this request should not alter server state
     \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \end{itemize}
 \end{itemize}
 
-By making use of the HTTP methods, and not using actionable-verbs within the URL itself, a simpler interface is presented to the developer. Instead of wondering which verbs apply to which nouns (do I \texttt{send} or \texttt{mail} an \emph{email}? Do I \texttt{remove} or \texttt{fire} an \emph{employee}?), a disambiguous and consistent convention is provided instead.
+By making use of the HTTP methods, and not using actionable-verbs within the URL itself, a simpler interface is presented to the developer. Instead of wondering which verbs apply to which nouns (Do I \texttt{send} or \texttt{mail} an \emph{email}? Do I \texttt{remove} or \texttt{fire} an \emph{employee}?), a disambiguous and consistent convention is provided instead.
 
-Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on cache headers), and will go as far as alert the user if they attempt to POST data for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
+Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on expiration headers), and will go as far as alert the user if they attempt to POST data for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
 
-If you plan on allowing JavaScript Consumers running in web browsers, and making requests from different domains, the OPTIONS method will need to be supported. This is called \href{https://en.wikipedia.org/wiki/Cross-origin_resource_sharing}{Cross Origin Resource Sharing (CORS)}, and is a fairly-new concept. Basically, it provides a set of request and response headers for defining which domains can access data and which HTTP Methods they can utilize.
+If you plan on allowing JavaScript Consumers running within web browsers, and making requests from different domains, the OPTIONS method will need to be supported. There is a fairly-new concept called \href{https://en.wikipedia.org/wiki/Cross-origin_resource_sharing}{Cross Origin Resource Sharing (CORS)} which uses the OPTIONS header. Basically, it provides a set of request and response headers for defining which domains can access data and which HTTP Methods they can utilize.
 
 
 \section{URL Endpoints}
+
+An Endpoint is a URL within your API which provides a method to interact with a Resource or a Collection of Resources. A typical RESTful API will use a plural naming convention for Collections.
+
+\subsection{Top-Level Collections}
 
 \begin{figure}[ht!]
 \centering
@@ -378,10 +387,6 @@ If you plan on allowing JavaScript Consumers running in web browsers, and making
 \caption{Diagram of Relationships}
 \label{fig:zoorelationships}
 \end{figure}
-
-An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources. Typically RESTful APIs use a Plural naming convention for Collections.
-
-\subsection{Top-Level Collections}
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple Zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
@@ -392,48 +397,42 @@ If you were building a fictional API to represent several different Zoo's, each 
 \item \texttt{https://api.example.com/v1/\textbf{employees}}
 \end{itemize}
 
-Each piece of data separated by a slash is a URL Segment. Try to keep these as simple as possible.
+Each piece of data separated by a slash is a URL Segment. Try to keep the number of segments per endpoint as few as possible.
 
 \subsection{Specific Endpoints}
 
-When referring to what each endpoint can do, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a semi-comprehensive list of actions one can perform with our fictional Zoo-keeping API. Notice that each endpoint is preceded with the HTTP Method, as this is the same notation used within an HTTP Request header.
+While conveying what each endpoint does, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a list of actions one can perform with our fictional Zoo-keeping API. Notice that we preceed each endpoint with the HTTP Method. This is a common notation and is similar to the one used within an HTTP Request header.
 
 \begin{itemize}
-\item \texttt{GET v1/zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
-\item \texttt{POST v1/zoos}: Create a new Zoo
-\item \texttt{GET v1/zoos/\{zoo\_id\}}: Retrieve an entire Zoo resource
-\item \texttt{PUT v1/zoos/\{zoo\_id\}}: Update a Zoo (entire resource)
-\item \texttt{PATCH v1/zoos/\{zoo\_id\}}: Update a Zoo (partial resource)
-\item \texttt{DELETE v1/zoos/\{zoo\_id\}}: Delete a Zoo
-\item \texttt{GET v1/zoos/\{zoo\_id\}/animals}: Retrieve a listing of Animals (ID and Name)
-\item \texttt{GET v1/animals}: List all Animals (ID and Name)
-\item \texttt{POST v1/animals}: Create a new Animal
-\item \texttt{GET v1/animals/\{animal\_id\}}: Retrieve an Animal resource
-\item \texttt{PUT v1/animals/\{animal\_id\}}: Update an Animal (entire resource)
-\item \texttt{PATCH v1/animals/\{animal\_id\}}: Update an Animal (partial resource)
-\item \texttt{GET v1/animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
-\item \texttt{GET v1/animal\_types/\{animaltype\_id\}}: Retrieve an entire Animal Type resource
-\item \texttt{GET v1/employees}: Retrieve an entire list of Employees
-\item \texttt{GET v1/employees/\{employee\_id\}}: Retrieve a specific Employee
-\item \texttt{GET v1/zoos/\{zoo\_id\}/employees}: Retrieve a listing of Employees at this Zoo
-\item \texttt{POST v1/employees}: Create a new Employee
-\item \texttt{POST v1/zoos/\{zoo\_id\}/employees}: Hire an Employee at a specific Zoo
-\item \texttt{DELETE v1/zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a Zoo
+\item \texttt{GET /v1/zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
+\item \texttt{POST /v1/zoos}: Create a new Zoo
+\item \texttt{GET /v1/zoos/\{zoo\_id\}}: Retrieve an entire Zoo resource
+\item \texttt{PUT /v1/zoos/\{zoo\_id\}}: Update a Zoo (entire resource)
+\item \texttt{PATCH /v1/zoos/\{zoo\_id\}}: Update a Zoo (partial resource)
+\item \texttt{DELETE /v1/zoos/\{zoo\_id\}}: Delete a Zoo
+\item \texttt{GET /v1/zoos/\{zoo\_id\}/animals}: Retrieve a listing of Animals (ID and Name)
+\item \texttt{GET /v1/animals}: List all Animals (ID and Name)
+\item \texttt{POST /v1/animals}: Create a new Animal
+\item \texttt{GET /v1/animals/\{animal\_id\}}: Retrieve an Animal resource
+\item \texttt{PUT /v1/animals/\{animal\_id\}}: Update an Animal (entire resource)
+\item \texttt{PATCH /v1/animals/\{animal\_id\}}: Update an Animal (partial resource)
+\item \texttt{GET /v1/animal\_types}: Retrieve a listing (ID and Name) of all Animal Types
+\item \texttt{GET /v1/animal\_types/\{animaltype\_id\}}: Retrieve an entire Animal Type resource
+\item \texttt{GET /v1/employees}: Retrieve an entire list of Employees
+\item \texttt{GET /v1/employees/\{employee\_id\}}: Retrieve a specific Employee
+\item \texttt{GET /v1/zoos/\{zoo\_id\}/employees}: Retrieve a listing of Employees at this Zoo
+\item \texttt{POST /v1/employees}: Create a new Employee
+\item \texttt{POST /v1/zoos/\{zoo\_id\}/employees}: Hire an Employee at a specific Zoo
+\item \texttt{DELETE /v1/zoos/\{zoo\_id\}/employees/\{employee\_id\}}: Fire an Employee from a Zoo
 \end{itemize}
 
-The syntax used to describe these URLs seen above (save for the request method) is called a URI Template and is a human-readable and machine-parsable standard for describing URLs. This is a great way to convey URLs in both your API documentation, as well as the API responses themselves. GitHub makes use of this technique when conveying Hypermedia URLs in their responses.
+The Entrypoint prefix has been omitted in the above examples for brevity. While this can be fine during informal communication (or books with limited page width), in your actual API documentation you should display the full URL to each endpoint.
 
-\begin{quote}
-A URI Template is a compact sequence of characters for describing a range of Uniform Resource Identifiers through variable expansion.\cite{RFC6570}
-\end{quote}
-
-The Root API URL has been omitted in the above examples for brevity. While this can be fine during communications (or books with lazy authors), in your actual API documentation you should display the full URL to each endpoint (e.g. \texttt{GET /animal\_type/\{animaltype\_id\}}).
-
-Notice how the relationships between data is conveyed, for example the many-to-many relationships between Employees and Zoos. By adding an additional URL segment, one can perform relationship interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same effect.
+Notice how the relationships between data is conveyed, for example the many-to-many relationships between Employees and Zoos. By adding an additional URL segment, one can perform relationship interactions. Of course there is no HTTP verb for "FIRE"-ing an employee, but by performing a DELETE on an Employee located within a Zoo, we're able to achieve the same goal.
 
 Also notice how the listing of Endpoints doesn't include every possible method-to-resource combination. For example a Consumer is unable to POST or DELETE to the \texttt{animal\_types} Endpoints. In this fictional situation, only administrators would be able to add new \texttt{animal\_types} using some mechanism outside of the API.
 
-There's nothing wrong with not supporting every method-to-resource combination, as every facet of data manipulation your service offers doesn't necessarily need to be exposed via API. Just keep in mind though, developers will wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an \texttt{animal\_type}). Know that if the functionality isn't documented, a developer may still discover a feature by brute force.
+There's nothing wrong with not supporting every method-to-resource combination, as every conceptual data manipulation your service offers doesn't necessarily need to be exposed via API. Just keep in mind developers may wonder why certain features aren't available, and they may even attempt to use an undocumented Endpoint (such as DELETE-ing an \texttt{animal\_type}). Know that if the functionality isn't documented, a developer may still discover a hidden feature by brute force.
 
 
 \section{Filtering Resources}
