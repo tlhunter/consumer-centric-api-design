@@ -182,22 +182,22 @@ Let's look at some real-world examples of how popular APIs do their data abstrac
 
 The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used where applicable. Endpoints don't have verbs in the name. Interacting with an endpoint feels much like one is working with a representation of an object, instead of performing actions.
 
-An example of a good endpoint is \texttt{GET /repos/UID/REPO/notifications}. This is obviously the endpoint used for getting a list of notifications of a particular repository. The \texttt{UID/REPO} method for grabbing a repository is one understood by all users of GitHub (repository names aren't globally unique, only unique to the current user). The only possible thing that could be improved may be not shortening repositories to repos and organizations to orgs in the names of endpoints, although repo is well understood.
+An example of a good endpoint is \texttt{GET /repos/\{user\_id\}/\{repo\_id\}/notifications}. This is obviously the endpoint used for getting a list of notifications of a particular repository. The \texttt{\{user\_id\}/\{repo\_id\}} convention for referring to a repository is one understood by most users of GitHub (repository names aren't globally unique, only unique to a particular user). The only thing that could be improved may be to not shorten \texttt{repositories} to \texttt{repos} and \texttt{organizations} to \texttt{orgs} in the names of endpoints, although \texttt{repo} is well understood.
 
-\subsubsection{Twitter: A Bad Example}
+\subsubsection{Twitter: A Flawed Example}
 
-The current Twitter v1.1 API \cite{TWITTERAPI} has some pretty bad abstraction of their data and business-logic, as far as being a RESTful API is concerned. The API only makes use of the GET and POST HTTP verbs for interacting with data. Due to this shortcoming, most endpoints are a concatenation of a noun and a verb.
+The current Twitter v1.1 API \cite{TWITTERAPI} has some abstraction shortcomings with their data and business-logic, as far as being a RESTful API is concerned. The API only makes use of the GET and POST methods for interacting with data. Due to this shortcoming, most endpoint names are a pair of noun and verbs.
 
-One such example is \texttt{POST statuses/destroy/SID}, used for deleting a status. The RESTful version of this endpoint would be \texttt{DELETE statuses/SID}. Also worth noting is their differentiation of \texttt{POST statuses/update\_with\_media} and \texttt{POST statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior allows the addition of media. These two endpoints should be combined into a single \texttt{POST statuses}, with the media-related attributes being optional.
+One such example is \texttt{POST /statuses/destroy/\{status\_id\}}, used for deleting a status. The RESTful version of this endpoint would be \texttt{DELETE /statuses/\{status\_id\}}. Also worth noting is the differentiation of \texttt{POST /statuses/update\_with\_media} and \texttt{POST /statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior allows for the attachment of media. These two endpoints should be combined into a single \texttt{POST /statuses}, with the media related attributes being optional.
 
-These endpoints are also an example of a bad nomenclature. Users of Twitter don't think of using the service as \emph{updating their status}, they think of it as \emph{tweeting}. This is something that may have changed throughout the lifetime of the service, and would be a good candidate to change between API versions. The Collection used by the aforementioned Endpoints would be better off named \texttt{tweets}.
+These endpoints are also an example of a bad nomenclature. Users of Twitter don't think of using the service as \emph{updating their status}, they think of it as \emph{tweeting}. This is something that may have changed throughout the lifetime of the service, and if so would be a good candidate to change between API versions. The Collection used by the aforementioned Endpoints would therefor be better named \texttt{tweets}.
 
 
 \section{Anatomy of an HTTP Message}
 
-Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP messages. It's surprising how many developers, who have been building websites for years, don't know what an HTTP message looks like! When the Consumer sends a Request to the Server, it provides a Request-Line and a set of Key/Value header pairs called headers. For POST, PUT, and PATCH requests it also provides two newlines and then the the request body. Both sets of information are sent in the same HTTP request (although this can be broken up into multiple network packets if the body is large enough).
+Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP messages. It's surprising how many developers who have been building websites for years don't know what an HTTP message looks like! When the Consumer sends a request to the Server, it provides a Request-Line and a set of Key/Value pairs called headers. For POST, PUT, and PATCH requests it also provides two newlines and then the the request body. All This information is sent in the same HTTP request (although this request can be broken up into multiple network packets if the message is large enough).
 
-The Server then replies with a similar format, first with a Status-Line and a set of headers, and typically two newlines followed by a body (the body technically optional, as you'll find out later). HTTP is very much a request/response protocol; there is no "Push" support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
+The Server then replies in a similar format, first with a Status-Line and headers, and typically two newlines followed by a body (the body is technically optional, as you'll find out later). HTTP is very much a request/response protocol; there is no \emph{push} support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
 
 \subsection{HTTP Request}
 
@@ -226,7 +226,7 @@ Cache-Control: no-cache
 {
   "id": "12",
   "created": 1386363036,
-  "modified": 1386363036,
+  "modified": null,
   "name": "Gir",
   "animal_type": "12"
 }
@@ -234,7 +234,7 @@ Cache-Control: no-cache
 
 \subsection{Debugging HTTP Traffic}
 
-\href{http://getpostman.com/}{Postman} (a Google Chrome extension) is an excellent tool for interacting with a RESTful API. As seen in Figure ~\ref{fig:postman}, Postman provides an easy-to-use interface for building API requests, as well as debugging the content of API responses. It also provides many advanced features regarding authentication (which we'll cover in later chapters).
+\href{http://getpostman.com/}{Postman} (a Google Chrome extension) is an excellent tool for interacting with a RESTful API. As seen in Figure ~\ref{fig:postman}, Postman provides a powerful yet easy-to-use interface for building API requests, as well as debugging the content of API responses. It also provides many advanced features regarding authentication (which we'll cover in later chapters).
 
 \begin{figure}[ht!]
 \centering
@@ -243,9 +243,9 @@ Cache-Control: no-cache
 \label{fig:postman}
 \end{figure}
 
-While designing and debugging your API you will sometimes need to debug packets at lower level than HTTP. The most popular tool for doing this is probably \href{https://www.wireshark.org}{Wireshark}. You will also want to use a framework/web server which allows you to read and change as many of these headers as possible.
+While designing and debugging your API you will sometimes need to debug packets at a lower level than HTTP. A powerful tool for doing this is \href{https://www.wireshark.org}{Wireshark}. You will also want to use a web framework and server which allows you to read and change as many headers as possible.
 
-Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form submission on a website. Notice all of the data sent back and forth via HTTP headers. The data passed around by browsers and web servers is often more chaotic and noisy than an API Consumer and Server will use.
+Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form submission on a website. Notice all of the data sent back and forth via HTTP headers. The headers passed around by browsers and web servers is often more chaotic and noisy than what an API Consumer and Server will send.
 
 \begin{figure}[ht!]
 \centering
@@ -257,7 +257,7 @@ Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form 
 
 \section{API Entrypoint}
 
-The root location of your API is important, believe it or not. When a developer (aka \emph{code archaeologist}) inherits a project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer communicates with. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
+The root location of your API is important, believe it or not. When a third-party developer (aka \emph{code archaeologist}) inherits a project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer communicates with. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
 \subsection{Choosing an Entrypoint}
 
@@ -268,19 +268,19 @@ Here are two common URL schemes that developers use when building an API. These 
 \item \texttt{https://example.org/api/*} -- \emph{Security Implications}
 \end{itemize}
 
-First, notice the HTTPS prefix. If API communication is sent unencrypted over the Internet, any third-party along the way is able to eavesdrop. This could include reading API data, and depending on the chosen authentication method, could allow third-parties to make requests on behalf of the user.
+First, notice the HTTPS prefix. If API communication is sent unencrypted over the Internet, any third-party along the way is able to eavesdrop. This could include reading sensitive API data, and depending on the chosen authentication method, could allow third-parties to make requests on behalf of the user.
 
-If your application is huge, or you anticipate it becoming huge, putting the API on a dedicated subdomain (in this case \texttt{api.}) is an important choice. This will allow for more flexible scalability in the future. It can also be useful for controlling what cookie data can be shared between the content website and the API.
+If your application is huge, or you anticipate it becoming huge, putting the API on a dedicated subdomain (in this case \texttt{api.}) is a must. This will allow for more scalability options in the future. It can also be useful for controlling what cookie data can be shared between the content website and the API.
 
-If you anticipate your API will never become large, or you want to build a simple application (e.g. you want to host the website AND API from the same framework), placing your API beneath a URL segment at the root of the domain (e.g. \texttt{/api/}) will also work, however it is not a great idea. More considerations will need to be made regarding security, and more potential vulnerabilities can arise. For example, if an XSS vulnerability is discovered on the main website, credentials which might otherwise be exposed can now be acquired by a devious third-party.
+If you anticipate your API will never become large, or you want to build a simple application (e.g. you want to host the website AND API from the same framework), or if your API is entirely anonymous or read-only, placing your API beneath a URL segment at the root of the domain (e.g. \texttt{/api/}) will also work, however it is not a great idea. More considerations will need to be made regarding security, and more potential vulnerabilities can arise. For example, if an XSS vulnerability is discovered on the main website, credentials which might not otherwise be exposed can now be hijacked by a devious third-party.
 
-Do not use a different TLD (Top Level Domain) for hosting your API than for hosting your website. This may sound tempting, as your main domain could be \textbf{example.com}, and your API and developer documentation be entirely located on the trendy \textbf{example.io}. However, there is no logical relationship between these two domains and an adversary could have purchased \textbf{example.io}, posing as a legitimate counterpart to \textbf{example.com}. Also, the \emph{code archaeologist} might only have knowledge of one domain and not the other. Finally, if you \emph{do} want to share some cookies between the two domains (e.g. an authenticated user on \textbf{example.com} can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or subdirectory.
+Do not use a different Top Level Domain (TLD) for hosting your API than for hosting your website. This may sound tempting, as your main domain could be \textbf{example.com}, and your API and developer documentation be entirely located on the trendy \textbf{example.io}. However there is no logical relationship between these two domains as an adversary could have purchased \textbf{example.io}, posing as a legitimate counterpart to \textbf{example.com}. Also, the \emph{code archaeologist} might only have knowledge of one domain and not the other. Finally, if you \emph{do} want to share cookies between the two domains (e.g. an authenticated user on \textbf{example.com} can be automatically logged into the developer site) it cannot be done as easily with two separate TLDs than with a subdomain or even a subdirectory.
 
 \subsection{Content Located at the Root}
 
-It's a good idea to have content at the root of your API. Accessing the root of GitHub's API returns a listing of endpoints, for example. Personally I'm a fan of having the root URL give information which a lost developer would find useful, for example how to get to the developer documentation.
+It's beneficial to Consumers to have content at the root of your API. For example, accessing the root of GitHub's API returns a listing of endpoints. Personally I'm a fan of having the root URL give information which a lost developer would find useful, like how to get to the developer documentation.
 
-Here's a truncated example of the content provided by the \href{https://api.github.com/}{GitHub API Root URL}. Notice how it's both easily readable by a human and easily parsable by a machine, and as it lists all endpoints, is a comprehensive guide for the lost developer.
+Here's a truncated list of the content provided by the \href{https://api.github.com/}{GitHub API Entrypoint}. Notice how it's both easily readable by a human and easily parsable by a machine (using the URI Template \cite{RFC6570} syntax), and as it lists all endpoints, is a comprehensive guide for the lost developer.
 
 \begin{verbatim}
 {
@@ -292,9 +292,9 @@ Here's a truncated example of the content provided by the \href{https://api.gith
 }
 \end{verbatim}
 
-Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate.
+Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate. If you take a similar approach to what GitHub does, one of the keys could be \texttt{current\_user}, and the value could be a URL
 
-It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these may contradict the existing RESTful URL patterns the rest of the API adheres to.
+It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these would contradict the existing RESTful URL patterns the rest of the API adheres to.
 
 
 \chapter{API Requests}
