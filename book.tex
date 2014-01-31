@@ -90,25 +90,25 @@ By the time you're done reading this book you'll have a high-level understanding
 
 \section{Data Design and Abstraction}
 
-Interacting with a \href{http://en.wikipedia.org/wiki/Restful}{RESTful API} is all about abstracting the intricate business-logic and database your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+Designing a \href{http://en.wikipedia.org/wiki/Restful}{RESTful API} means abstracting the intricate business-logic and data your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions behind the scenes such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
-Planning how your API will look begins earlier than you'd think; first you need to decide how your data will be designed and how your core service/application works. If you're following \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API First Development} \cite{APIFIRST} this should be easy! If you're bolting an API on to an existing project, you will have more work ahead of you.
+Architecting your API begins earlier than you may think; first you need to decide how your data will be stored and how your service/application functions. If you're practicing \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API-First Development} \cite{APIFIRST} this is all part of the process. However, if you're bolting an API onto an existing project, you will have more abstraction to take care of.
 
-If you're lucky, a Collection can represent a database table, and a Resource can represent a row within that table. Unfortunately this is often not the case, especially if the existing data-model is overly complex. It is very important that you don't overwhelm Third-Party Developers with any complex application data, otherwise they won't want to use your API.
+In an idealized, overly-simple service, a Collection can represent a database table, and a Resource can represent a row within that table. As real-world practice will show this is rarely the case, especially if the existing data design is overly complex. It is important that you don't overwhelm third-party developers with complex application data, otherwise they won't want to use your API.
 
-Keep in mind there will likely be parts of your service which you \emph{should not} expose via API at all. A common example is that many APIs will not allow Consumers to create nor delete user accounts.
+There will be parts of your service which you \emph{should not} expose via API at all. A common example is that many APIs will not allow Consumers to create or delete user accounts, or data shared between many accounts.
 
 Sometimes multiple tables will be represented as a single resource (\texttt{JOIN} statements come in handy here). You might even find that one table should have multiple resources (although, you may have made some poor database design decisions if this is the case).
 
 \subsection{Examples of Abstraction}
 
-For both the good and bad abstraction examples, we'll make use of the same fictional service. Pretend that you control a service which sends messages to different users, and messages can either be sent as a text message or an email. This is dependent on the preference of the particular user.
+For both of these examples of abstraction, we'll make use of the same fictional service. This service sends messages to different users, and messages can either be sent as a text message or an email. The chosen method depends on the preference of the particular user.
 
 Don't worry too much about the technical parts of the examples as we'll cover them with more detail in a later chapter. For now, just think of them as simple function calls with inputs and outputs.
 
 \subsubsection{Good Abstraction}
 
-Here's a clean, almost ideal RESTful approach for sending a notification.
+Here's a clean and simple RESTful approach for sending a notification.
 
 \paragraph{\textbf{Creating a Notification}}
 
@@ -129,17 +129,15 @@ POST /notifications
 }
 \end{verbatim}
 
-Here we use a single endpoint for sending a notification to a user. The first JSON document is the request and the second is the response. This endpoint is simply called \texttt{notifications}, and the Consumer functions by creating new notification objects.
+In this example we use a single endpoint for sending a notification to a user. The first JSON document is the request and the second is the response. This endpoint is called \texttt{notifications}, and the Consumer interacts by creating new notification objects. When the Consumer wishes to notify a user, it is conceptually creating a new notification object, thereby abstracting the concept of performing an action with creating an object.
 
-When the Consumer wishes to notify a user, it is actually creating a new notification object, thereby abstracting the concept of performing an action with creating an object. Of course, an action like sending a message can't be undone or altered, so the Consumer can't DELETE or PUT a notification object.
+An important concept of this example is that the business-logic of determining which method of contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notification preference. In the background, the Server is taking the appropriate action and hiding it from the Consumer.
 
-An important takeaway from this example is that the business-logic of determining which method of contacting a user is abstracted away from the Consumer entirely, hence the lack of an endpoint for getting the users notification preference.
-
-In the example response, we do have a \texttt{medium} attribute which represents the method of notifying the user, but that can be hidden entirely depending on if your Consumers would ever need to know this information (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbiage should be correct). Then again, this could be a privacy concern.
+In the example response, we do have a \texttt{medium} attribute which represents the method of notifying the user, but that can be omitted depending on if your Consumers need to know this information (perhaps their application has a dashboard which mentions the last time a text/email was sent, and the verbiage should be correct).
 
 \subsubsection{Bad Abstraction}
 
-This example will include numerous shortcomings.
+This example will include numerous shortcomings, and is an easy approach to take by the novice RESTful API architect.
 
 \paragraph{\textbf{Getting User Preference}}
 
@@ -151,16 +149,16 @@ GET /get_user_preferences/12
 }
 \end{verbatim}
 
-This first API Endpoint is called \texttt{get\_user\_preferences}, and is called by passing in the ID of the user whose preference we are looking for (shown as \texttt{12}. The name of an Endpoint should be a simple noun (or pair of nouns if need be). You should never add the action (verb) being performed (in this case \texttt{get}). The reason one should use a simple noun is that this tells the Consumer exactly what the ID value represents. Does the \texttt{12} shown above represent user \texttt{12}? Or perhaps some user preference concept which might not correlate 1:1 to a user object?
+This first API Endpoint is called \texttt{get\_user\_preferences}, and is called by passing in the ID of the user whose preference we are looking up (shown here as \texttt{12}). The name of an Endpoint should be a simple noun (or compound nouns). It should not include the action (verb) being performed (in this case \texttt{get}). The reason one should use a simple noun is because this removes ambiguity and tells the Consumer what the ID represents. Does the \texttt{12} represent user \texttt{12}? Or perhaps some user-preference concept which might not correlate 1:1 to a user object?
 
-Another problem with this example is the response contains the integer \texttt{1}. Internally to this fictional service there are some constants where \texttt{1} refers to sending a text, and \texttt{2} refers to sending an email. Even if this value is documented in the API documentation, a third party developer is not going to remember the values. Each time they look up what the values mean they are losing productivity.
+Another problem with this example is the response contains the integer \texttt{1}. Internally to this fictional service there are some constants where \texttt{1} refers to sending a text, and \texttt{2} refers to sending an email. Even if these values are disclosed in the API documentation, a third-party developer is not going to remember what they represent. Each time they look up what the values mean they are losing productivity.
 
-Another problem is that there's an API Endpoint dedicated specifically to getting a user preference. In general, you want to reduce the number of Endpoints in your API, and focus on making each one serve the Consumer better. Data like this could have been merged with another endpoint for getting data about a particular user, for example.
+Yet another problem is that there's an API Endpoint dedicated specifically to getting a user preference. In general, you want to reduce the number of Endpoints in your API, and focus on making each one serve the Consumer better. Data like this could have been merged with another endpoint for getting a user object, for example.
 
 \paragraph{\textbf{Sending a Text or Email (Two Endpoints)}}
 
 \begin{verbatim}
-POST /users/12/[send_text|send_email]
+POST /users/12/send_{medium}
 
 {
   "message": "Hello World",
@@ -168,21 +166,21 @@ POST /users/12/[send_text|send_email]
 }
 \end{verbatim}
 
-These second and third endpoints have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these actionable endpoints is a common mistake among developers intending to build a RESTful API.
+These second and third endpoints (assuming \texttt{\{medium\}} can represent \texttt{email} or \texttt{text}) have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these actionable endpoints is a common mistake among developers intending to build a RESTful API.
 
-Another issue with this example is that the business-logic for determining which method of notification to use is left for the Consumer to handle! Sure, the Consumer can make a request to get the user preference for sending messages, but what if they intentionally ignore it? Or, suppose the Consumer caches the preference and it becomes outdated? Either way users are bound to get annoyed.
+Another issue with this example is that the business-logic for determining which method of notification to use is left for the Consumer to decide! Sure, the Consumer can make a request to get the users preference, but what if they intentionally ignore it? Or suppose the Consumer caches the preference and it becomes outdated? Either way users are bound to get notified in a manner they didn't choose.
 
-Whenever you find yourself creating two endpoints with the exact same expected request inputs and response outputs, there may be an issue with abstraction and the two may be better off combined into one endpoint.
+Whenever you find yourself creating two endpoints with the same request inputs and response outputs, there may be a problem with abstraction and the two may be better off combined into one endpoint.
 
-Finally, there is no way to look up previous instances of notifications that have been sent to a user. Sure, the Consumer could record this information locally, but it would be beneficial if the API made available a method for looking up previous notifications.
+Finally, there is no way to look up previous instances of notifications that have been sent to a user. While another Endpoint could have been created for looking up notification logs, it would likely be ad-hoc or inconsistent with existing Endpoints.
 
 \subsection{Real World Examples}
 
 Let's look at some real-world examples of how popular APIs do their data abstraction.
 
-\subsubsection{GitHub: A Good Example}
+\subsubsection{GitHub: An Ideal Example}
 
-The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used whenever applicable. URLs don't have verbs in them. Working with an endpoint feels like one is working with objects, instead of performing actions.
+The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used where applicable. Endpoints don't have verbs in the name. Interacting with an endpoint feels much like one is working with a representation of an object, instead of performing actions.
 
 An example of a good endpoint is \texttt{GET /repos/UID/REPO/notifications}. This is obviously the endpoint used for getting a list of notifications of a particular repository. The \texttt{UID/REPO} method for grabbing a repository is one understood by all users of GitHub (repository names aren't globally unique, only unique to the current user). The only possible thing that could be improved may be not shortening repositories to repos and organizations to orgs in the names of endpoints, although repo is well understood.
 
