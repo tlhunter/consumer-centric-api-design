@@ -36,7 +36,7 @@
 
 \subsubsection*{Thomas Hunter II, Author}
 
-\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate/API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given verious talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
+\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate and API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given various talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -54,19 +54,17 @@ TODO: Get Biography from Jason
 
 \subsubsection*{Jon Kuperman, Influence}
 
-I'd also like to make a special thanks to \href{https://twitter.com/thecodeplanet}{Jon} who once told me, "Tom, you should turn that \href{http://codeplanet.io/principles-good-restful-api-design/}{API blog post} into a book."
-
-\tableofcontents
+I'd like to make a special thanks to \href{https://twitter.com/thecodeplanet}{Jon}, who once told me "Tom, you should turn that \href{http://codeplanet.io/principles-good-restful-api-design/}{API blog post} into a book."
 
 \newpage
 
 \section*{Introduction}
 
-An API represents a contract between data and business-logic stored on your Server, and Consumers who wish to interact with this data. Breaking this contract will result in angry emails from developers and sad sad users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
+An API represents a contract between the data and business-logic stored on your Server, and Consumers who wish to interact with this data. Breaking this contract will result in angry emails from developers and anguished users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
 
-Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/core-application has the potential to become a platform from which other services grow. Look at the current tech companies offering popular services: \href{https://developers.facebook.com/}{Facebook}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{https://developers.google.com/}{Google}, \href{http://developer.github.com/v3/}{GitHub}, \href{https://developer.amazon.com/}{Amazon}, \href{http://developer.netflix.com/}{Netflix}, \href{https://www.dropbox.com/developers/core/docs}{Dropbox}... None of them would be nearly as popular as they are today if they hadn't opened up their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
+Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/application has the potential to become a platform from which other services grow. Look at these tech companies offering popular services: \href{https://developers.facebook.com/}{Facebook}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{https://developers.google.com/}{Google}, \href{http://developer.github.com/v3/}{GitHub}, \href{https://developer.amazon.com/}{Amazon}, \href{http://developer.netflix.com/}{Netflix}, \href{https://www.dropbox.com/developers/core/docs}{Dropbox}... None of them would be nearly as popular as they are today if they hadn't opened their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
 
-The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure it has been working with your API, getting more developers to sign-up along the way.
+The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure working with your API has been, getting more developers to sign-up along the way.
 
 \subsection*{Approach}
 
@@ -76,11 +74,16 @@ This book will take a language-agnostic approach to demonstrating good API desig
 
 The ideal reader of this book is someone who has already built several websites and is comfortable working with a web language or framework, as well as having some intermediate knowledge such as how to read and write HTTP headers.
 
-While knowledge of any particular language is not a requirement of this book, an understanding of basic SQL will be beneficial for understanding the example queries.
+While knowledge of any particular language is not a requirement of this book, a basic understanding of SQL will be beneficial for understanding the example queries.
 
 \subsection*{Goals}
 
 By the time you're done reading this book you'll have a high-level understanding of how to build a RESTful API Ecosystem which third-party developers will love. This book will not cover the technical details of how to program an API from scratch.
+
+
+\tableofcontents
+
+\newpage
 
 
 \chapter{The Basics}
@@ -198,7 +201,7 @@ Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP mes
 
 The Server then replies with a similar format, first with a Status-Line and a set of headers, and typically two newlines followed by a body (the body technically optional, as you'll find out later). HTTP is very much a request/response protocol; there is no "Push" support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
 
-\subsection{Example HTTP Request}
+\subsection{HTTP Request}
 
 \begin{verbatim}
 POST /v1/animal HTTP/1.1
@@ -213,7 +216,7 @@ Content-Length: 24
 }
 \end{verbatim}
 
-\subsection{Example HTTP Response}
+\subsection{HTTP Response}
 
 \begin{verbatim}
 HTTP/1.1 200 OK
@@ -254,11 +257,11 @@ Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form 
 \end{figure}
 
 
-\section{Choosing a Root URL}
+\section{API Entrypoint}
 
 The root location of your API is important, believe it or not. When a developer (aka \emph{code archaeologist}) inherits a project using your API and needs to build new features, they may not know about your service at all. Perhaps all they know is a list of URLs which the Consumer communicates with. It's important that the root entry point into your API is as simple as possible, as a long complex URL will appear daunting and can turn developers away.
 
-\subsection{Common Root API Locations}
+\subsection{Choosing an Entrypoint}
 
 Here are two common URL schemes that developers use when building an API. These are also sometimes called API entry points.
 
@@ -380,7 +383,7 @@ If you plan on allowing JavaScript Consumers running in web browsers, and making
 
 An Endpoint is a URL within your API which points to a specific Resource or a Collection of Resources. Typically RESTful APIs use a Plural naming convention for Collections.
 
-\subsection{Main Collections}
+\subsection{Top-Level Collections}
 
 If you were building a fictional API to represent several different Zoo's, each containing many Animals (with an animal belonging to exactly one Zoo), employees (who can work at multiple Zoos) and keeping track of the species of each animal, you might have the following endpoints:
 
@@ -464,7 +467,7 @@ The parameter name you choose isn't too important. It could be "filter" or the o
 
 The SQL queries are just an over-simplified example of what could be generated if your API represented a simple Relational Database application.
 
-\subsection{Example Filtered Request}
+\subsection{Filtered Request}
 
 In this next example, the Consumer has requested a filtered list of attributes. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort will be involved.
 
@@ -490,7 +493,7 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 }
 \end{verbatim}
 
-\subsection{Example Unfiltered Request}
+\subsection{Unfiltered Request}
 
 In this example request, the default representation of a user resource includes data from two database tables joined together. One of the tables is the obvious \texttt{user} table, and another table contains some textual data related to a user called \texttt{user\_desc}.
 
@@ -519,13 +522,13 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id =
 \end{verbatim}
 
 
-\section{Request Bodies}
+\section{Body Formats}
 
 A common method for APIs to receive data from third-parties is to accept a JSON document as the body. Assuming your API is providing data to third-parties in the form of JSON, as a consequence those same third-parties should be able to produce JSON documents as well.
 
 There are two common methods a Web Browser will use when send data to a web server. If you're using a common web language/framework for building an API, such as \emph{PHP} or \emph{Express.js} or \emph{Ruby on Rails}, you're already used to consuming data using these two methods. Web Servers (e.g. \emph{Apache} or \emph{NGINX}) abstract the differences of these two methods and will provide your programming language data in one easy to consume manner. The two methods are called Multi-part Form Data (required for file uploads), and URL Form Encoded (most forms use this latter method).
 
-\subsection{Example JSON Request}
+\subsection{JSON}
 
 The JSON document used for the Request can be very similar to the JSON document used for the Response. JSON can specify the type of data (e.g. Integers, Strings, Booleans), while also allowing for hierarchal relationships of data. String data needs to be escaped (e.g. a quote \texttt{"} becomes prefixed with a backslash \texttt{\symbol{92}"}), but this is usually done automatically for the developer.
 
@@ -542,7 +545,7 @@ Content-Length: 24
 }
 \end{verbatim}
 
-\subsection{Example Form URL Encoded Request}
+\subsection{Form URL Encoded}
 
 This method is used by Websites for accepting simple data forms from a web browser. Data needs to be URL Encoded if they contain any special characters (e.g. a space character becomes \texttt{\%20}). This is automatically taken care of by the browser.
 
@@ -556,7 +559,7 @@ Content-Type: application/x-www-form-urlencoded
 username=root&password=Zion0101
 \end{verbatim}
 
-\subsection{Example Multi-part Form Data Request}
+\subsection{Multi-Part Form Data}
 
 This method is used by Websites for accepting more complex data from a web browser, such as file uploads. No escaping needs to happen, although the boundary is a random string and needs to not be contained within the uploaded file or data.
 
@@ -596,7 +599,7 @@ Here is an example of what a complete Status-Line looks like:
 HTTP/1.1 204 File Not Found
 \end{verbatim}
 
-\subsection{Common Status Codes}
+\subsection{Common API Status Codes}
 
 There are a plethora of HTTP Status Codes \cite{RFC2616} to choose from, however this list should be a good starting point.
 
@@ -659,7 +662,7 @@ The \textbf{4XX} range is reserved for responding to errors made by the Consumer
 The \textbf{5XX} range is reserved as a response when the Server makes a mistake. Often times, these errors are created by low-level functions even outside of the developers control, and ensure a Consumer gets some sort of response. The Consumer can't possibly know the state of the server when a 5XX response is received, and so these should be avoidable.
 
 
-\section{Response Content Types}
+\section{Content Types}
 
 Currently, the most \emph{exciting} of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, etc. XML appears to have lost the popularity contest a while ago (except in large corporate environments). SOAP, thankfully, is all but dead. We really don't see many APIs providing HTML to be consumed (save for web scrapers).
 
@@ -679,7 +682,7 @@ Some people recommend adding a .json, .xml, or .html file extension to the URL (
 Use the \texttt{Accept} header, which is built into the HTTP spec for this purpose, and if you can't provide data in a format the Consumer wants, reply with a \texttt{406 Not Acceptable} response.
 
 
-\section{Expected Response Bodies}
+\section{Anticipated Body Content}
 
 When a Consumer makes a request to the Server, something needs to be returned as a response. Depending on the HTTP Method being used, the response will be different.
 
@@ -767,7 +770,7 @@ JSON, which stands for \emph{JavaScript Object Notation}, is a subset of JavaScr
 
 That said, there is still quite a bit of freedom that a developer has for representing data using JSON. This section of the book is designed to give you advice for representing data.
 
-\subsection{Attribute Consistency between Resources}
+\subsection{Consistency between Resources}
 
 Whenever you represent different Resources within the same Collection, each attribute should remain of the same data type. For example, if one Resource has a \texttt{name} attribute which is a String, you shouldn't in a different Resource represent it as an Integer.
 
@@ -781,7 +784,7 @@ This really isn't necessary as attribute names are often self-documenting. For e
 
 Another tip with Booleans is that they should usually be a \emph{positive} or \emph{happy} word, as opposed to their negative counterparts. This will prevent developers form having to figure out a double-negative in their head. For example, use \texttt{enabled} instead of \texttt{disabled}, \texttt{public} instead of \texttt{private}, and even \texttt{keep} instead of \texttt{purge}.
 
-\subsection{Dates}
+\subsection{Timestamps}
 
 The ideal standard for representing dates is the \textbf{ISO 8601} \cite{ISO8601} standard, and it looks a bit like this:
 
@@ -927,7 +930,7 @@ Many APIs I've seen include the use of integer numeric codes. For example, if th
 The Stripe API \cite[\#Errors]{STRIPEAPI} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
 
 
-\section{Responses Should Resemble Requests}
+\section{Responses should Resemble Requests}
 
 As a general rule of thumb, a Response resource should closely resemble the equivalent Request resource. This means that the same attribute names and values are used for Requests as well as Responses.
 
@@ -935,7 +938,7 @@ There are of course a few exceptions. A PATCH, for example, only affects a parti
 
 Whenever dealing with the values of attributes, they should always be the same format.
 
-\subsection{Example of an Acceptable Discrepancy}
+\subsection{Acceptable Discrepancy}
 
 In this example, the differences between the Request and the Response documents are minimal. Some of the values are read-only, and calculated on the server (e.g. \texttt{id}, \texttt{modified}, and \texttt{created}). Some of the attributes have default values (e.g. \texttt{enabled}), which is fine too, as long as these are documented.
 
@@ -963,7 +966,7 @@ POST /users
 }
 \end{verbatim}
 
-\subsection{Example of a Bad Discrepancy}
+\subsection{Avoidable Discrepancy}
 
 In this example, during a POST to the \texttt{users} endpoint, there is a \texttt{role} attribute, which is a string containing possible user roles, such as \texttt{administrator} or \texttt{moderator}. However, in the response, that same data becomes a Boolean of whether or not the user is an administrator. This doubles the amount of attribute names the Consumer needs to keep track of.
 
@@ -1001,7 +1004,7 @@ As a side note, if you are simply ADDING new features to your API, such as new a
 
 Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to alert developers that the older version will be removed on a specific date and that they should upgrade to a newer version.
 
-\subsection{Requesting Specific Versions}
+\subsection{Requesting a Specific Version}
 
 There are three common methods RESTful APIs use for communicating which version of the API to use.
 
@@ -1131,7 +1134,7 @@ There is also the older OAuth 1.0a \cite{RFC5849} standard, which solves mostly 
 I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. While maintaining an OAuth 1.0a provider, I was surprised by the number of developers who had to implement their own library since one didn't already exist for their language. After spending many hours debugging cryptic "invalid signature" errors, I must recommend you choose an alternative.
 \end{quote}
 
-\subsection{Real-World Examples}
+\subsection{Real-World Support}
 
 Choosing which authentication mechanism to use for your service may be made easier by looking at what other services use, and the reasoning by choosing each method.
 
@@ -1222,7 +1225,7 @@ For the purpose of building an API which developers will love, the most importan
 If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for \emph{3LA}). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
 
 
-\section{Writing Good Documentation}
+\section{Documentation}
 
 Writing good documentation is vital to the success of any API. If consumers don't know how to use an API, they won't use an API.
 
@@ -1260,7 +1263,7 @@ Ensure using the Developer Console is easy and efficient for the developer to us
 
 If possible use GET parameters for the Developer Console HTML form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
 
-\subsection{Provide Example cURL Commands}
+\subsection{Providing cURL Commands}
 
 cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). You may have installed cURL as a dependency for another project which deals with making HTTP requests.
 
