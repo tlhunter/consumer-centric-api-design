@@ -1001,21 +1001,23 @@ POST /users
 
 \section{API Versioning}
 
-No matter what you are building, no matter how much planning you do beforehand, your core application will change, your company will pivot, your data relationships will alter, and attributes will be added and removed from resources. This is just how software development works, and is especially true if your project is alive and used by many people.
+No matter what you are building and how much planning you do beforehand, your core application will change, your company will pivot, your data relationships will alter, and attributes will be added and removed from resources. This is just how software development works, and is especially true if your project is alive and used by many people.
 
-Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they will use somebody else's service instead. To ensure your application continually evolves AND you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
+Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they may migrate to somebody else's service. To ensure your application continually evolves \emph{and} you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
 
-As a side note, if you are simply ADDING new features to your API, such as new attributes on a resource (assuming they are not required to be set), or if you are ADDING new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation of course.
+\begin{quote}
+As a side note, if you are simply \emph{adding} new features to your API, such as new attributes to a resource (assuming they are not required to be set), or if you are \emph{adding} new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation, of course.
+\end{quote}
 
-Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish the quality of it, but to alert developers that the older version will be removed on a specific date and that they should upgrade to a newer version.
+Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish quality, but to alert developers that the older version will be removed on a specific date and that they should upgrade to a newer version.
 
 \subsection{Requesting a Specific Version}
 
 There are three common methods RESTful APIs use for communicating which version of the API to use.
 
-\subsubsection{Versioning via a URL Segment (Preferred)}
+\subsubsection{Versioning via a URL Segment}
 
-The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing for developers to do.
+The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing a developer can do.
 
 The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLs likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
 
@@ -1027,9 +1029,9 @@ It is customary to use the letter \textbf{v} followed by an integer when version
 
 \subsubsection{Versioning via the Accept Header}
 
-One method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
+Another method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
 
-The Accept header offers a way to specify generic and less generic content types, as well as specifying fall-backs. In the example below, we are requesting a more specific version of JSON, specifically, Version 1 of the API JSON.
+The Accept header offers a way to specify generic and less generic content types, as well as specifying fall-backs. In the example below, we are requesting a more specific version of JSON, conceptually, Version 1 of the API JSON.
 
 \begin{verbatim}
 Accept: application/json+v1
@@ -1037,7 +1039,7 @@ Accept: application/json+v1
 
 \subsubsection{Versioning via a Custom Header}
 
-Another method is to use a custom header. This is quite similar to the method above. Consumers would still use the normal Accept header they've been using.
+Another method is to use a custom header. This is quite similar to the previous method. Consumers would still use the normal Accept header they've been using.
 
 \begin{verbatim}
 X-Api-Version: 1
@@ -1045,11 +1047,11 @@ X-Api-Version: 1
 
 \section{Authentication and Authorization}
 
-There are two common paradigms in which your API may authorize Consumers. Using the Two-Legged paradigm, there are two parties involved, a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who probably has an account with both services.
+There are two common paradigms in which your API may authorize Consumers. Using the Two-Legged paradigm, there are two parties involved; a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who has (or will have) an account with both services.
 
 In theory, your API could use both methods of authorization for different areas. Also, there may be some sections of the API which can be accessed anonymously and can entirely bypass the authorization process.
 
-\subsection{Two-Legged Authentication}
+\subsection{Two-Legged Authentication (2LA)}
 
 \begin{figure}[!htb]
 \centering
@@ -1060,7 +1062,7 @@ In theory, your API could use both methods of authorization for different areas.
 
 As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication (\emph{2LA}) is quite simple. Essentially, the Consumer needs a way to authenticate themselves with the API. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
 
-Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via a cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with), but the method we will use is essentially the same thing.
+Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with programmatically), but the method we will use is conceptually similar.
 
 \begin{quote}
 The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{ACMV2N2}
@@ -1077,7 +1079,7 @@ The HTTP protocol conveniently gives us a header called \texttt{Authorization} f
 \label{fig:basichhtpauth}
 \end{figure}
 
-The "classical" method of performing authentication is called Basic HTTP Auth \cite{RFC2617}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog to the user prompting the user for a username and password.
+The \emph{classical} method of performing authentication is called Basic HTTP Auth \cite{RFC2617}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog prompting the user for a username and password.
 
 \paragraph{\textbf{First Request}}
 
@@ -1095,9 +1097,9 @@ Date: Thu, 9 Jan 2014 23:35:00 GMT
 WWW-Authenticate: Basic realm="Example"
 \end{verbatim}
 
-At this point, the user either clicks cancel and is taken to a not-very-useful screen and chooses to go somewhere else, or they enter correct credentials and click Authorize. Entering the wrong credentials typically results in the Server sending back the same Unauthorized status.
+At this point, the user either clicks cancel and is taken to an error screen and chooses to go somewhere else, or they enter correct credentials and click Authorize. Entering the wrong credentials typically results in the Server sending back the same Unauthorized status.
 
-The credentials the user supplies are transmitted as follows: The username (which cannot contain ":") is concatenated with ":", and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
+The credentials supplied by the user are transmitted as follows: The username (which cannot contain ":") is concatenated with ":", and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
 
 \paragraph{\textbf{Authorized Request}}
 
@@ -1108,17 +1110,15 @@ Accept: text/html
 Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
 \end{verbatim}
 
-Finally, the Server begins giving the User Agent the content which the user is expecting. This exact same Authorization header is sent with every subsequent request.
+Finally, the Server provides the User Agent with the protected content which the user has requested. This exact same Authorization header is sent with every subsequent request.
 
-Introducing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be performed as the Consumer should know that it needs to first be authorized, however, if the Consumer does provide incorrect credentials, the server would still reply with a \texttt{401 Unauthorized} status.
+Implementing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be performed as the Consumer would know ahead of time that it needs to first be authorized. If the Consumer does provide incorrect credentials, the server would still reply with a \texttt{401 Unauthorized} status.
 
 \subsubsection{Alternatives to Basic Auth}
 
-You can invent your own method of auth where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this concept is often referred to as an \emph{Auth Token}). Third parties may want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration interface so developers can provision and revoke these tokens themselves.
+You can always invent your own method of auth where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this concept is often referred to as an \emph{Auth Token}). Third parties may want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration interface so developers can provision and revoke these tokens themselves.
 
-OAuth, which is most commonly used for performing Three-Legged Authentication, provides some methods for doing \emph{2LA}. Typically developers prefer using standards, although \emph{2LA} is usually pretty simple.
-
-\subsection{Three-Legged Authentication}
+\subsection{Three-Legged Authentication (3LA)}
 
 \begin{figure}[!htb]
 \centering
@@ -1127,19 +1127,19 @@ OAuth, which is most commonly used for performing Three-Legged Authentication, p
 \label{fig:threelegged}
 \end{figure}
 
-As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\emph{3LA}) is a bit more complex. A user likely trusts your application with their username and password, however they don't trust a third-party consumer. The user would also like to one day revoke the third-parties access to their data stored on your Server, without the need to change their username and password.
+As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\emph{3LA}) is a bit more complex. Instead of passing messages between two parties (one channel), messages need to be communicated between three parties (three channels). A user likely trusts your application with their username and password, however they don't trust a third-party Consumer. The user would also like the ability to revoke the third-parties access to their data, without the need to change their username and password.
 
-The complexities of \emph{3LA} is far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate Consumers are who they say they are. They also provide a method for users to grant privileges to Consumers to access specific data from your API. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
+The complexities of \emph{3LA} are far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate they are who they say they are. \emph{3LA} also provides a method for users to grant privileges so Consumers can access specific data. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
 
-OAuth 2.0 \cite{RFC6749} provides a great way of doing \emph{3LA}. With each Request, you can be sure you know which Consumer is making requests, which User they are making requests on behalf of, and provides a (mostly) standardized way of expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials. OAuth 2.0 is used by 
+OAuth 2.0 \cite{RFC6749} is the De-Facto standard for performing \emph{3LA} in modern RESTful APIs. With each Request, the Server can be sure it knows which Consumer is making a request, which User they are making requests on behalf of, and provide a standardized method for expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
 
-There is also the older OAuth 1.0a \cite{RFC5849} standard, which solves mostly the same problems. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, and are mostly made irrelevant by sending data over HTTPS. Whichever method you ultimately choose, ensure it is trustworthy and well-documented, having many different libraries written for the languages and platforms which your Consumers will likely be using.
+There is also the older OAuth 1.0a \cite{RFC5849} standard, which solves mostly the same problems. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, such as preventing replay attacks, and are mostly made irrelevant by sending data over HTTPS. Whichever method you ultimately choose, ensure it is trustworthy and well-documented and has many different libraries available for the languages and platforms which your Consumers will likely be using.
 
 \begin{quote}
-I can honestly tell you that OAuth 1.0a, while it is the most secure of the options, is quite difficult to implement. While maintaining an OAuth 1.0a provider, I was surprised by the number of developers who had to implement their own library since one didn't already exist for their language. After spending many hours debugging cryptic "invalid signature" errors, I must recommend you choose an alternative.
+OAuth 1.0a, while it is technically the most secure of the options, can be quite difficult to implement. While maintaining an OAuth 1.0a provider, I was surprised by the number of developers who had to implement their own library since one didn't already exist for their language. After spending many hours debugging cryptic \emph{invalid signature} errors, I really must suggest choosing OAuth 2.0.
 \end{quote}
 
-\subsection{Real-World Support}
+\subsection{Real-World Usage}
 
 Choosing which authentication mechanism to use for your service may be made easier by looking at what other services use, and the reasoning by choosing each method.
 
@@ -1162,7 +1162,7 @@ Choosing which authentication mechanism to use for your service may be made easi
     \end{itemize}
 \item \href{https://developers.facebook.com/docs/reference/dialogs/oauth/}{\textbf{Facebook Graph}}: OAuth 2.0
     \begin{itemize}
-        \item The userbase is Facebooks greatest asset, and is definitely a \emph{3LA} servce
+        \item The userbase is Facebooks greatest asset, and is definitely a \emph{3LA} service
         \item Facebook is a big target for hackers
     \end{itemize}
 \item \href{https://www.dropbox.com/developers/core/docs}{\textbf{Dropbox}}: OAuth 1.0a, OAuth 2.0
@@ -1175,13 +1175,13 @@ Choosing which authentication mechanism to use for your service may be made easi
 
 \section{Consumer Permissions}
 
-Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate said data.
+Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate this data.
 
-When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by Company X, and this company trusts Company Y with certain features of the API, X will probably manually assign Y with more permissive permissions. However, Company Z, which is otherwise unknown to X, will get the default, less permissive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
+When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by \emph{Widgets, Inc.}, and this company trusts \emph{Gadgets, Co.} with certain features of the API, \emph{Widgets, Inc.} will probably manually assign \emph{Gadgets, Co.} with more permissive permissions. However, Company \emph{Hackers, LLC}, which is otherwise unknown to \emph{Widgets, Inc.}, will get the default restrictive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
 
-Regarding \emph{3LA}, the Consumer needs to be able to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review the permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (such as Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
+Regarding \emph{3LA}, the Consumer needs to have the ability to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (seen in Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
 
-Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whatever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing can break in weird ways.
+Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whichever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing could break in weird ways.
 
 \begin{figure}[ht!]
 \centering
@@ -1192,9 +1192,9 @@ Some services will allow a User to disable permissions (older versions of Facebo
 
 \subsection{Example Permissions Object}
 
-Specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a a standard didn't exist as part of the spec. The Server can accept an additional parameter called \texttt{scope} (or whatever you choose) during the Request Token generation phase. This parameter could be a JSON object which represent the permissions the Consumer is trying to be granted. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
+The method for specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a a standard didn't exist as part of the spec. The Server can accept an additional parameter called \texttt{scope} (or whatever you choose) during the Request Token generation phase. This parameter could be a JSON object representing the permissions the Consumer is requesting. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
 
-The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send the user emails using the service (although not have access to their email address), and finally retrieve the list of the users friends, add new friends, and remove existing friends.
+The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send the user emails using the service (although not have access to their email address), as well as retrieve a list of friends, add new friends, and remove existing friends.
 
 \begin{verbatim}
 {
@@ -1204,11 +1204,11 @@ The following permissions object could represent a common social media website. 
 }
 \end{verbatim}
 
-When the user authenticates the Consumer, they would see a list of each of the operations the Consumer is asking for. Some of them which grant destructive or powerful capabilities should probably be highlighted, such as adding and removing friends, and updating the users profile.
+When the user authenticates the Consumer, they would see a list of each of the permissions the Consumer is asking for. Some of them which grant destructive or powerful capabilities such as adding and removing friends or changing the users profile should be highlighted for emphasis.
 
 \subsection{Real World Example}
 
-Here's another example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions and use a simple list of keywords representing permissions spearated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
+Here's an example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions by using a simple list of keywords representing permissions spearated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
 
 \begin{verbatim}
 https://coinbase.com/oauth/authorize?response_type=code
