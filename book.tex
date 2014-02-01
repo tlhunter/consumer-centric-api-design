@@ -1218,31 +1218,54 @@ https://coinbase.com/oauth/authorize?response_type=code
 
 \subsection{Default Consumer Permissions}
 
-At the point in time which a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions once. Ideally, your Server could even allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions). This gives developers the greatest amount of control and convenience.
+When a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions all at once. This would probably be done from a UI, such as providing a list of checkboxes where each checkbox represents a permission.
+
+Ideally, your Server could even allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions). This gives developers the greatest amount of control and convenience.
+
+
+\section{Rate Limiting}
+
+Rate limiting is a feature which can be implemented in an API to prevent Consumers from making detrimenting Server stability by making too many requests. Consumers can be given a limit on the number of requests they make. This limit could be per-Consumer, per-User-per-Consumer, or whatever you decide. If limits are per-Consumer, depending on how much your Server trusts the Consumer, the limits could be higher. Some services even offer a subscription fee for increasing this limit.
+
+If your API makes use of rate limits, be sure informaiton about the limit can be accesses programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
+
+\begin{verbatim}
+HTTP/1.1 403 Forbidden
+Date: Tue, 20 Aug 2013 14:50:41 GMT
+Status: 403 Forbidden
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1377013266
+
+{
+    "message": "API rate limit exceeded. \
+        See http://developer.github.com/v3/#rate-limiting for details."
+}
+\end{verbatim}
 
 
 \section{API Analytics}
 
-Keep track of the version/endpoints of your API being used by Consumers. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is a good idea, for example, the most commonly used API calls should have their database queries optimized to reduce server load.
+Keep track of the version/endpoints being used by Consumers of your API. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is beneficial such as optimizing the most commonly requested Endpoints to reduce Server load.
 
-For the purpose of building an API which developers will love, the most important thing is that when you do deprecate a version of your API, you can actually contact developers using deprecated features. This is the perfect way to remind them to upgrade before you kill the old version.
+When you do deprecate a version of your API, you can actually contact third-party developers using deprecated features. This is a convenient approach for reminding developers to upgrade before killing off the old version.
 
-If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which User for \emph{3LA}). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
+If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which \emph{3LA} User). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
 
 
 \section{Documentation}
 
-Writing good documentation is vital to the success of any API. If consumers don't know how to use an API, they won't use an API.
+Writing documentation is vital to the success of an API. If consumers don't know how to use an API, they won't use it.
 
-Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Developers won't be able to use Google for finding documentation, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
+Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Developers won't be able to find documentation using a search engine, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
 
-Do not use automatic documentation generators! But if you do, at least make sure you're cleaning up the output and making it presentable. Generated docs can be useful with libraries where code connects directly to it, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected. However, automatically-generated documentation typically sucks.
+Avoid using automatic documentation generators! If you do use them, at least make sure you're cleaning up the output and making it presentable. Generated docs can be useful with libraries where code connects directly to it, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected. However, automatically-generated documentation can often leave much to be desired regarding quality and navigability.
 
-Do not truncate example request and response bodies, instead show the whole thing. Even specify which HTTP headers the Consumer should expect to see. Make use of a syntax highlighter in your documentation as color-highlighted JSON is much easier to parse with human eyes.
+Do not truncate example Resource request and response bodies, just show the whole thing (Collections can be truncated to only a few Resources, of course). Even specify which HTTP headers the Consumer should expect to see. Make use of a syntax highlighter in your documentation as color-highlighted JSON is much easier to parse with human eyes.
 
-Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those errors to happen. Keep a place where all anticipated error codes can be looked up as well.
+Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those errors to happen. Dedicate a place where anticipated error codes can be looked up as well.
 
-Make sure your documentation can be printed. CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody ever prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline reading.
+Make sure your documentation can be printed. CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline perusing.
 
 Documentation can either be split into many different pages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others.
 
