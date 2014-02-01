@@ -825,39 +825,39 @@ The problem with this format is that it does not convey what timezone the date i
 
 \subsection{Resource Identifiers (IDs)}
 
-Whenever communicating IDs, transfer them as a String (even if they are numeric). Everything a Consumer does with an ID is in string form anyway. If they make a request to the Resource, the ID is concatenated with another String and used as a URL. If the ID is logged, it is written as a String on disk. And unless the Consumer is doing some shady scraping of the API, the ID should never have arithmetic performed on it.
+Whenever communicating IDs, transfer them as a String (even if they are numeric). Everything a Consumer does with an ID is in string form anyway. If they make a request to the Resource, the ID is concatenated with another String and used as a URL. If the ID is logged, it is written as a String on disk. And unless the Consumer is doing some shady scraping of the API, the ID should never need to have arithmetic performed with it.
 
-Also, if IDs are always sent as a String, deciding to change from a numeric representation to a different format such as a UUID (e.g. \texttt{7d531700-79a5-11e3-979a-a79bcbe406e9}) or a Base62 encoded value (e.g. \texttt{oHg5SJYRHA0}) will result in no changes to the code on the Consumers end.
+Also, if IDs are always sent as a String, deciding to change from a numeric representation to a different format such as a UUID (e.g. \texttt{7d531700-79a5-11e3-979a-a79bcbe406e9}) or a Base62 encoded value (e.g. \texttt{oHg5SJYRHA0}) will result in no code changes on the Consumers end.
 
 \subsection{Nulls}
 
 If most Resources have a particular attribute available, and some do not, you should always provide the attribute in the document with a null value, instead of outright removing the attribute.
 
-This will usually make things easier for your Consumers, who won't need to check if a JSON attribute exists before attempting to read it.
+This will make things easier for Consumers who won't need to check if a JSON attribute exists before attempting to read it.
 
 \subsection{Arrays}
 
-When representing Resources with attributes which represent an array, you should give the attribute a plural name. This signifies to the developer that they should expect more than one value.
+When representing Resources with attributes which represent an array, you should give the attribute a plural name. This signifies to the developer they should expect more than one value.
 
-When an Array shouldn't have any entries, you should typically return an array with nothing in it, instead of returning a null. This really depends on the situation though. Empty arrays and a null have two different meanings.
+When an Array shouldn't have any entries, you should typically return an array with nothing in it, instead of returning a null.
 
 \subsection{Whitespace}
 
 Whitespace, while convenient for a human to read, isn't very beneficial to a Consumer, and incurs some extra networking overhead. It's really up to you to decide if you want to add whitespace to the output.
 
-JSON allows for any number of whitespace between keys and values, but if you are going to add whitespace, use a simple and consistent standard. Two spaces for indentation and a single newline is a common choice.
+JSON allows for any number of whitespace between keys and values, but if you are going to add whitespace, use a simple and consistent standard. Two spaces for indentation and a single newline is common practice.
 
 \section{Error Reporting}
 
-Errors are an inevitability of inter-party communication. Users will fat finger an email address, developers will not read the tiny disclaimer you hid in your API documentation, and a database server will occasionally be unavailable. When this happens, the server will of course return a 4XX or 5XX HTTP Status Code, but the document body itself should have useful information included.
+Errors are an inevitability of any inter-party communication. Users will fat finger an email address, developers will not read the tiny disclaimer you hid in your API documentation, and a database server will occasionally burst into flame. When this happens, the server will of course return a \textbf{4XX} or \textbf{5XX} HTTP Status Code, but the document body itself should have useful information included.
 
-When designing an error object, there isn't a specific standard that you need to follow. The examples that follow aren't a standard themselves, however feel free to use them as a starting point when designing your own error objects. Make sure that there is consistency between endpoints.
+When designing an error object, there isn't a specific standard that you need to follow. The examples that follow aren't an existing standard, however feel free to use them as a starting point when designing your own errors. Make sure that there is consistency between errors regardless of endpoint.
 
-There are essentially two classes of errors you can account for. The first one is a simple error, where it is easy to point to a certain attribute as being the problem. Let's refer to these as validation errors. The second class of errors are a bit more complex, and may not be easily interpreted by an API Consumer. Let's call these generic errors.
+There are essentially two classes of errors you can account for. The first one is a simple error, where it is easy to point to a specific attribute as being the problem. Let's refer to these as validation errors. The second class of errors are a bit more complex, and may not be easily interpreted by an API Consumer. Let's call these generic errors.
 
 \subsection{Validation Errors}
 
-When an error happens regarding a malformed attribute, provide the Consumer with a reference to the attribute causing the error, as well as a message about what is wrong. Assuming the Consumer is a providing a UI for the User to input data, they can not only display the message for the user to read, but if you provide the attribute, the Consumer can provide some context for the User.
+When an error happens regarding a malformed attribute, provide the Consumer with a reference to the attribute causing the error, as well as a message about what is wrong. Assuming the Consumer is a providing a UI for a User to input data, they can display the message for the user to read as well as provide context for the User.
 
 \paragraph{\textbf{Erroneous Request}}
 
@@ -880,9 +880,9 @@ PUT /v1/users/1
   "error_code": "invalid_attributes",
   "fields": [
     {
+      "field": "age",
       "error_human": "Age must be a number between 1 and 100",
-      "error_code": "integer_validation",
-      "field": "age"
+      "error_code": "integer_validation"
     }
   ]
 }
