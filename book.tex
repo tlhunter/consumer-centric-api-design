@@ -9,6 +9,7 @@
 \usepackage{epstopdf}
 \usepackage{wallpaper}
 \usepackage{geometry}
+\usepackage[utf8]{inputenc}
 \renewcommand\bibname{References}
 
 \begin{document}
@@ -36,7 +37,7 @@
 
 \subsubsection*{Thomas Hunter II, Author}
 
-\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate and API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API facade to abstract backend disparity. He's also given various talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
+\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate and API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API façade to abstract backend disparity. He's also given various talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -62,9 +63,9 @@ I'd like to make a special thanks to \href{https://twitter.com/thecodeplanet}{Jo
 
 An API represents a contract between the data and business-logic stored on your Server, and Consumers who wish to interact with this data. Breaking this contract will result in angry emails from developers and anguished users with broken apps. Designing a hard-to-use API will result in few or no third-party developers using it. On the other hand, building a great API and adhering to this contract will result in substantially more third-party developers and can elevate your service from a closed-source product to an open platform.
 
-Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/application has the potential to become a platform from which other services grow. Look at these tech companies offering popular services: \href{https://developers.facebook.com/}{Facebook}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{https://developers.google.com/}{Google}, \href{http://developer.github.com/v3/}{GitHub}, \href{https://developer.amazon.com/}{Amazon}, \href{http://developer.netflix.com/}{Netflix}, \href{https://www.dropbox.com/developers/core/docs}{Dropbox}... None of them would be nearly as popular as they are today if they hadn't opened their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms.
+Building an API is one of the most important things you can do to increase the value of your service. By having an API, your service/application has the potential to become a platform from which other services grow. Look at these tech companies offering popular services: \href{https://developers.facebook.com/}{Facebook}, \href{https://dev.twitter.com/docs/api/1.1}{Twitter}, \href{https://developers.google.com/}{Google}, \href{http://developer.github.com/v3/}{GitHub}, \href{https://developer.amazon.com/}{Amazon}, \href{http://developer.netflix.com/}{Netflix}, \href{https://www.dropbox.com/developers/core/docs}{Dropbox}... None of them would be nearly as popular as they are today if they hadn't opened their data and functionality via API. An entire industry exists with the sole purpose of consuming data provided by these platforms (Facebook games, social-media CRMs, secure Dropbox tools...)
 
-The principles of this book, if followed while designing and maintaining your API, will ensure third-party developers grok your API while substantially reducing support tickets and confused emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure working with your API has been, getting more developers to sign-up along the way.
+The principles of this book, if followed while designing and maintaining an API, will ensure third-party developers grok your API while consequently reducing support tickets and emails. Developers will travel from tech conference to tech conference rejoicing what a pleasure working with your API has been, getting more developers to sign-up along the way.
 
 \subsection*{Approach}
 
@@ -125,7 +126,7 @@ POST /notifications
   "user_id": "12",
   "message": "Hello World",
   "medium": "email",
-  "created": "2013-01-06 21:02:00"
+  "created": "2013-01-06T21:02:00Z"
 }
 \end{verbatim}
 
@@ -162,7 +163,7 @@ POST /users/12/send_{medium}
 
 {
   "message": "Hello World",
-  "sent": "2013-01-06 21:02:00"
+  "sent": "2013-01-06T21:02:00Z"
 }
 \end{verbatim}
 
@@ -225,7 +226,7 @@ Cache-Control: no-cache
 
 {
   "id": "12",
-  "created": 1386363036,
+  "created": "2013-12-18T06:08:22Z",
   "modified": null,
   "name": "Gir",
   "animal_type": "12"
@@ -690,13 +691,13 @@ When performing a GET request to an entire Collection, the Consumer expects an a
   {
     "id": "1",
     "name": "John Smith",
-    "created": "2014-01-01 12:00:00",
+    "created": "2014-01-01T12:00:00Z",
     "modified": null
   },
   {
     "id": "2",
     "name": "Jane Doe",
-    "created": "2014-01-01 12:01:00",
+    "created": "2014-01-01T12:01:00Z",
     "modified": null
   }
 ]
@@ -710,7 +711,7 @@ When performing a GET request for a specific resource, the Consumer is expecting
 {
   "id": "2",
   "name": "Jane Doe",
-  "created": "2014-01-01 12:01:00",
+  "created": "2014-01-01T12:01:00Z",
   "modified": null
 }
 \end{verbatim}
@@ -723,7 +724,7 @@ When performing a POST request to a Collection, the Consumer expects the resourc
 {
   "id": "3",
   "name": "Alice Roberts",
-  "created": "2014-01-01 12:02:00",
+  "created": "2014-01-01T12:02:00Z",
   "modified": null
 }
 \end{verbatim}
@@ -736,8 +737,8 @@ The result of a PUT operation is the entirety of the resource that was updated, 
 {
   "id": "3",
   "name": "Alice Smith",
-  "created": "2014-01-01 12:01:00",
-  "modified": "2014-01-01 12:03:00"
+  "created": "2014-01-01T12:01:00Z",
+  "modified": "2014-01-01T12:03:00Z"
 }
 \end{verbatim}
 
@@ -749,8 +750,8 @@ The result of a PATCH request is exactly the same as the result of a PUT operati
 {
   "id": "3",
   "name": "Alicia Smith",
-  "created": "2014-01-01 12:01:00",
-  "modified": "2014-01-01 12:04:00"
+  "created": "2014-01-01T12:01:00Z",
+  "modified": "2014-01-01T12:04:00Z"
 }
 \end{verbatim}
 
@@ -789,9 +790,10 @@ The ideal standard for representing dates is the \textbf{ISO 8601} \cite{ISO8601
 
 \begin{verbatim}
 "2014-01-10T03:06:17.396Z"
+"2014-01-09T22:06:17+05:00"
 \end{verbatim}
 
-This format is human readable, lacks redundant information, has variable precision (the microseconds on the end is optional), conveys timezone information, and is the most popular of standardized date formats.
+This format is human readable, lacks redundant information, has variable precision (the microseconds on the end is optional), conveys timezone information (the \texttt{Z} means UTC, but an offset can be provided), and is the most popular of standardized date formats.
 
 \subsubsection{JavaScript Default}
 
@@ -1005,6 +1007,8 @@ No matter what you are building and how much planning you do beforehand, your co
 
 Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they may migrate to somebody else's service. To ensure your application continually evolves \emph{and} you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
 
+Facebook is notorious for making backwards-breaking changes to their API. Indeed, while researching their Graph API, I could not find any mention of a scheme for performing versioning.
+
 \begin{quote}
 As a side note, if you are simply \emph{adding} new features to your API, such as new attributes to a resource (assuming they are not required to be set), or if you are \emph{adding} new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation, of course.
 \end{quote}
@@ -1027,6 +1031,8 @@ https://api.example.org/v1/*
 
 It is customary to use the letter \textbf{v} followed by an integer when versioning this way. Due to the nature of APIs, changing versions often is discouraged, and point releases usually aren't needed.
 
+GitHub, LinkedIn, and Google+ use a \texttt{v} and an integer (e.g. \texttt{/v3/}). Dropbox just uses an integer (e.g. \texttt{/1/}). Twitter uses a \texttt{v} and a decimal (e.g. \texttt{/v1.1/}). NetFlix uses a \texttt{?v=} and a decimal URL parameter (not an Endpoint URL segment, but still part of the URL).
+
 \subsubsection{Versioning via the Accept Header}
 
 Another method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
@@ -1044,6 +1050,8 @@ Another method is to use a custom header. This is quite similar to the previous 
 \begin{verbatim}
 X-Api-Version: 1
 \end{verbatim}
+
+\href{https://apidocs.joyent.com/sdcapidoc/cloudapi/}{Joyent CloudAPI} and \href{https://developers.copy.com/documentation#api-calls}{Copy.com} APIs use this header.
 
 \section{Authentication and Authorization}
 
@@ -1181,8 +1189,6 @@ When dealing with \emph{2LA}, the process for deciding Permissions is likely to 
 
 Regarding \emph{3LA}, the Consumer needs to have the ability to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (seen in Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
 
-Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whichever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing could break in weird ways.
-
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=120mm]{images/permissions-twitter.png}
@@ -1190,7 +1196,9 @@ Some services will allow a User to disable permissions (older versions of Facebo
 \label{fig:twitteroauth}
 \end{figure}
 
-\subsection{Example Permissions Object}
+Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whichever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing could break in weird ways.
+
+\subsection{Per-Authorization Permissions}
 
 The method for specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a a standard didn't exist as part of the spec. The Server can accept an additional parameter called \texttt{scope} (or whatever you choose) during the Request Token generation phase. This parameter could be a JSON object representing the permissions the Consumer is requesting. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
 
@@ -1206,8 +1214,6 @@ The following permissions object could represent a common social media website. 
 
 When the user authenticates the Consumer, they would see a list of each of the permissions the Consumer is asking for. Some of them which grant destructive or powerful capabilities such as adding and removing friends or changing the users profile should be highlighted for emphasis.
 
-\subsection{Real World Example}
-
 Here's an example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions by using a simple list of keywords representing permissions spearated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
 
 \begin{verbatim}
@@ -1218,7 +1224,14 @@ https://coinbase.com/oauth/authorize?response_type=code
 
 \subsection{Default Consumer Permissions}
 
-When a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions all at once. This would probably be done from a UI, such as providing a list of checkboxes where each checkbox represents a permission.
+When a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions all at once. This would probably be done from a UI, such as providing a list of checkboxes where each checkbox represents a permission. Figure \ref{fig:copypermissions} is an example of Per-Consumer permissions used by Copy.com.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/permissions-consumer.png}
+\caption{Copy.com Default Consumer Permissions}
+\label{fig:copypermissions}
+\end{figure}
 
 Ideally, your Server could even allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions). This gives developers the greatest amount of control and convenience.
 
@@ -1251,6 +1264,15 @@ Keep track of the version/endpoints being used by Consumers of your API. This ca
 When you do deprecate a version of your API, you can actually contact third-party developers using deprecated features. This is a convenient approach for reminding developers to upgrade before killing off the old version.
 
 If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which \emph{3LA} User). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=120mm]{images/apigee-analytics.png}
+\caption{Screenshot of Apigee Analytics}
+\label{fig:apigee}
+\end{figure}
+
+Figure \ref{fig:apigee} is an example of the sort of API Analytics captured by the company Apigee.
 
 
 \section{Documentation}
