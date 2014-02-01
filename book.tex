@@ -683,7 +683,7 @@ When a Consumer makes a request to the Server, something needs to be returned as
 
 \subsubsection{GET /\{collection\}}
 
-When performing a GET request to an entire Collection, the Consumer expects an array of every Resource being returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogeneous list of resources.
+When performing a GET request to an entire Collection, the Consumer expects an array of Resources to be returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogeneous list of resources.
 
 \begin{verbatim}
 [
@@ -704,7 +704,7 @@ When performing a GET request to an entire Collection, the Consumer expects an a
 
 \subsubsection{GET /\{collection\}/\{resource\_id\}}
 
-When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple RESTful API, this is just the resource object as a top level JSON object.
+When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple RESTful API, this is just the resource as a top level JSON object.
 
 \begin{verbatim}
 {
@@ -743,7 +743,7 @@ The result of a PUT operation is the entirety of the resource that was updated, 
 
 \subsubsection{PATCH /\{collection\}/\{resource\_id\}}
 
-The result of a PATCH request is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the resource attributes, the entire resource is returned.
+The result of a PATCH request is exactly the same as the result of a PUT operation. Even though the Consumer may have only acted on some of the attributes, the entire resource is returned.
 
 \begin{verbatim}
 {
@@ -756,30 +756,34 @@ The result of a PATCH request is exactly the same as the result of a PUT operati
 
 \subsubsection{DELETE /\{collection\}/\{resource\_id\}}
 
-This is the easiest of the bodies to deal with. Once a resource is deleted, you simply return an empty document. No need to return information about the deleted resource. As no body is present, omit the \texttt{Content-Type} header.
+This is the easiest of the bodies to deal with. Once a resource is deleted, you simply return an empty document. No need to return information about the deleted resource. Since no body is present, omit the \texttt{Content-Type} header.
 
 
 \section{JSON Attribute Conventions}
 
-JSON, which stands for \emph{JavaScript Object Notation}, is a subset of JavaScript, and was defined for the purpose of building a language-agnostic data interchange format. It fills mostly the same role that XML was designed to fill, except that it has the side effect of being much more compact, easily deserializing into native objects in most languages, and supporting many different data types (XML only really supports strings).
+JSON, which stands for \emph{JavaScript Object Notation}, is a subset of JavaScript, and was defined for the purpose of building a language-agnostic data interchange format. It fills mostly the same role that XML was designed to fill, except that it has the side effect of being much more compact, easily deserializing into native objects in most languages, and supporting many different data types (XML technically only supports strings).
 
-That said, there is still quite a bit of freedom that a developer has for representing data using JSON. This section of the book is designed to give you advice for representing data.
+That said, there is still quite a bit of freedom that a developer has when representing data using JSON. This section of the book is designed to give you advice for representing data.
 
 \subsection{Consistency between Resources}
 
 Whenever you represent different Resources within the same Collection, each attribute should remain of the same data type. For example, if one Resource has a \texttt{name} attribute which is a String, you shouldn't in a different Resource represent it as an Integer.
 
-There are some exceptions, such as when a value doesn't exist, it can be represented as a null. In general though keeping the attributes of the same data type will make your API easier for consumers to use, especially those using statically typed languages (JavaScript and PHP are more forgiving than something like C).
+There are some exceptions, such as when a value doesn't exist, it can be represented as a \texttt{null}. In general, keeping the attributes of the same data type will make your API easier for consumers to use, especially those using statically typed languages (\emph{JavaScript} and \emph{PHP} are more forgiving in this regard than a language like \emph{C}).
 
 \subsection{Booleans}
 
-It may be tempting to name your Booleans with a prefix or postfix to symbolize the purpose of the attribute. Common examples of this would be to prefix the variable with \texttt{is\_} or end it in \texttt{\_flag}.
+It may be tempting to name your Booleans with a prefix or postfix to symbolize the purpose of the attribute. Common examples of this would be to prefix the variable with \texttt{is\_} or end it with \texttt{\_flag}.
 
-This really isn't necessary as attribute names are often self-documenting. For example, if there is an attribute on your User resource called \texttt{administrator}, it should be pretty obvious that using a number or a string isn't intended.
+This really isn't necessary as attribute names are often self-documenting. For example, if there is an attribute on your User resource called \texttt{administrator}, it should be obvious that using a non-Boolean isn't intended.
 
-Another tip with Booleans is that they should usually be a \emph{positive} or \emph{happy} word, as opposed to their negative counterparts. This will prevent developers form having to figure out a double-negative in their head. For example, use \texttt{enabled} instead of \texttt{disabled}, \texttt{public} instead of \texttt{private}, and even \texttt{keep} instead of \texttt{purge}.
+Another tip with Booleans is that they should usually be a \emph{positive} or \emph{happy} word, as opposed to their negative counterparts. This will prevent developers form having to figure out a double-negative. For example, use \texttt{enabled} instead of \texttt{disabled}, \texttt{public} instead of \texttt{private}, and even \texttt{keep} instead of \texttt{purge}.
 
 \subsection{Timestamps}
+
+There are a multitude of standards for representing dates and times.
+
+\subsubsection{ISO 8601}
 
 The ideal standard for representing dates is the \textbf{ISO 8601} \cite{ISO8601} standard, and it looks a bit like this:
 
@@ -789,13 +793,17 @@ The ideal standard for representing dates is the \textbf{ISO 8601} \cite{ISO8601
 
 This format is human readable, lacks redundant information, has variable precision (the microseconds on the end is optional), conveys timezone information, and is the most popular of standardized date formats.
 
-JSON is a subset of JavaScript, and JavaScript does have a default format for parsing dates. The format of these dates looks a little something like this:
+\subsubsection{JavaScript Default}
+
+JSON is a subset of JavaScript, and JavaScript does have a default format for parsing dates. To see this format generated, create a new \texttt{Date} object and convert it to a String. The format of these dates looks a little something like this:
 
 \begin{verbatim}
 "Thu Jan 09 2014 22:06:17 GMT-0500 (EST)"
 \end{verbatim}
 
-That format is as verbose as it is ugly. Who cares what day of the week it was?
+Unfortunately this format is a verbose eyesore. Who cares what day of the week it was?
+
+\subsubsection{UNIX Epoch}
 
 If you wanted something much more terse, you could represent the date as the number of seconds since the Unix Epoch, and it can be stored as an integer:
 
@@ -803,15 +811,17 @@ If you wanted something much more terse, you could represent the date as the num
 1389323177396
 \end{verbatim}
 
-That format, on the other hand, is a bit too terse. As a human looking at it, you have no idea what date and time it represents! Linux and Unix machines and open source languages can parse that format very easily, however developers in Microsoft land will be clueless.
+This format is a bit too terse. As a human looking at it, you have no idea what date and time it represents! Linux and Unix machines and open source languages can parse that format very easily, however developers using \emph{Microsoft} technology will likely be clueless.
 
-Here is another common date format. This is what happens when a developer takes a TIMESTAMP directly from a SQL database and outputs it into the response:
+\subsubsection{SQL Timestamp}
+
+Here is another common date format. This is what happens when a developer takes a \texttt{TIMESTAMP} directly from a SQL database and outputs it into the response:
 
 \begin{verbatim}
 "2014-01-10 03:06:17"
 \end{verbatim}
 
-The problem with this format is that the Consumer has no idea what timezone the date is in! You may be tempted to use this format, and document the timezone of the server. However, developers will not remember it, and users of their application will wonder why a newly uploaded image has a modified time of five hours and three seconds ago.
+The problem with this format is that it does not convey what timezone the date is in! You may be tempted to use this format, and document the timezone of the server (which we refer to as being \emph{out of band}). However, developers will not remember it, and users of their application will wonder why a newly uploaded image has a modified time of five hours and three seconds ago.
 
 \subsection{Resource Identifiers (IDs)}
 
