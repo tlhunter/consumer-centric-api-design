@@ -1317,29 +1317,29 @@ curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
 
 \section{Hypermedia APIs: REST Evolved}
 
-Hypermedia APIs seem to be the future of RESTful API design. They're a pretty amazing concept, going "back to the roots" of how HTTP and HTML was intended to work.
+Hypermedia APIs may very-well be the future of RESTful API design. It really is an amazing concept, going \emph{back to the roots} of how HTTP and HTML was intended to work.
 
-When working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the API and the Consumer. These Endpoints must be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the API as intended.
+While working with non-Hypermedia RESTful APIs, the URL Endpoints are part of the contract between the API and the Consumer. These Endpoints must be known by the Consumer ahead of time, and changing them means the Consumer is no longer able to communicate with the API.
 
-API Consumers are of course far from being the only user agent making HTTP requests on the Internet. Humans, with their web browsers, are the most common user agent making HTTP requests. Humans, however, are NOT locked into this predefined Endpoint URL contract that RESTful APIs are.
+API Consumers are far from being the only user agent making HTTP requests on the Internet. Humans with their web browsers are the most common user agent making HTTP requests. Humans of course are \emph{not} locked into this predefined Endpoint URL contract that RESTful APIs are.
 
-What makes humans so special? Well, we're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get to where we want to go. If a URL changes, we're not affected (unless, that is, they bookmarked a page, in which case they go to the homepage and find a new route to their beloved article).
+What makes us humans so special? We're able to read content, click links for headings which look interesting, and in general explore a website and interpret content to get where we want to go. If a URL changes, we're not affected (unless we bookmarked a page, in which case we go to the homepage and find a new route to our beloved article).
 
 The Hypermedia API concept works the same way a human would. Requesting the Root of the API returns a listing of URLs which point perhaps to each collection of information, and describing each collection in a way which the Consumer can understand. Providing IDs for each resource isn't important as long as a URL to the resource is provided.
 
 With the Consumer of a Hypermedia API crawling links and gathering information, URLs are always up-to-date within responses and do not need to be known as part of a contract. If a URL is ever cached, and a subsequent request returns a 404, the Consumer can simply go back to the root and discover the content again.
 
-When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response can be a 3XX redirect to the complete resource.
+When retrieving a list of Resources within a Collection, an attribute containing a complete URL for the individual Resources are returned. When performing a POST/PATCH/PUT, the response could be a \textbf{3XX} redirect to the complete resource.
 
-JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document. HTML, as you can probably guess, does provide this information! We may very well see our APIs come full circle and return back to consuming HTML. Considering how far we've come with CSS, one day it may be common practice for APIs and Websites to use the exact same URLs and HTML content.
+JSON doesn't quite give us the semantics we need for specifying which attributes are URLs, nor how URLs relate to the current document (although, as we'll soon see, there are some standards for doing this). HTML, as you can probably guess, does provide this information! We may very well see our APIs come full circle and return to consuming HTML. Considering how far we've come with CSS, one day it may be common practice for APIs and Websites to use the exact same URLs and HTML content.
 
-Imagine a tool on the internet that you want to use. Could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messengers. Normally, integrations between tools are only convenient if you're dealing with a massive suite of tools, such as what is offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
+Imagine a tool on the internet that you want to use. It could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messengers. Normally, integrations between tools are only convenient if you're using a massive suite of tools, such as what is offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
 
-Now, imagine that these disparate tools created by different companies can work with each other as tightly as these massive suites of tools. Often times when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could work automatically, with the different services automatically discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
+Now, imagine that these disparate tools by different companies can work with each other as tightly as these massive suites of tools. Often times when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could theoretically work automatically, with the different services discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia APIs.
 
 \subsection{ATOM: An Early Hypermedia API}
 
-\href{https://en.wikipedia.org/wiki/Atom\_\%28standard\%29}{ATOM} \cite{HYPERATOM}, a relative to RSS, is likely one of the first mainstream Hypermedia APIs (except for HTML itself). ATOM is valid XML, and therefore is very easy to parse. Links to other documents use a \texttt{link} tag, and specify both the URL (using a \texttt{href} attribute), as well as the documents relation to the current document (using the \texttt{rel} attribute).
+\href{https://en.wikipedia.org/wiki/Atom\_\%28standard\%29}{ATOM} \cite{HYPERATOM}, a distant cousin of RSS, is likely one of the first mainstream Hypermedia APIs (except for HTML itself). ATOM is valid XML, and therefore easy to parse. Links to other documents use a \texttt{link} tag, and specify both the URL (using the \texttt{href} attribute), as well as the documents relation to the current document (using the \texttt{rel} attribute).
 
 \begin{verbatim}
 <?xml version="1.0" encoding="utf-8"?>
@@ -1370,15 +1370,15 @@ Now, imagine that these disparate tools created by different companies can work 
 
 \section{Response Document Standards}
 
-When responding with a document representing a Collection, it is usually adequate to return a top-level array containing each resource object. Likewise, when responding with a document representing a resource, simply returning a top-level object containing the resource is good-enough.
+When responding with a document representing a Collection, it is usually adequate to return a top-level array containing each resource object. Likewise, when responding with a document representing a resource, simply returning a top-level object containing the resource is usually good-enough.
 
-However, there are some standards which smart people have developed for encapsulating these items in a standardized envelope to help give the Consumer some context when parsing the responses.
+However, there are some standards which forward-thinking API Architects have developed for encapsulating these objects in a standardized envelope. These envelopes give the Consumer context when parsing the responses.
 
-For example, if making a filtered request limiting the Collection to containing only 10 Resources, how do you let the Consumer know how many total records exist? If an error occurs, sure you reply with a 4XX or 5XX HTTP Status, but what about an object in the body representing an error? These different response document standards provide a standardized method for returning this meta data.
+For example, if making a filtered request limits a Collection response to contain only 10 Resources, how do you let the Consumer know how many total records exist? How do you convey expected data types programmatically? These different response document standards provide methods for returning this meta data.
 
 \subsection{JSON Schema}
 
-\href{http://json-schema.org/}{JSON Schema} \cite{JSONSCHEMA} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, one could easily automate data validation and generation of CRUD forms.
+\href{http://json-schema.org/}{JSON Schema} \cite{JSONSCHEMA} provides a method for describing the attributes provided by an APIs endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, a Consumer could easily automate data validation and generation of CRUD forms.
 
 \subsubsection{Example JSON Schema Document}
 
@@ -1405,9 +1405,9 @@ For example, if making a filtered request limiting the Collection to containing 
 
 \subsection{JSON API}
 
-The \href{http://jsonapi.org/}{JSON API} \cite{JSONAPI} spec provided a standardized format for structuring response documents by introducing some reserved words which have special meanings (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
+The \href{http://jsonapi.org/}{JSON API} \cite{JSONAPI} spec provided a standardized format for structuring response documents by introducing some reserved attributes which have special meaning (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
 
-An interesting feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating what the Consumer would want.
+An notable feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating the Consumers next request(s).
 
 \subsubsection{Example JSON API Document}
 
@@ -1449,7 +1449,7 @@ An interesting feature of JSON API is that is also provides a method for returni
 
 \subsection{Siren}
 
-The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a standard method for representing resources and what actions can be performed on said resources. It is a Hypermedia API so the URL for performing an action or linking to a Resource is provided in the document.
+The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a standard method for representing resources and what actions can be performed on said resources. It is a Hypermedia API so the URL for performing an action or linking to a Resource is provided within the document.
 
 \subsubsection{Example Siren Document}
 
@@ -1506,17 +1506,19 @@ The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a s
 
 \subsection{JSON RPC}
 
-\href{http://www.jsonrpc.org/specification}{JSON RPC} \cite{JSONRPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP.
+\href{http://www.jsonrpc.org/specification}{JSON RPC} \cite{JSONRPC} is a relatively popular alternative to REST for exposing functionality over a network. Whereas REST is required to be used via HTTP, JSON RPC doesn't have a protocol requirement. It can be sent over sockets, be used with Inter Process Communication (IPC), and yes, it can function over HTTP as well.
 
 Unlike REST which requires an abstraction of Server business-logic and data into simple objects which can be acted upon using CRUD, JSON RPC calls will typically map to existing functions within your application.
 
 When a client makes a call using JSON RPC, they specify the name of a function to execute, as well as arguments to the function. Arguments can be in the form of either ordered parameters (using a JSON Array), or named parameters (using a JSON Object).
 
-The important part of the specification is the envelope which the data being sent through adheres to. The concept of a URL doesn't really exist (if you're using JSON RPC over HTTP, there's probably a single URL all requests are sent through, and each request is likely sent as a POST).
+The important part of the specification is the envelope which the data adheres to. The concept of a URL doesn't really exist (if you're using JSON RPC over HTTP, there's probably a single URL which all requests are sent through, and each request is likely sent as a POST).
 
 JSON RPC is mostly useful for situations where you don't have an HTTP server, for example multiplayer games or embedded systems or simple communication applications. If you already have an HTTP Server for your product or service, REST is likely the correct solution for you.
 
-When dealing with HTTP, every Request and Response is guaranteed to be paired together correctly. Due to the asynchronous nature of sockets and other such communication protocols, Requests need to provide a unique ID value, and the corresponding Response needs to provide the same ID.
+With HTTP, every Request and Response is guaranteed to be paired together correctly. Due to the asynchronous nature of sockets and other such communication protocols, Requests need to provide a unique ID value, and the corresponding Response needs to provide the same ID.
+
+JSON RPC also has mechanisms for sending batches of operations at once, and in some situations can compliment a RESTful API.
 
 \subsubsection{Example JSON RPC Request}
 
@@ -1533,9 +1535,7 @@ When dealing with HTTP, every Request and Response is guaranteed to be paired to
 
 \subsection{SOAP}
 
-\href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} \cite{SOAP} is a term you've very likely heard of, and even if you've never used it, you'll likely have strong negative opinions of it (and if you have used it, perhaps even stronger). The word \emph{Simple} in the acronym is a sort of a misnomer due to the complexity and verbosity of using SOAP.
-
-SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you've probably guessed, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
+Worth mentioning is \href{https://en.wikipedia.org/wiki/SOAP}{Simple Object Access Protocol (SOAP)} \cite{SOAP}, which is a term you've very likely heard of. SOAP is a sort of successor to an older technology called \href{https://en.wikipedia.org/wiki/XML-RPC}{XML RPC}. As you've probably guessed, XML RPC is similar to JSON RPC, as both are forms of Remote Procedure Call protocols.
 
 SOAP is useful for describing services exposed over the network, and is transport agnostic just like JSON RPC, although most implementations use it over HTTP. Partly due to the waning popularity of XML in comparison to JSON, SOAP is often looked down upon due to the verbosity and the bulkiness of document sizes.
 
