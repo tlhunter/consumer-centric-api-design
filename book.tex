@@ -1267,12 +1267,12 @@ Document expected response codes and possible error messages for each endpoint, 
 
 Make sure your documentation can be printed. CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline perusing.
 
-Documentation can either be split into many different pages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others.
+Documentation can either be split into many different webpages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others. Long documentation can be hard to browse, and search engine results won't always link to the proper section of the document (this issue plagues the \href{http://backbonejs.org/}{Backbone.js documentation}).
 
 
 \section{Convenience of Developer Experimentation}
 
-Providing convenient tools will allow developers to quickly test API commands without having paste sample code into their own application. This allows them to get familiar with your API much quicker.
+Providing convenient tools will allow developers to quickly test API commands without having to paste sample code into their own application. This allows them to get familiar with your API much quicker.
 
 \subsection{Web-Based Developer Console}
 
@@ -1285,21 +1285,23 @@ A Web-based developer console, e.g. Figure \ref{fig:devconsole}, will allow deve
 \label{fig:devconsole}
 \end{figure}
 
-Your server will need a website where third-party developers can register their applications, get authentication credentials, read documentation, etc. This is a great place to put the API Console.
+You will already need a website where third-party developers can register their applications, get authentication credentials, read documentation, etc. This is a great place to put an API Console.
 
-Ensure using the Developer Console is easy and efficient for the developer to use. Perhaps even provide them with a default user account which resets every hour using a CRON job. Maybe by clicking a single button their application listing, the credentials are stored automatically and the developer can begin making API calls on behalf of their application.
+Ensure the Developer Console is easy and efficient. Perhaps even provide them with a default user account which resets every hour using a CRON job. Maybe by clicking a single button their application listing, the \emph{3LA} credentials are automatically applied and the developer can begin making API calls on behalf of their application immediately.
 
-If possible use GET parameters for the Developer Console HTML form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
+If possible use URL parameters for the Developer Console form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
 
 \subsection{Providing cURL Commands}
 
-cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). You may have installed cURL as a dependency for another project which deals with making HTTP requests.
+cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). You very likely have installed cURL as a dependency for another project which makes HTTP requests.
 
-Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, \href{https://stripe.com/docs/connect/oauth}{Stripe}, etc., provide sample cURL queries. When doing \emph{2LA}, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
+Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, \href{https://stripe.com/docs/connect/oauth}{Stripe}, and even \href{http://developer.github.com/v3/}{GitHub} provide sample cURL commands. When doing \emph{2LA}, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
+
+While cURL is available for \emph{Windows}, if your service is primarily consumed by developers using \emph{Microsoft} technologies, providing example cURL commands may not be as beneficial as many of these developers would not have cURL or find it as beneficial.
 
 \subsubsection{Example cURL Command}
 
-This is the example cURL command displayed on the Mailgun homepage \cite{MAILGUNHOME}. The provided API key is even functional, so by pasting this command into a terminal, a developer can immediately make real API calls.
+This is the example cURL command displayed on the Mailgun homepage \cite{MAILGUNHOME}. The provided API key is even functional, so by pasting this command into a terminal, a developer can instantly make a real API call!
 
 \begin{verbatim}
 curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
