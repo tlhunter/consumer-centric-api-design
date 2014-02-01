@@ -920,28 +920,28 @@ Make sure that you catch all errors your server is capable of producing, and \em
 
 This sounds obvious, but it can actually be a lot harder than you think. In PHP, for example, extra care has to be made to catch all errors. By default, PHP and many other web languages/frameworks will return HTML formatted errors.
 
-Consumers will throw all sorts of broken data your way. Experiment with your Server and see what sort of errors you can get it to produce. Try sending malformed JSON, upload a 100GB file, corrupt the HTTP headers, make 100k concurrent requests, even try removing the underlying code and see how your web server handles it.
+Consumers will throw all sorts of broken data your way. Experiment with your Server and see what sort of errors you can cause it to produce. Try sending malformed JSON, upload a 100GB file, corrupt the HTTP headers, make 100k concurrent requests, even try removing the underlying code or breaking file permissions and see how your web server handles it.
 
 \subsection{String-Based Error Codes}
 
-You might have noticed from these examples that the \texttt{error\_code} attributes contain a simple string as a value. In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even Unicode symbols. These strings should never be compared. When I program in a language which supports both single or double quotes for strings, I'll surround these in double quotes.
+In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even Unicode symbols. These strings should never be used for comparison. When I program in a language which supports both single and double-quotes for strings, I'll surround these in double quotes.
 
 The other types of strings are computer readable strings. These are much simpler, often used for attributes (you wouldn't use "First Name" as a JSON key, would you?!), and should be all lowercase and contain underscores (or, camelCase, if you're one of \emph{those} people). These strings could pass as names of variables in most languages. I'll usually surround these strings in single quotes.
 
-Back to the point of error codes, it is important to provide the Consumer with \emph{both} a computer readable error code, as well as a human readable error message. The code can be looked up and have logic applied to it by the Consumer. The human readable message can change at any point if a translation changes or any type of rewrite happens.
+Returning to the topic of error codes, it is important to provide the Consumer with \emph{both} a computer readable error code, as well as a human readable error message. The code can be looked up and have logic applied to it by the Consumer. The human readable message can change at any point if a translation changes or any type of rewrite happens.
 
-Many APIs I've seen include the use of integer numeric codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to continue on their way.
+Many APIs I've seen include the use of numeric error codes. For example, if there was an error with a database transaction being committed, the error code might be \texttt{2091}. A third-party developer working with the API and coming across that error is going to have absolutely no idea what that number means, and will have to go look it up in the API docs. If that message were instead \texttt{database\_transaction\_failure}, the developer is going to have somewhat of a clue as to what just happened and will be able to compensate faster.
 
 The Stripe API \cite[\#Errors]{STRIPEAPI} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
 
 
 \section{Responses should Resemble Requests}
 
-As a general rule of thumb, a Response resource should closely resemble the equivalent Request resource. This means that the same attribute names and values are used for Requests as well as Responses.
+As a general rule, a Response resource structure should closely resemble the equivalent Request resource. This means that the same attribute names and values are used for Requests as well as Responses.
 
-There are of course a few exceptions. A PATCH, for example, only affects a partial document. A POST won't have certain server-calculated attributes (like an ID or a created timestamp). PATCH and PUTs won't have certain read-only attributes (e.g. created and modified times). These differences in attributes should be minimized whenever possible.
+There are of course a few exceptions. A PATCH, for example, only affects a partial document. A POST won't have certain server-calculated attributes (like an ID or a created timestamp). PATCH and PUTs won't have certain read-only attributes (e.g. created and modified times). These differences in attributes should be minimal when possible.
 
-Whenever dealing with the values of attributes, they should always be the same format.
+Whenever dealing with the values of attributes, they should always be the same format. A good philosophy to follow is that request objects should be a strict subset of response objects.
 
 \subsection{Acceptable Discrepancy}
 
@@ -973,7 +973,7 @@ POST /users
 
 \subsection{Avoidable Discrepancy}
 
-In this example, during a POST to the \texttt{users} endpoint, there is a \texttt{role} attribute, which is a string containing possible user roles, such as \texttt{administrator} or \texttt{moderator}. However, in the response, that same data becomes a Boolean of whether or not the user is an administrator. This doubles the amount of attribute names the Consumer needs to keep track of.
+In this example, during a POST to the \texttt{users} endpoint, there is a \texttt{role} attribute, which is a string containing possible user roles, such as \texttt{administrator} or \texttt{moderator}. However, in the response, that same data becomes a Boolean of whether or not the user is an administrator. This increases the amount of attribute names the Consumer needs to keep track of.
 
 \paragraph{\textbf{Request}}
 
