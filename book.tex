@@ -582,53 +582,53 @@ on
 
 \section{HTTP Status Codes}
 
-It is vital that a RESTful API makes use of the proper HTTP Status Codes; they are a standard after all! Various networking equipment is able to read these Status Codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out many 5XX errors. Client libraries understand if a request has succeeded or failed depending on the Status Code.
+It is vital that a RESTful API makes use of the proper HTTP Status Codes; they are a standard after all! Various networking equipment is able to read these Status Codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out too many errors. Client libraries understand if a request has succeeded or failed depending on the Status Code.
 
 \begin{quote}
-The first line of a Response message is the Status-Line, consisting of the protocol version followed by a numeric status code and its associated textual phrase, with each element separated by SP characters. No CR or LF is allowed except in the final CRLF sequence.\cite{RFC2616}
+The first line of a Response message is the Status-Line, consisting of the protocol version followed by a numeric status code and its associated textual phrase, with each element separated by SP characters. No CR or LF is allowed except in the final CRLF sequence. \cite{RFC2616}
 \end{quote}
 
 Here is an example of what a complete Status-Line looks like:
 
 \begin{verbatim}
-HTTP/1.1 204 File Not Found
+HTTP/1.1 404 File Not Found
 \end{verbatim}
 
 \subsection{Common API Status Codes}
 
-There are a plethora of HTTP Status Codes \cite{RFC2616} to choose from, however this list should be a good starting point.
+While there are a plethora of HTTP Status Codes to choose from \cite{RFC2616}, this list should provide a good starting point.
 
 \begin{itemize}
 \item \texttt{\textbf{200} OK}
     \begin{itemize}
-    \item GET / PUT / PATCH  Requests
+    \item Successful GET / PUT / PATCH  Requests
     \item The Consumer requested data from the Server, and the Server found it for them
     \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
 \item \texttt{\textbf{201} Created}
     \begin{itemize}
-    \item POST Requests
+    \item Successful POST Requests
     \item The Consumer gave the Server data, and the Server accepted it
     \end{itemize}
 \item \texttt{\textbf{204} No Content}
     \begin{itemize}
-    \item DELETE Requests
+    \item Successful DELETE Requests
     \item The Consumer asked the Server to delete a Resource, and the Server deleted it
     \end{itemize}
 \item \texttt{\textbf{400} Invalid Request}
     \begin{itemize}
-    \item POST / PUT / PATCH Requests
+    \item Erroneous POST / PUT / PATCH Requests
     \item The Consumer gave bad data to the Server, and the Server did nothing with it
     \end{itemize}
 \item \texttt{\textbf{404} Not Found}
     \begin{itemize}
     \item All Requests
-    \item The Consumer referenced an inexistent Resource or Collection, and the Server did nothing
+    \item The Consumer referenced an inexistent Resource or Collection
     \end{itemize}
 \item \texttt{\textbf{500} Internal Server Error}
     \begin{itemize}
     \item All Requests
-    \item The Server encountered an error, and the Consumer has no knowledge if the request was successful
+    \item The Server encountered an error, and the Consumer does not know if the request succeeded
     \end{itemize}
 \end{itemize}
 
@@ -638,30 +638,30 @@ The first digit of the status code is the most significant, and provides a gener
 
 \subsubsection{1XX - Informational}
 
-The \textbf{1XX} range is reserved for low-level HTTP stuff, and you'll very likely go your entire career without manually sending one of these status codes. An example of this is when upgrading a connection from HTTP to Web Sockets.
+The \textbf{1XX} range is reserved for low-level HTTP happenings, and you'll very likely go your entire career without manually sending one of these status codes. An example of this range is when upgrading a connection from HTTP to Web Sockets.
 
 \subsubsection{2XX - Successful}
 
-The \textbf{2XX} range is reserved for successful messages where all goes as planned. Do your best to ensure your Server sends as many of these to the Consumer as possible.
+The \textbf{2XX} range is reserved for successful responses. Ensure your Server sends as many of these to the Consumer as possible.
 
 \subsubsection{3XX - Redirection}
 
-The \textbf{3XX} range is reserved for traffic redirection. Most APIs do not use these requests, however, the newer Hypermedia style APIs may make more use of these.
+The \textbf{3XX} range is reserved for traffic redirection triggering subsequent requests. Most APIs do not use these status codes however the newer Hypermedia style APIs may make more use of them.
 
 \subsubsection{4XX - Client Error}
 
-The \textbf{4XX} range is reserved for responding to errors made by the Consumer, e.g. they're providing bad data or asking for things which don't exist. These requests should be be idempotent, and not change the state of the server.
+The \textbf{4XX} range is reserved for responding to errors made by the Consumer, e.g. they've provided bad data or asked for something which don't exist. These requests should be be idempotent, and not change the state of the server.
 
 \subsubsection{5XX - Server Error}
 
-The \textbf{5XX} range is reserved as a response when the Server makes a mistake. Often times, these errors are created by low-level functions even outside of the developers control, and ensure a Consumer gets some sort of response. The Consumer can't possibly know the state of the server when a 5XX response is received, and so these should be avoidable.
+The \textbf{5XX} range is reserved as a response when the Server makes a mistake. Often times, these errors are created by low-level functions even outside of the developers control to ensure a Consumer gets some sort of response. The Consumer can't possibly know the state of the server when a \textbf{5XX} response is received, e.g. did a failure happen before or after persisting the change, and so these should be avoidable.
 
 
 \section{Content Types}
 
-Currently, the most \emph{exciting} of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, etc. XML appears to have lost the popularity contest a while ago (except in large corporate environments). SOAP, thankfully, is all but dead. We really don't see many APIs providing HTML to be consumed (save for web scrapers).
+Currently, the most \emph{exciting} of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, etc. XML appears to have lost the popularity contest a while ago (save for large corporate environments). SOAP, thankfully, is all but dead. We really don't see many APIs providing HTML to be consumed (except for web scrapers).
 
-Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emph{JSON API}, \emph{XML API}, and \emph{SOAP API}. This should provide a feel for how their popularity has changed over time.
+Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emph{JSON API}, \emph{XML API}, and \emph{SOAP API}. This should provide an understanding of how their popularities have changed over time.
 
 \begin{figure}[ht!]
 \centering
@@ -670,16 +670,16 @@ Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emp
 \label{fig:googletrends}
 \end{figure}
 
-Developers using popular languages and frameworks can very likely parse any valid data format you return to them. You can even provide data in any of the aforementioned data formats (not including SOAP) quite easily, if you're building a common response object and swapping serializers. What does matter though, is that you make use of the Accept header when responding with data.
+Developers using popular languages and frameworks can very likely parse any valid data format you return to them. You can even interchange data in any of the aforementioned data formats (not including SOAP) quite easily, if you're building a common response object and swapping serializers. It is crucial that when supporting multiple return formats you adhere to the \texttt{Accept} header provided by the Consumer.
 
-Some people recommend adding a .json, .xml, or .html file extension to the URL (appended to the Endpoint) for specifying the Content Type to be returned. Unfortunately, with the different extensions added, we've now got different URLs for the same Resources.
+Some API architects recommend adding a .json, .xml, or .html file extension to the URL (appended to the Endpoint) for specifying the Content Type to be returned. Unfortunately, with the different extensions added, we've now got different URLs representing the same Resources.
 
-Use the \texttt{Accept} header, which is built into the HTTP spec for this purpose, and if you can't provide data in a format the Consumer wants, reply with a \texttt{406 Not Acceptable} response.
+Use the \texttt{Accept} header, which is built into the HTTP spec specifically for this purpose, and if you can't provide data in a format the Consumer requests, reply with a \texttt{406 Not Acceptable} status.
 
 
-\section{Anticipated Body Content}
+\section{Expected Body Content}
 
-When a Consumer makes a request to the Server, something needs to be returned as a response. Depending on the HTTP Method being used, the response will be different.
+When a Consumer makes a request to the Server, something needs to be returned as a response. Depending on the HTTP Method and Endpoint being requested, the expected response will differ.
 
 \subsubsection{GET /\{collection\}}
 
