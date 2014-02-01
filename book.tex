@@ -437,36 +437,34 @@ There's nothing wrong with not supporting every method-to-resource combination, 
 
 \section{Filtering Resources}
 
-When a Consumer makes a GET request for a Collection, provide them a list of every single Resource matching the requested criteria even though the list could be quite large. Do your best to minimize arbitrary limitations imposed on Consumers, as these limits make it harder for a third party developer to grok the API. If they request a certain Collection, and iterate over the results, never seeing more than 100 items, it is now their job to determine where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large responses?
+When a Consumer makes a GET request for a Collection, provide them a list of every Resource matching the requested criteria, even though the list could be quite large. Do your best to minimize arbitrary limitations imposed on Consumers, as these limits make it harder for a third party developer to grok the API. If they request a Collection, and iterate over the results, never seeing more than 100 items, it is now their mission to determine where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large responses?
 
-Do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer gets their results back as soon as possible. Another reason for this is the Consumer may be lazy and wants the Server to do filtering and pagination. The not-so-important reason (from the Consumers perspective), yet a great benefit for the Server, is that the response-generation will require less resources.
+Do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer recieves results as soon as possible. Another reason for this is the Consumer may be lazy and want the Server to perform filtering and pagination. The not-so-important reason from the Consumers perspective, yet a great benefit for the Server, is that response-generation will require less resources.
 
-Filtering is applicable when performing GETs on Collections. Since these are GET requests, filtering information should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API, and if your API were a simple representation of a Relational Database, the correlating SQL clause.
+Since these are GET requests on Collections, filters should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API, and if your API were a simple representation of a Relational Database, the correlating SQL clause.
 
 \begin{itemize}
-\item \texttt{?limit=10\&offset=20}: Pagination of results\newline{}(\texttt{LIMIT 20, 10})
+\item \texttt{?limit=10\&offset=20}: Pagination and offsetting of results\newline{}(\texttt{LIMIT 20, 10})
 \item \texttt{?animal\_type\_id=1}: Filter records which match the following condition\newline{}(\texttt{WHERE animal\_type\_id = 1})
-\item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attribute\newline{}(\texttt{ORDER BY name ASC})
+\item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attributes\newline{}(\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some filtering can be redundant with endpoint URLs. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\{zoo\_id\}}. Dedicated endpoints will make the lives easier of developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
-
-Also, this may go without saying, but whenever filtering or sorting of data happens, be sure to white-list the column names for which the Consumer can filter and sort by. We don't want any database errors being sent to Consumers!
+Some filtering can be redundant with other endpoints. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\{zoo\_id\}}. Dedicated endpoints will make API consumption easuer for developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
 
 
 \section{White-Listing Attributes}
 
-Often times, when a Consumer is making a GET request to a specific Resource or Collection of Resources, they do not need all attributes belonging to the resource(s). Having so much data could also be a network bottleneck. Responding with less data can also reduce the overhead on the Server, e.g. it may prevent an unnecessary database \texttt{JOIN}.
+Often times, when a Consumer is making a GET request to a specific Resource or Collection, they do not need all attributes belonging to the resource(s). Having so much data could become a network bottleneck as well. Responding with less data can help reduce server overhead, e.g. it may prevent an unnecessary database \texttt{JOIN}.
 
-Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing parameters. In theory, blacklisting could work as well, but as new attributes appear in Resources (as additions are backwards compatible), the Consumer ends up receiving data it doesn't want.
+Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing attributes. In theory, black-listing could work as well, but as new attributes appear in Resources (since additions are backwards compatible), the Consumer ends up receiving data it doesn't want.
 
 The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
 
-The SQL queries are just an over-simplified example of what could be generated if your API represented a simple Relational Database application.
+The SQL queries in these examples are over-simplification of what could be generated if your API represented a simple Relational Database application.
 
 \subsection{Filtered Request}
 
-In this next example, the Consumer has requested a filtered list of attributes. If you make use of an ORM, filtering of this data should be pretty simple, however if you're manually writing SQL queries, more effort will be involved.
+In this example, the Consumer has requested a filtered list of attributes pertaining to a user.
 
 \paragraph{\textbf{Request URL}}
 
@@ -492,7 +490,7 @@ SELECT id, name, email FROM user WHERE user.id = 12;
 
 \subsection{Unfiltered Request}
 
-In this example request, the default representation of a user resource includes data from two database tables joined together. One of the tables is the obvious \texttt{user} table, and another table contains some textual data related to a user called \texttt{user\_desc}.
+In this example request, the default representation of a user resource includes data from two database tables joined together. One of the tables is a \texttt{user} table, and another table contains some textual data related to a user called \texttt{user\_desc}.
 
 \paragraph{\textbf{Request URL}}
 
@@ -521,13 +519,13 @@ SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id =
 
 \section{Body Formats}
 
-A common method for APIs to receive data from third-parties is to accept a JSON document as the body. Assuming your API is providing data to third-parties in the form of JSON, as a consequence those same third-parties should be able to produce JSON documents as well.
+A common method for APIs to receive data from third-parties is to accept a JSON document as the body. Assuming your API provides data to third-parties in the form of JSON, as a consequence those same third-parties should also be able to produce JSON documents.
 
-There are two common methods a Web Browser will use when send data to a web server. If you're using a common web language/framework for building an API, such as \emph{PHP} or \emph{Express.js} or \emph{Ruby on Rails}, you're already used to consuming data using these two methods. Web Servers (e.g. \emph{Apache} or \emph{NGINX}) abstract the differences of these two methods and will provide your programming language data in one easy to consume manner. The two methods are called Multi-part Form Data (required for file uploads), and URL Form Encoded (most forms use this latter method).
+There are two primary methods a Web Browser will use when send data to a web server. If you're using a popular web language/framework for building an API, such as \emph{PHP} or \emph{Express.js} and \emph{Ruby on Rails}, you're already used to consuming data using these two methods. Web Servers (e.g. \emph{Apache} or \emph{NGINX}) abstract the differences of these two methods and will provide your programming language one easy method to consume data. The two methods are called Multi-part Form Data (required for file uploads), and URL Form Encoded (most forms use this latter method).
 
 \subsection{JSON}
 
-The JSON document used for the Request can be very similar to the JSON document used for the Response. JSON can specify the type of data (e.g. Integers, Strings, Booleans), while also allowing for hierarchal relationships of data. String data needs to be escaped (e.g. a quote \texttt{"} becomes prefixed with a backslash \texttt{\symbol{92}"}), but this is usually done automatically for the developer.
+The JSON document used for the Request can be very similar to the JSON document used for the Response. JSON can specify the type of data (e.g. Integers, Strings, Booleans), while also allowing for hierarchal relationships of data. String data needs to be escaped (e.g. a quote \texttt{"} becomes prefixed with a backslash \texttt{\symbol{92}"}), but this is typically done automatically for the developer.
 
 \begin{verbatim}
 POST /v1/animal HTTP/1.1
@@ -544,7 +542,7 @@ Content-Length: 24
 
 \subsection{Form URL Encoded}
 
-This method is used by Websites for accepting simple data forms from a web browser. Data needs to be URL Encoded if they contain any special characters (e.g. a space character becomes \texttt{\%20}). This is automatically taken care of by the browser.
+This method is used by Websites for accepting simple data forms from a web browser. Data needs to be URL Encoded if it contains any special characters (e.g. a space character becomes \texttt{\%20}). This is automatically taken care of by the browser.
 
 \begin{verbatim}
 POST /login HTTP/1.1
@@ -558,7 +556,7 @@ username=root&password=Zion0101
 
 \subsection{Multi-Part Form Data}
 
-This method is used by Websites for accepting more complex data from a web browser, such as file uploads. No escaping needs to happen, although the boundary is a random string and needs to not be contained within the uploaded file or data.
+This method is used by Websites for accepting more complex data from a web browser, such as file uploads. No escaping needs to happen, although the boundary is a random string and needs to not be contained within the uploaded file or form data.
 
 \begin{verbatim}
 POST /file_upload HTTP/1.1
