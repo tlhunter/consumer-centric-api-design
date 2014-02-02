@@ -37,7 +37,7 @@
 
 \subsubsection*{Thomas Hunter II, Author}
 
-\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate and API Architect of a large filesharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API façade to abstract backend disparity. He's also given various talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
+\href{http://thomashunter.name}{Thomas} previously worked as a Developer Advocate and API Architect of a large file-sharing and storage service, where his main concern was getting a well-documented API into the hands of third-party developers. While working at a company in the financial industry he evangelized an internal API façade to abstract backend disparity. He's also given various talks on the topic of API Design. His previous book \href{http://amzn.to/1aqVRvq}{Backbone.js Application Development} guides the reader through the process of building an API-consuming JavaScript application.
 
 \subsubsection*{John Sheehan, Technical Reviewer}
 
@@ -369,7 +369,7 @@ Here are two lesser-known HTTP Methods. Feel free to use them in your API, howev
     \end{itemize}
 \end{itemize}
 
-By making use of the HTTP methods, and not using actionable-verbs within the URL itself, a simpler interface is presented to the developer. Instead of wondering which verbs apply to which nouns (Do I \texttt{send} or \texttt{mail} an \emph{email}? Do I \texttt{remove} or \texttt{fire} an \emph{employee}?), a disambiguous and consistent convention is provided instead.
+By making use of the HTTP methods, and not using actionable-verbs within the URL itself, a simpler interface is presented to the developer. Instead of wondering which verbs apply to which nouns (Do I \texttt{send} or \texttt{mail} an \emph{email}? Do I \texttt{remove} or \texttt{fire} an \emph{employee}?), a unambiguous and consistent convention is provided instead.
 
 Typically, GET requests can be cached (and often are!) Browsers, for example, will cache GET requests (depending on expiration headers), and will go as far as alert the user if they attempt to POST data for a second time. A HEAD request is basically a GET without the response body, and can be cached as well.
 
@@ -402,7 +402,7 @@ Each piece of data separated by a slash is a URL Segment. Try to keep the number
 
 \subsection{Specific Endpoints}
 
-While conveying what each endpoint does, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a list of actions one can perform with our fictional Zoo-keeping API. Notice that we preceed each endpoint with the HTTP Method. This is a common notation and is similar to the one used within an HTTP Request header.
+While conveying what each endpoint does, you'll want to list valid HTTP Method and Endpoint combinations. For example, here's a list of actions one can perform with our fictional Zoo-keeping API. Notice that we precede each endpoint with the HTTP Method. This is a common notation and is similar to the one used within an HTTP Request header.
 
 \begin{itemize}
 \item \texttt{GET /v1/zoos}: List all Zoos (perhaps just ID and Name, not too much detail)
@@ -440,7 +440,7 @@ There's nothing wrong with not supporting every method-to-resource combination, 
 
 When a Consumer makes a GET request for a Collection, provide them a list of every Resource matching the requested criteria, even though the list could be quite large. Do your best to minimize arbitrary limitations imposed on Consumers, as these limits make it harder for a third party developer to grok the API. If they request a Collection, and iterate over the results, never seeing more than 100 items, it is now their mission to determine where this limit is imposed. Is their ORM buggy and limiting items to 100? Is the network chopping up large responses?
 
-Do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer recieves results as soon as possible. Another reason for this is the Consumer may be lazy and want the Server to perform filtering and pagination. The not-so-important reason from the Consumers perspective, yet a great benefit for the Server, is that response-generation will require less resources.
+Do offer the ability for a Consumer to specify some sort of filtering/limitation of the results. The most important reason for this, as far as the Consumer is concerned, is that the network payload is minimal and the Consumer receives results as soon as possible. Another reason for this is the Consumer may be lazy and want the Server to perform filtering and pagination. The not-so-important reason from the Consumers perspective, yet a great benefit for the Server, is that response-generation will require less resources.
 
 Since these are GET requests on Collections, filters should be passed via URL parameters. Here are some examples of the types of filtering you could conceivably add to your API, and if your API were a simple representation of a Relational Database, the correlating SQL clause.
 
@@ -450,7 +450,7 @@ Since these are GET requests on Collections, filters should be passed via URL pa
 \item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attributes\newline{}(\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some filtering can be redundant with other endpoints. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\{zoo\_id\}}. Dedicated endpoints will make API consumption easuer for developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
+Some filtering can be redundant with other endpoints. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\{zoo\_id\}}. Dedicated endpoints will make API consumption easier for developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
 
 
 \section{White-Listing Attributes}
@@ -1214,7 +1214,7 @@ The following permissions object could represent a common social media website. 
 
 When the user authenticates the Consumer, they would see a list of each of the permissions the Consumer is asking for. Some of them which grant destructive or powerful capabilities such as adding and removing friends or changing the users profile should be highlighted for emphasis.
 
-Here's an example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions by using a simple list of keywords representing permissions spearated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
+Here's an example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions by using a simple list of keywords representing permissions separated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
 
 \begin{verbatim}
 https://coinbase.com/oauth/authorize?response_type=code
@@ -1238,9 +1238,9 @@ Ideally, your Server could even allow for both of these mechanisms to work in pa
 
 \section{Rate Limiting}
 
-Rate limiting is a feature which can be implemented in an API to prevent Consumers from making detrimenting Server stability by making too many requests. Consumers can be given a limit on the number of requests they make. This limit could be per-Consumer, per-User-per-Consumer, or whatever you decide. If limits are per-Consumer, depending on how much your Server trusts the Consumer, the limits could be higher. Some services even offer a subscription fee for increasing this limit.
+Rate limiting is a feature which can be implemented in an API to prevent Consumers from making diminishing Server stability by making too many requests. Consumers can be given a limit on the number of requests they make. This limit could be per-Consumer, per-User-per-Consumer, or whatever you decide. If limits are per-Consumer, depending on how much your Server trusts the Consumer, the limits could be higher. Some services even offer a subscription fee for increasing this limit.
 
-If your API makes use of rate limits, be sure informaiton about the limit can be accesses programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
+If your API makes use of rate limits, be sure information about the limit can be accesses programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
 
 \begin{verbatim}
 HTTP/1.1 403 Forbidden
