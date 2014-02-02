@@ -310,7 +310,7 @@ It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users
 
 You probably already know about GET and POST requests. These are the two most commonly used requests when a web browser accesses webpages and interacts with data. All browsers, including the antiquated Internet Explorer 6 (IE6), are able to generate these two requests.
 
-There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say "and a half" because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many APIs.
+There are, however, four and a half HTTP Methods that you need to know about when building a RESTful API. I say \emph{and a half} because the PATCH method is very similar to the PUT method, and the functionality of the two are often combined into just PUT by many APIs.
 
 You've likely heard of the phrase \emph{CRUD} when referring to the seemingly boiler-plate code many web developers need to write when interacting with a database. Some web frameworks will even generate CRUD \emph{Scaffolding} for the developer as a result of running a simple terminal command. CRUD stands for Create, Read, Update, and Delete, and short of handling any business-logic, can be used for handling all data entry.
 
@@ -459,7 +459,7 @@ Often times, when a Consumer is making a GET request to a specific Resource or C
 
 Again, since we're dealing with GET requests, you'll want to accept a URL parameter for white-listing attributes. In theory, black-listing could work as well, but as new attributes appear in Resources (since additions are backwards compatible), the Consumer ends up receiving data it doesn't want.
 
-The parameter name you choose isn't too important. It could be "filter" or the overly-verbose "attribute\_whitelist". Consistency between different Endpoints is what is most important.
+The parameter name you choose isn't too important. It could be \texttt{filter} or the overly-verbose \texttt{attribute\_whitelist}. Consistency between different Endpoints is what is most important.
 
 The SQL queries in these examples are over-simplification of what could be generated if your API represented a simple Relational Database application.
 
@@ -928,7 +928,7 @@ Consumers will throw all sorts of broken data your way. Experiment with your Ser
 
 In my opinion, there are two types of strings in programming. The first type of string contains human readable text, which includes punctuation and different letter cases and even Unicode symbols. These strings should never be used for comparison. When I program in a language which supports both single and double-quotes for strings, I'll surround these in double quotes.
 
-The other types of strings are computer readable strings. These are much simpler, often used for attributes (you wouldn't use "First Name" as a JSON key, would you?!), and should be all lowercase and contain underscores (or, camelCase, if you're one of \emph{those} people). These strings could pass as names of variables in most languages. I'll usually surround these strings in single quotes.
+The other types of strings are computer readable strings. These are much simpler, often used for attributes (you wouldn't use \texttt{First Name} as a JSON key, would you?!), and should be all lowercase and contain underscores (or, camelCase, if you're one of \emph{those} people). These strings could pass as names of variables in most languages. I'll usually surround these strings in single quotes.
 
 Returning to the topic of error codes, it is important to provide the Consumer with \emph{both} a computer readable error code, as well as a human readable error message. The code can be looked up and have logic applied to it by the Consumer. The human readable message can change at any point if a translation changes or any type of rewrite happens.
 
@@ -1107,7 +1107,7 @@ WWW-Authenticate: Basic realm="Example"
 
 At this point, the user either clicks cancel and is taken to an error screen and chooses to go somewhere else, or they enter correct credentials and click Authorize. Entering the wrong credentials typically results in the Server sending back the same Unauthorized status.
 
-The credentials supplied by the user are transmitted as follows: The username (which cannot contain ":") is concatenated with ":", and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
+The credentials supplied by the user are transmitted as follows: The username (which cannot contain \texttt{:}) is concatenated with \texttt{:}, and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
 
 \paragraph{\textbf{Authorized Request}}
 
@@ -1185,7 +1185,7 @@ Choosing which authentication mechanism to use for your service may be made easi
 
 Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate this data.
 
-When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by \emph{Widgets, Inc.}, and this company trusts \emph{Gadgets, Co.} with certain features of the API, \emph{Widgets, Inc.} will probably manually assign \emph{Gadgets, Co.} with more permissive permissions. However, Company \emph{Hackers, LLC}, which is otherwise unknown to \emph{Widgets, Inc.}, will get the default restrictive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
+When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by \emph{Widgets, Inc.}, and this company trusts \emph{Gadgets, Co.} with certain features of the API, \emph{Widgets, Inc.} will probably manually assign \emph{Gadgets, Co.} with more liberal permissions. However, Company \emph{Hackers, LLC}, which is otherwise unknown to \emph{Widgets, Inc.}, will get the default restrictive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
 
 Regarding \emph{3LA}, the Consumer needs to have the ability to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (seen in Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
 
@@ -1292,7 +1292,7 @@ Make sure your documentation can be printed. CSS is a powerful thing; don't be a
 Documentation can either be split into many different webpages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others. Long documentation can be hard to browse, and search engine results won't always link to the proper section of the document (this issue plagues the \href{http://backbonejs.org/}{Backbone.js documentation}).
 
 
-\section{Convenience of Developer Experimentation}
+\section{Convenience of Developer Testing}
 
 Providing convenient tools will allow developers to quickly test API commands without having to paste sample code into their own application. This allows them to get familiar with your API much quicker.
 
