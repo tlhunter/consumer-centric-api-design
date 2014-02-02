@@ -299,7 +299,7 @@ The syntax used to describe these URLs is called a URI Template and is a human-r
 A URI Template is a compact sequence of characters for describing a range of Uniform Resource Identifiers through variable expansion. \cite{RFC6570}
 \end{quote}
 
-Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate. If you take a similar approach to what GitHub does, one of the keys could be \texttt{current\_user}, and the value could be a URL
+Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate. If you take a similar approach to what GitHub does, one of the keys could be \texttt{current\_user}, and the value could be a URL to the \texttt{users} endpoint pre-populated with the current users \texttt{user\_id}.
 
 It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these would contradict the existing RESTful URL patterns the rest of the API adheres to.
 
