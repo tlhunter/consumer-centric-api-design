@@ -1061,14 +1061,14 @@ In theory, your API could use both methods of authorization for different areas.
 
 \subsection{Two-Legged Authentication (2LA)}
 
+As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication (\emph{2LA}) is quite simple. Essentially, the Consumer needs a way to authenticate themselves with the API. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
+
 \begin{figure}[!htb]
 \centering
-\includegraphics[scale=.6]{images/two-legged.eps}
+\includegraphics[width=60mm]{images/two-legged.eps}
 \caption{Two-Legged Authentication (2LA)}
 \label{fig:twolegged}
 \end{figure}
-
-As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication (\emph{2LA}) is quite simple. Essentially, the Consumer needs a way to authenticate themselves with the API. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
 
 Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with programmatically), but the method we will use is conceptually similar.
 
@@ -1130,7 +1130,7 @@ You can always invent your own method of auth where you supply the Consumer with
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[scale=.6]{images/three-legged.eps}
+\includegraphics[width=60mm]{images/three-legged.eps}
 \caption{Three-Legged Authentication (3LA)}
 \label{fig:threelegged}
 \end{figure}
