@@ -1031,7 +1031,7 @@ https://api.example.org/v1/*
 
 It is customary to use the letter \textbf{v} followed by an integer when versioning this way. Due to the nature of APIs, changing versions often is discouraged, and point releases usually aren't needed.
 
-GitHub, LinkedIn, and Google+ use a \texttt{v} and an integer (e.g. \texttt{/v3/}). Dropbox just uses an integer (e.g. \texttt{/1/}). Twitter uses a \texttt{v} and a decimal (e.g. \texttt{/v1.1/}). NetFlix uses a \texttt{?v=} and a decimal URL parameter (not an Endpoint URL segment, but still part of the URL).
+LinkedIn, and Google+ use a \texttt{v} and an integer (e.g. \texttt{/v3/}). Dropbox just uses an integer (e.g. \texttt{/1/}). Twitter uses a \texttt{v} and a decimal (e.g. \texttt{/v1.1/}). NetFlix uses a \texttt{?v=} and a decimal URL parameter (not an Endpoint URL segment, but still part of the URL).
 
 \subsubsection{Versioning via the Accept Header}
 
@@ -1042,6 +1042,8 @@ The Accept header offers a way to specify generic and less generic content types
 \begin{verbatim}
 Accept: application/json+v1
 \end{verbatim}
+
+\href{http://developer.github.com/v3/media/#beta-v3-and-the-future}{GitHub} uses an Accept header formatted \texttt{application/vnd.github.v3+json} to interact with a specific version of their API. If omitted, the Consumer interacts with the \emph{beta} version.
 
 \subsubsection{Versioning via a Custom Header}
 
