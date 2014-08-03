@@ -21,6 +21,9 @@ book). When this happens, I'll come up with some sort of system for keeping trac
 probably have a dedicated page in the book itself. Content submitted in this manner will be given the
 once over by yours-truly to ensure consistency in writing style.
 
+Of course, any contributions made to this book will give me (and whatever publisher I go with)
+non-exclusive rights to do whatever we want with it. Sorry, legal stuff.
+
 ## Installing LaTeX
 
 If you use OS X, there's a convenient package you can install called [MacTeX](https://tug.org/mactex/).
