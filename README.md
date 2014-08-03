@@ -43,7 +43,7 @@ Once you have LaTeX run the following command from within the book directory:
 ./build.sh
 ```
 
-The book will be available as `book.pdf`.
+The book will be named something like "Consumer-Centric API Design vX.Y.Z.pdf".
 
 ## Donations
 

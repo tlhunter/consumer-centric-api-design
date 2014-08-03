@@ -5,10 +5,9 @@ book.blg
 book.log
 book.out
 book.toc
-book.pdf
 
 # Temporary PDF files converted from EPS during build
-images/*.pdf
+*.pdf
 
 # Dia temporary files
 *.dia.autosave
