@@ -9,6 +9,10 @@ Currently the book weighs in at about 55 pages. I like to think of it as coverin
 manner, but I'm sure it really just needs more content ;). I'd like to hit at least 100 pages, though
 that's not to say content needs to be watered down to fill more space.
 
+## Downloading PDFs
+
+[Download Book Builds Here](https://thomashunter.name/consumer-centric-api-design/)
+
 ## Contributing
 
 If you'd like to see more topics covered in this book, submit an issue with your question and I'll either
