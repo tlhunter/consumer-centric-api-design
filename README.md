@@ -45,6 +45,13 @@ Once you have LaTeX run the following command from within the book directory:
 
 The book will be available as `book.pdf`.
 
+## Donations
+
+Donations help fund the time I've spent on the project (as well as validate I should keep going).
+
+* [GitTip/tlhunter](https://www.gittip.com/tlhunter/)
+* Bitcoin: `16XGDMMDFFWrL2qsbTUjyK97zK6uiM5fYC`
+
 ## License
 
 ![CC BY-NC-ND](http://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png)
