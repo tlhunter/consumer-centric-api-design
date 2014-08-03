@@ -1,0 +1,336 @@
+\chapter{The API Ecosystem}
+
+\section{API Versioning}
+
+No matter what you are building and how much planning you do beforehand, your core application will change, your company will pivot, your data relationships will alter, and attributes will be added and removed from resources. This is just how software development works, and is especially true if your project is alive and used by many people.
+
+Remember than an API is a published contract between a Server and a Consumer. If you make changes to the API and these changes break backwards compatibility, you will break deployed applications and third party developers will resent you for it. Do it enough, and they may migrate to somebody else's service. To ensure your application continually evolves \emph{and} you keep developers happy, you need to occasionally introduce new versions of the API while still allowing old versions to function.
+
+Facebook is notorious for making backwards-breaking changes to their API. Indeed, while researching their Graph API, I could not find any mention of a scheme for performing versioning.
+
+\begin{quote}
+As a side note, if you are simply \emph{adding} new features to your API, such as new attributes to a resource (assuming they are not required to be set), or if you are \emph{adding} new Endpoints, you do not need to increment your API version number as these changes do not break backwards compatibility. You will want to update your API Documentation, of course.
+\end{quote}
+
+Over time you can deprecate old versions of the API. To deprecate a feature doesn't mean to shut if off or diminish quality, but to alert developers that the older version will be removed on a specific date and that they should upgrade to a newer version.
+
+\subsection{Requesting a Specific Version}
+
+There are three common methods RESTful APIs use for communicating which version of the API to use.
+
+\subsubsection{Versioning via a URL Segment}
+
+The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing a developer can do.
+
+The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLs likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
+
+\begin{verbatim}
+https://api.example.org/v1/*
+\end{verbatim}
+
+It is customary to use the letter \textbf{v} followed by an integer when versioning this way. Due to the nature of APIs, changing versions often is discouraged, and point releases usually aren't needed.
+
+LinkedIn, and Google+ use a \texttt{v} and an integer (e.g. \texttt{/v3/}). Dropbox just uses an integer (e.g. \texttt{/1/}). Twitter uses a \texttt{v} and a decimal (e.g. \texttt{/v1.1/}). NetFlix uses a \texttt{?v=} and a decimal URL parameter (not an Endpoint URL segment, but still part of the URL).
+
+\subsubsection{Versioning via the Accept Header}
+
+Another method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
+
+The Accept header offers a way to specify generic and less generic content types, as well as specifying fall-backs. In the example below, we are requesting a more specific version of JSON, conceptually, Version 1 of the API JSON.
+
+\begin{verbatim}
+Accept: application/json+v1
+\end{verbatim}
+
+\href{http://developer.github.com/v3/media/#beta-v3-and-the-future}{GitHub} uses an Accept header formatted \texttt{application/vnd.github.v3+json} to interact with a specific version of their API. If omitted, the Consumer interacts with the \emph{beta} version.
+
+\subsubsection{Versioning via a Custom Header}
+
+Another method is to use a custom header. This is quite similar to the previous method. Consumers would still use the normal Accept header they've been using.
+
+\begin{verbatim}
+X-Api-Version: 1
+\end{verbatim}
+
+\href{https://apidocs.joyent.com/sdcapidoc/cloudapi/}{Joyent CloudAPI} and \href{https://developers.copy.com/documentation#api-calls}{Copy.com} APIs use this header.
+
+\section{Authentication and Authorization}
+
+There are two common paradigms in which your API may authorize Consumers. Using the Two-Legged paradigm, there are two parties involved; a Consumer and your Server. In the Three-Legged paradigm, there are three parties involved, a Consumer, your Server, and a User who has (or will have) an account with both services.
+
+In theory, your API could use both methods of authorization for different areas. Also, there may be some sections of the API which can be accessed anonymously and can entirely bypass the authorization process.
+
+\subsection{Two-Legged Authentication (2LA)}
+
+As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authentication (\emph{2LA}) is quite simple. Essentially, the Consumer needs a way to authenticate themselves with the API. Due to the stateless nature of HTTP, this authentication needs to be present with every request.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=60mm]{images/two-legged.eps}
+\caption{Two-Legged Authentication (2LA)}
+\label{fig:twolegged}
+\end{figure}
+
+Modern websites make use of sessions for handling this state, where a session identifier is passed along with every request via cookie. With an API, you would never require the use of a cookie (they're typically difficult to work with programmatically), but the method we will use is conceptually similar.
+
+\begin{quote}
+The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{ACMV2N2}
+\end{quote}
+
+The HTTP protocol conveniently gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
+
+\subsubsection{Basic HTTP Authentication}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/basic-http-auth.png}
+\caption{Basic HTTP Authentication Dialog in FireFox}
+\label{fig:basichhtpauth}
+\end{figure}
+
+The \emph{classical} method of performing authentication is called Basic HTTP Auth \cite{RFC2617}, where a User Agent (meaning a web browser or Consumer) first makes a GET request to a protected resource. The Server responds with the \texttt{401 Unauthorized} header, and the User Agent displays a dialog prompting the user for a username and password.
+
+\paragraph{\textbf{First Request}}
+
+\begin{verbatim}
+GET /protected HTTP/1.1
+Host: www.example.org
+Accept: text/html
+\end{verbatim}
+
+\paragraph{\textbf{Unauthorized Response}}
+
+\begin{verbatim}
+HTTP/1.1 401 Unauthorized
+Date: Thu, 9 Jan 2014 23:35:00 GMT
+WWW-Authenticate: Basic realm="Example"
+\end{verbatim}
+
+At this point, the user either clicks cancel and is taken to an error screen and chooses to go somewhere else, or they enter correct credentials and click Authorize. Entering the wrong credentials typically results in the Server sending back the same Unauthorized status.
+
+The credentials supplied by the user are transmitted as follows: The username (which cannot contain \texttt{:}) is concatenated with \texttt{:}, and then concatenated with the password. This text is then \href{https://en.wikipedia.org/wiki/Base64}{Base64 Encoded} and sent in the Authorization header. As you can probably guess, this is extremely insecure if done over unencrypted HTTP.
+
+\paragraph{\textbf{Authorized Request}}
+
+\begin{verbatim}
+GET /protected HTTP/1.1
+Host: www.example.org
+Accept: text/html
+Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ==
+\end{verbatim}
+
+Finally, the Server provides the User Agent with the protected content which the user has requested. This exact same Authorization header is sent with every subsequent request.
+
+Implementing HTTP Basic Authorization to your API is just as easy, except that instead of having a browser on the other end, it would be a Consumer of your API. The initial unauthorized request wouldn't need to be performed as the Consumer would know ahead of time that it needs to first be authorized. If the Consumer does provide incorrect credentials, the server would still reply with a \texttt{401 Unauthorized} status.
+
+\subsubsection{Alternatives to Basic Auth}
+
+You can always invent your own method of auth where you supply the Consumer with a single randomly-generated and impossible-to-guess token, which they simply provide in the Authorization header (this concept is often referred to as an \emph{Auth Token}). Third parties may want the ability to revoke Auth Tokens, and to generate multiple ones for their Application. Make sure that you provide an administration interface so developers can provision and revoke these tokens themselves.
+
+\subsection{Three-Legged Authentication (3LA)}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=60mm]{images/three-legged.eps}
+\caption{Three-Legged Authentication (3LA)}
+\label{fig:threelegged}
+\end{figure}
+
+As you can see in Figure \ref{fig:threelegged}, Three-Legged Authentication (\emph{3LA}) is a bit more complex. Instead of passing messages between two parties (one channel), messages need to be communicated between three parties (three channels). A user likely trusts your application with their username and password, however they don't trust a third-party Consumer. The user would also like the ability to revoke the third-parties access to their data, without the need to change their username and password.
+
+The complexities of \emph{3LA} are far too intricate to exemplify in this book, so you'll want to read more information from a different source. At a high level, they provide a method for a Consumer to sign requests and to validate they are who they say they are. \emph{3LA} also provides a method for users to grant privileges so Consumers can access specific data. Users can revoke permissions from Consumers at any point. Of course, the Server can also revoke a Consumers privileges.
+
+OAuth 2.0 \cite{RFC6749} is the De-Facto standard for performing \emph{3LA} in modern RESTful APIs. With each Request, the Server can be sure it knows which Consumer is making a request, which User they are making requests on behalf of, and provide a standardized method for expiring access or allowing users to revoke access from a Consumer, all without the need for a third-party Consumer to know the users login credentials.
+
+There is also the older OAuth 1.0a \cite{RFC5849} standard, which solves mostly the same problems. This standard works by requiring a hash of OAuth attributes sent over the wire, which includes concepts such as a timestamp and a nonce. These are common in cryptographic systems for providing security, such as preventing replay attacks, and are mostly made irrelevant by sending data over HTTPS. Whichever method you ultimately choose, ensure it is trustworthy and well-documented and has many different libraries available for the languages and platforms which your Consumers will likely be using.
+
+\begin{quote}
+OAuth 1.0a, while it is technically the most secure of the options, can be quite difficult to implement. While maintaining an OAuth 1.0a provider, I was surprised by the number of developers who had to implement their own library since one didn't already exist for their language. After spending many hours debugging cryptic \emph{invalid signature} errors, I really must suggest choosing OAuth 2.0.
+\end{quote}
+
+\subsection{Real-World Usage}
+
+Choosing which authentication mechanism to use for your service may be made easier by looking at what other services use, and the reasoning by choosing each method.
+
+\begin{itemize}
+\item \textbf{Twitter}: OAuth 1.0a, \href{https://dev.twitter.com/docs/oauth/xauth}{xAuth} (proprietary), OAuth 2.0
+    \begin{itemize}
+        \item OAuth 1.0a is kept around to support legacy Consumers
+        \item xAuth was created to bring some OAuth 2.0 features to OAuth 1.0a (e.g. desktop login)
+    \end{itemize}
+\item \href{http://developer.github.com/v3/#authentication}{\textbf{GitHub}}: OAuth 2.0, Basic Auth
+    \begin{itemize}
+        \item Basic Auth will leak user credentials to third-parties
+        \item Basic Auth likely chosen for developers testing their own apps
+        \item Github users \emph{are} developers after all
+    \end{itemize}
+\item \href{http://documentation.mailgun.com/quickstart.html#authentication}{\textbf{Mailgun}}: Basic Auth
+    \begin{itemize}
+        \item Mailgun is purely \emph{2LA}, so Basic Auth is a fine choice
+        \item Using Basic Auth makes it easier for novice developers to test the API
+    \end{itemize}
+\item \href{https://developers.facebook.com/docs/reference/dialogs/oauth/}{\textbf{Facebook Graph}}: OAuth 2.0
+    \begin{itemize}
+        \item The userbase is Facebooks greatest asset, and is definitely a \emph{3LA} service
+        \item Facebook is a big target for hackers
+    \end{itemize}
+\item \href{https://www.dropbox.com/developers/core/docs}{\textbf{Dropbox}}: OAuth 1.0a, OAuth 2.0
+    \begin{itemize}
+        \item OAuth 1.0a is for supporting legacy Consumers
+        \item OAuth 2.0 is the preferred method for authenticating with Dropbox
+    \end{itemize}
+\end{itemize}
+
+
+\section{Consumer Permissions}
+
+Permissions are a way of specifying which Consumers have access to what data, and more specifically, how they are allowed to manipulate this data.
+
+When dealing with \emph{2LA}, the process for deciding Permissions is likely to be handled very simply. For example, if your Service is owned by \emph{Widgets, Inc.}, and this company trusts \emph{Gadgets, Co.} with certain features of the API, \emph{Widgets, Inc.} will probably manually assign \emph{Gadgets, Co.} with more liberal permissions. However, Company \emph{Hackers, LLC}, which is otherwise unknown to \emph{Widgets, Inc.}, will get the default restrictive permissions. Or, perhaps additional permissions can be earned by paying a fee or mailing in a photo ID.
+
+Regarding \emph{3LA}, the Consumer needs to have the ability to specify which resources belonging to the user they would like to interact with. When the user authorizes the Consumer, the user is usually prompted with a GUI to review permissions, perhaps make a decision or two, and either allow or deny access. You've very likely seen these permission prompts with services like Twitter (seen in Figure ~\ref{fig:twitteroauth}), Facebook, LinkedIn, etc.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=120mm]{images/permissions-twitter.png}
+\caption{Twitter OAuth Permissions}
+\label{fig:twitteroauth}
+\end{figure}
+
+Some services will allow a User to disable permissions (older versions of Facebook allowed this), other services will require the permissions to be accepted or denied outright. You can choose whichever approach you'd like with your service. Do keep in mind that Consumers which don't anticipate the permissions changing could break in weird ways.
+
+\subsection{Per-Authorization Permissions}
+
+The method for specifying permissions will vary depending on the authorization mechanism your API implements. With OAuth 1.0a a standard didn't exist as part of the spec. The Server can accept an additional parameter called \texttt{scope} (or whatever you choose) during the Request Token generation phase. This parameter could be a JSON object representing the permissions the Consumer is requesting. By passing this parameter during the authorization step, a Consumer is able to get per-user permissions.
+
+The following permissions object could represent a common social media website. It represents a Consumer which wishes to get information about a users profile as well as make changes to their profile, send the user emails using the service (although not have access to their email address), as well as retrieve a list of friends, add new friends, and remove existing friends.
+
+\begin{verbatim}
+{
+  "profile": [ "read", "write" ],
+  "email": [ "send" ],
+  "friends": [ "read", "add", "remove" ]
+}
+\end{verbatim}
+
+When the user authenticates the Consumer, they would see a list of each of the permissions the Consumer is asking for. Some of them which grant destructive or powerful capabilities such as adding and removing friends or changing the users profile should be highlighted for emphasis.
+
+Here's an example taken from \href{https://coinbase.com/docs/api/authentication#permissions}{Coinbase} \cite{COINBASE}. They adhere to the OAuth 2.0 spec for sending permissions by using a simple list of keywords representing permissions separated by spaces (which are encoded as \texttt{+} symbols). This request would allow the consumer to \texttt{buy}, \texttt{sell}, \texttt{send}, and \texttt{request} Bitcoins on behalf of the authenticated user.
+
+\begin{verbatim}
+https://coinbase.com/oauth/authorize?response_type=code
+    &client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_CALLBACK_URL
+    &scope=buy+sell+send+request
+\end{verbatim}
+
+\subsection{Default Consumer Permissions}
+
+When a Consumer registers their application with your Server, assuming permissions will need to be the same for every user of their application, they can specify the permissions all at once. This would probably be done from a UI, such as providing a list of checkboxes where each checkbox represents a permission. Figure \ref{fig:copypermissions} is an example of Per-Consumer permissions used by Copy.com.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/permissions-consumer.png}
+\caption{Copy.com Default Consumer Permissions}
+\label{fig:copypermissions}
+\end{figure}
+
+Ideally, your Server could even allow for both of these mechanisms to work in parallel (accepting preset permissions, to be overwritten by optional per-user permissions). This gives developers the greatest amount of control and convenience.
+
+
+\section{Rate Limiting}
+
+Rate limiting is a feature which can be implemented in an API to prevent Consumers from making diminishing Server stability by making too many requests. Consumers can be given a limit on the number of requests they make. This limit could be per-Consumer, per-User-per-Consumer, or whatever you decide. If limits are per-Consumer, depending on how much your Server trusts the Consumer, the limits could be higher. Some services even offer a subscription fee for increasing this limit.
+
+If your API makes use of rate limits, be sure information about the limit can be accesses programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
+
+\begin{verbatim}
+HTTP/1.1 403 Forbidden
+Date: Tue, 20 Aug 2013 14:50:41 GMT
+Status: 403 Forbidden
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1377013266
+
+{
+    "message": "API rate limit exceeded. \
+        See http://developer.github.com/v3/#rate-limiting for details."
+}
+\end{verbatim}
+
+
+\section{API Analytics}
+
+Keep track of the version/endpoints being used by Consumers of your API. This can be as simple as incrementing an integer in a database each time a request is made. There are many reasons that keeping track of API Analytics is beneficial such as optimizing the most commonly requested Endpoints to reduce Server load.
+
+When you do deprecate a version of your API, you can actually contact third-party developers using deprecated features. This is a convenient approach for reminding developers to upgrade before killing off the old version.
+
+If you can, try to keep track of a matrix worth of analytics data. For example, which endpoint is used, in which version of the API, and by which Consumer (and perhaps even which \emph{3LA} User). If you get angry users telling you that certain features are broken, having this information will be very helpful for diagnosing problems.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=120mm]{images/apigee-analytics.png}
+\caption{Screenshot of Apigee Analytics}
+\label{fig:apigee}
+\end{figure}
+
+Figure \ref{fig:apigee} is an example of the sort of API Analytics captured by the company Apigee.
+
+
+\section{Documentation}
+
+Writing documentation is vital to the success of an API. If consumers don't know how to use an API, they won't use it.
+
+Make your Documentation available to the public, and especially search engines. Keeping documentation hidden behind a login prompt will have a few detriments. Developers won't be able to find documentation using a search engine, developers will be annoyed when they have to login and re-navigate to the docs, and potential developers won't know the capabilities of your API before deciding if they should sign up.
+
+Avoid using automatic documentation generators! If you do use them, at least make sure you're cleaning up the output and making it presentable. Generated docs can be useful with libraries where code connects directly to it, or even Remote Procedure Call (RPC) style APIs where the code and API are closely connected. However, automatically-generated documentation can often leave much to be desired regarding quality and navigability.
+
+Do not truncate example Resource request and response bodies, just show the whole thing (Collections can be truncated to only a few Resources, of course). Even specify which HTTP headers the Consumer should expect to see. Make use of a syntax highlighter in your documentation as color-highlighted JSON is much easier to parse with human eyes.
+
+Document expected response codes and possible error messages for each endpoint, and what could have gone wrong to cause those errors to happen. Dedicate a place where anticipated error codes can be looked up as well.
+
+Make sure your documentation can be printed. CSS is a powerful thing; don't be afraid to hide that sidebar when the docs are printed. Even if nobody prints a physical copy, you'd be surprised at how many developers like to print to PDF for offline perusing.
+
+Documentation can either be split into many different webpages, or kept on one long page. If you are keeping documentation on one long page, break it up into sections with anchor tags and provide a Table of Contents so that developers can link to parts and share links with others. Long documentation can be hard to browse, and search engine results won't always link to the proper section of the document (this issue plagues the \href{http://backbonejs.org/}{Backbone.js documentation}).
+
+
+\section{Convenience of Developer Testing}
+
+Providing convenient tools will allow developers to quickly test API commands without having to paste sample code into their own application. This allows them to get familiar with your API much quicker.
+
+\subsection{Web-Based Developer Console}
+
+A Web-based developer console, e.g. Figure \ref{fig:devconsole}, will allow developers to test API commands without ever leaving the documentation website.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/api-console.png}
+\caption{Example API Console}
+\label{fig:devconsole}
+\end{figure}
+
+You will already need a website where third-party developers can register their applications, get authentication credentials, read documentation, etc. This is a great place to put an API Console.
+
+Ensure the Developer Console is easy and efficient. Perhaps even provide them with a default user account which resets every hour using a CRON job. Maybe by clicking a single button their application listing, the \emph{3LA} credentials are automatically applied and the developer can begin making API calls on behalf of their application immediately.
+
+If possible use URL parameters for the Developer Console form when it submits. This way, from within the documentation, a developer could click a link describing an API Endpoint and immediately be taken to the console where the Endpoint is executed.
+
+\subsection{Providing cURL Commands}
+
+cURL is a command-line utility available for many platforms (it even comes shipped with many Linux distributions). You very likely have installed cURL as a dependency for another project which makes HTTP requests.
+
+Services such as \href{http://documentation.mailgun.com/api_reference.html}{Mailgun}, \href{https://stripe.com/docs/connect/oauth}{Stripe}, and even \href{http://developer.github.com/v3/}{GitHub} provide sample cURL commands. When doing \emph{2LA}, sample queries are very easy to execute (3LA is often more difficult due to the required steps beforehand).
+
+While cURL is available for \emph{Windows}, if your service is primarily consumed by developers using \emph{Microsoft} technologies, providing example cURL commands may not be as beneficial as many of these developers would not have cURL or find it as beneficial.
+
+\subsubsection{Example cURL Command}
+
+This is the example cURL command displayed on the Mailgun homepage \cite{MAILGUNHOME}. The provided API key is even functional, so by pasting this command into a terminal, a developer can instantly make a real API call!
+
+\begin{verbatim}
+curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
+    https://api.mailgun.net/v2/samples.mailgun.org/messages \
+    -F from='Excited User <excited@samples.mailgun.org>' \
+    -F to='devs@mailgun.net' \
+    -F subject='Hello' \
+    -F text='Testing some Mailgun awesomeness!'
+\end{verbatim}
