@@ -14,5 +14,5 @@ mv book.pdf Consumer-Centric\ API\ Design\ `git describe --abbrev=0`.pdf
 
 # run `./build.sh --perserve` if you want to keep these files around
 if [ "$1" != "--preserve" ]; then
-    rm book.aux book.bbl book.blg book.log book.out book.toc
+    rm -f book.{aux,bbl,blg,log,out,toc}
 fi
