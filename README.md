@@ -13,6 +13,81 @@ that's not to say content needs to be watered down to fill more space.
 
 [Download Book Builds Here](https://thomashunter.name/consumer-centric-api-design/)
 
+## Table of Contents
+
+1 The Basics
+1.1 Data Design and Abstraction
+1.1.1 Examples of Abstraction
+1.1.2 Real World Examples
+1.2 Anatomy of an HTTP Message
+1.2.1 HTTP Request
+1.2.2 HTTP Response
+1.2.3 Debugging HTTP Traffic
+1.3 API Entrypoint
+1.3.1 Choosing an Entrypoint
+1.3.2 Content Located at the Root
+2 API Requests
+2.1 HTTP Methods
+2.2 URL Endpoints
+2.2.1 Top-Level Collections
+2.2.2 Specific Endpoints
+2.3 Filtering Resources
+2.4 White-Listing Attributes
+2.4.1 Filtered Request
+2.4.2 Unfiltered Request
+2.5 Body Formats
+2.5.1 JSON
+2.5.2 Form URL Encoded
+2.5.3 Multi-Part Form Data
+3 API Responses
+3.1 HTTP Status Codes
+3.1.1 Common API Status Codes
+3.1.2 Status Code Ranges
+3.2 Content Types
+3.3 Expected Body Content
+3.4 JSON Attribute Conventions
+3.4.1 Consistency between Resources
+3.4.2 Booleans
+3.4.3 Timestamps
+3.4.4 Resource Identifiers (IDs)
+3.4.5 Nulls
+3.4.6 Arrays
+3.4.7 Whitespace
+3.5 Error Reporting
+3.5.1 Validation Errors
+3.5.2 Generic Errors
+3.5.3 Always Handle Server Errors
+3.5.4 String-Based Error Codes
+3.6 Responses should Resemble Requests
+3.6.1 Acceptable Discrepancy
+3.6.2 Avoidable Discrepancy
+4 The API Ecosystem
+4.1 API Versioning
+4.1.1 Requesting a Specific Version
+4.2 Authentication and Authorization
+4.2.1 Two-Legged Authentication (2LA)
+4.2.2 Three-Legged Authentication (3LA)
+4.2.3 Real-World Usage
+4.3 Consumer Permissions
+4.3.1 Per-Authorization Permissions
+4.3.2 Default Consumer Permissions
+4.4 Rate Limiting
+4.5 API Analytics
+4.6 Documentation
+4.7 Convenience of Developer Testing
+4.7.1 Web-Based Developer Console
+4.7.2 Providing cURL Commands
+5 Beyond REST
+5.1 Hypermedia APIs: REST Evolved
+5.1.1 ATOM: An Early Hypermedia API
+5.2 Response Document Standards
+5.2.1 JSON Schema
+5.2.2 JSON API
+5.2.3 Siren
+5.3 Alternatives to REST
+5.3.1 JSON RPC
+5.3.2 SOAP
+
 ## Contributing
 
 If you'd like to see more topics covered in this book, submit an issue with your question and I'll either
