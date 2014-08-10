@@ -21,6 +21,7 @@ Pages will have alternating margins, as this is intended to be printed front and
 rendered in vector to keep filesize small and quality high.
 
 ![Cover and First Page Screenshot](resources/screenshot.png)
+_Screenshot from Evince highlighting hyperlinks_
 
 ## Table of Contents
 
