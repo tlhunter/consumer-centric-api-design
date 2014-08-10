@@ -111,14 +111,26 @@ non-exclusive rights to do whatever we want with it. Sorry, legal stuff.
 
 ## Installing LaTeX
 
-If you use OS X, there's a convenient package you can install called [MacTeX](https://tug.org/mactex/).
+### OS X
+
+There's a convenient package you can install called [MacTeX](https://tug.org/mactex/).
+
 There's also a homebrew cask you can tap, but in the background it grabs that same package.
 
-If you're using a Debian-based linux distribution (e.g. Ubuntu), run the following command:
+### Debian/Ubuntu Linux
+
+If you're using a Debian-based linux distribution (e.g. Ubuntu), install the package `texlive`:
 
 ```
 sudo apt-get install texlive
 ```
+
+Other distributions may have different package names.
+
+### Windows
+
+On windows, you can install the [MiKTeX](http://miktex.org/) project (although you won't be able to run
+`build.sh` to compiile the book, you'll need to run the relevant commands manually).
 
 ## Building the Book
 
@@ -128,7 +140,7 @@ Once you have LaTeX run the following command from within the book directory:
 ./build.sh
 ```
 
-The book will be named something like "Consumer-Centric API Design vX.Y.Z.pdf".
+The book will be named something like `Consumer-Centric API Design vX.Y.Z.pdf`.
 
 ## Donations
 
