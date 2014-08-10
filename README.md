@@ -5,6 +5,8 @@ My goal is to eventually get it published (either self-published or through a pu
 One might think making content freely available while also planning on selling it would be disasterous,
 but hey, if it works for Trent Reznor surely it can work for me.
 
+![Cover and First Page Screenshot](resources/screenshot.png)
+
 Currently the book weighs in at about 55 pages. I like to think of it as covering content in a concise
 manner, but I'm sure it really just needs more content ;). I'd like to hit at least 100 pages, though
 that's not to say content needs to be watered down to fill more space.
