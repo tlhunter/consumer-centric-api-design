@@ -113,6 +113,11 @@ non-exclusive rights to do whatever we want with it. Sorry, legal stuff.
 
 ## Installing LaTeX
 
+Installing LaTeX will allow you to build the book yourself if you plan on contributing. However, it is
+not necessary that you have LaTeX installed nor that your content properly adheres to the spec. If you
+don't want to go through the effort to learn it, simply toss some content where you think it should go,
+submit a pull request, and I'll look it over and make the necessary modifications.
+
 ### OS X
 
 There's a convenient package you can install called [MacTeX](https://tug.org/mactex/).
