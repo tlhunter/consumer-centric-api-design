@@ -1,13 +1,15 @@
 # Consumer-Centric API Design
 
-This is a book I started writing in early 2014 (January 1st, according to the commit history).
-My goal is to eventually get it published (either self-published or through a publisher) and sell copies.
-One might think making content freely available while also planning on selling it would be disasterous,
-but hey, if it works for Trent Reznor surely it can work for me.
+This book covers a wide range of information regarding the design of HTTP-based APIs. The intent is to
+build easy-to-use APIs which your consumers will love. Everything from URL design and consistent usage
+of HTTP methods to more esoteric topics such as authentication paradigms and permissions are covered.
 
-Currently the book weighs in at about 55 pages. I like to think of it as covering content in a concise
-manner, but I'm sure it really just needs more content ;). I'd like to hit at least 100 pages, though
-that's not to say content needs to be watered down to fill more space.
+My goal is to eventually get this published (either self-published or through a publisher) and sell copies.
+One might think making content freely available while also planning on selling it would be disasterous,
+but hey, if it works for Trent Reznor perhaps it can work for me.
+
+The book is currently around 55 pages long. If there is any content you feel the book is missing, please
+submit a question in the form of an issue and I'll go ahead and write about it!
 
 ## Downloading PDFs
 
