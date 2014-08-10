@@ -15,6 +15,7 @@ that's not to say content needs to be watered down to fill more space.
 
 ## Table of Contents
 
+```
 1 The Basics
 1.1 Data Design and Abstraction
 1.1.1 Examples of Abstraction
@@ -87,6 +88,7 @@ that's not to say content needs to be watered down to fill more space.
 5.3 Alternatives to REST
 5.3.1 JSON RPC
 5.3.2 SOAP
+```
 
 ## Contributing
 
