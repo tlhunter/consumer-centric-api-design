@@ -45,7 +45,7 @@ Here is a list of HTTP Methods, as well as which CRUD operation they represent, 
     \end{itemize}
 \end{itemize}
 
-Here are two lesser-known HTTP Methods. Feel free to use them in your API, however if they are not present in the API, nobody is going to miss them.
+Here are two lesser-known HTTP Methods. While it isn't always necessary that they be implemented in your API, in some situations (such as API's accessed via web browser from a different domain), their inclusion is mandatory.
 
 \begin{itemize}
 \item \textbf{HEAD}
@@ -58,6 +58,7 @@ Here are two lesser-known HTTP Methods. Feel free to use them in your API, howev
 \item \textbf{OPTIONS}
     \begin{itemize}
     \item Retrieve information about what the Consumer can do with the Resource
+    \item Modern browsers precede all \href{http://www.w3.org/TR/cors/}{CORS} requests with an OPTIONS request
     \item Considered \emph{Safe}: this request should not alter server state
     \item Considered \emph{Idempotent}: duplicate subsequent requests should be side-effect free
     \end{itemize}
