@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$1" == "--clean" ]; then
+    rm -f book.{aux,bbl,blg,log,out,toc}
+    exit
+fi
+
 # If the book doesn't get built multiple times,
 # the ToC ends up missing information.
 

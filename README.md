@@ -94,14 +94,14 @@ _Screenshot from Evince highlighting hyperlinks_
     1 Web-Based Developer Console
     2 Providing cURL Commands
 
-5 Beyond REST
-  1 Hypermedia APIs: REST Evolved
+5 HTTP API Standards
+  1 Hypermedia API's
     1 ATOM: An Early Hypermedia API
   2 Response Document Standards
     1 JSON Schema
     2 JSON API
     3 Siren
-  3 Alternatives to REST
+  3 Alternatives to URL-based API's
     1 JSON RPC
     2 SOAP
 ```
