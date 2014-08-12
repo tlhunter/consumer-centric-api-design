@@ -2,7 +2,7 @@
 
 \section{Data Design and Abstraction}
 
-Designing a \href{http://en.wikipedia.org/wiki/Restful}{RESTful API} means abstracting the intricate business-logic and data your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions behind the scenes such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
+Designing a friendly HTTP API means abstracting the intricate business-logic and data your service uses into the four basic CRUD concepts (\emph{Create}, \emph{Read}, \emph{Update}, \emph{Delete}). Your application may perform many complex actions behind the scenes such as sending a text message or resizing an image or moving a file, but if you do enough planning and abstraction, everything can be represented as CRUD.
 
 Architecting your API begins earlier than you may think; first you need to decide how your data will be stored and how your service/application functions. If you're practicing \href{http://blog.pop.co/post/67465239611/why-we-chose-api-first-development}{API-First Development} \cite{APIFIRST} this is all part of the process. However, if you're bolting an API onto an existing project, you will have more abstraction to take care of.
 
@@ -20,7 +20,7 @@ Don't worry too much about the technical parts of the examples as we'll cover th
 
 \subsubsection{Good Abstraction}
 
-Here's a clean and simple RESTful approach for sending a notification.
+Here's a clean and simple approach for sending a notification.
 
 \paragraph{\textbf{Creating a Notification}}
 
@@ -49,7 +49,7 @@ In the example response, we do have a \texttt{medium} attribute which represents
 
 \subsubsection{Bad Abstraction}
 
-This example will include numerous shortcomings, and is an easy approach to take by the novice RESTful API architect.
+This example will include numerous shortcomings, and is an easy approach to take by the novice HTTP API architect.
 
 \paragraph{\textbf{Getting User Preference}}
 
@@ -78,7 +78,7 @@ POST /users/12/send_{medium}
 }
 \end{verbatim}
 
-These second and third endpoints (assuming \texttt{\{medium\}} can represent \texttt{email} or \texttt{text}) have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these actionable endpoints is a common mistake among developers intending to build a RESTful API.
+These second and third endpoints (assuming \texttt{\{medium\}} can represent \texttt{email} or \texttt{text}) have the same problem as the previous endpoint wherein the action is part of the URL (in this case \texttt{send}). These endpoints don't represent data, as the previous one did, they specifically represent an action. Building APIs with these actionable endpoints is a common mistake among developers intending to build an HTTP API.
 
 Another issue with this example is that the business-logic for determining which method of notification to use is left for the Consumer to decide! Sure, the Consumer can make a request to get the users preference, but what if they intentionally ignore it? Or suppose the Consumer caches the preference and it becomes outdated? Either way users are bound to get notified in a manner they didn't choose.
 
@@ -92,22 +92,22 @@ Let's look at some real-world examples of how popular APIs do their data abstrac
 
 \subsubsection{GitHub: An Ideal Example}
 
-The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted RESTful API. Each of the popular HTTP verbs are used where applicable. Endpoints don't have verbs in the name. Interacting with an endpoint feels much like one is working with a representation of an object, instead of performing actions.
+The current GitHub v3 API \cite{GITHUBAPI} is a beautiful example of a properly-abstracted HTTP API. Each of the popular HTTP verbs are used where applicable. Endpoints don't have verbs in the name. Interacting with an endpoint feels much like one is working with a representation of an object, instead of performing actions.
 
 An example of a good endpoint is \texttt{GET /repos/\{user\_id\}/\{repo\_id\}/notifications}. This is obviously the endpoint used for getting a list of notifications of a particular repository. The \texttt{\{user\_id\}/\{repo\_id\}} convention for referring to a repository is one understood by most users of GitHub (repository names aren't globally unique, only unique to a particular user). The only thing that could be improved may be to not shorten \texttt{repositories} to \texttt{repos} and \texttt{organizations} to \texttt{orgs} in the names of endpoints, although \texttt{repo} is well understood.
 
 \subsubsection{Twitter: A Flawed Example}
 
-The current Twitter v1.1 API \cite{TWITTERAPI} has some abstraction shortcomings with their data and business-logic, as far as being a RESTful API is concerned. The API only makes use of the GET and POST methods for interacting with data. Due to this shortcoming, most endpoint names are a pair of noun and verbs.
+The current Twitter v1.1 API \cite{TWITTERAPI} has some abstraction shortcomings with their data and business-logic, as far as being an HTTP API is concerned. The API only makes use of the GET and POST methods for interacting with data. Due to this shortcoming, most endpoint names are a pair of noun and verbs.
 
-One such example is \texttt{POST /statuses/destroy/\{status\_id\}}, used for deleting a status. The RESTful version of this endpoint would be \texttt{DELETE /statuses/\{status\_id\}}. Also worth noting is the differentiation of \texttt{POST /statuses/update\_with\_media} and \texttt{POST /statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior allows for the attachment of media. These two endpoints should be combined into a single \texttt{POST /statuses}, with the media related attributes being optional.
+One such example is \texttt{POST /statuses/destroy/\{status\_id\}}, used for deleting a status. A cleaner version of this endpoint would be \texttt{DELETE /statuses/\{status\_id\}}. Also worth noting is the differentiation of \texttt{POST /statuses/update\_with\_media} and \texttt{POST /statuses/update}. Both of these endpoints are used for creating a new tweet, however the prior allows for the attachment of media. These two endpoints should be combined into a single \texttt{POST /statuses}, with the media related attributes being optional.
 
 These endpoints are also an example of a bad nomenclature. Users of Twitter don't think of using the service as \emph{updating their status}, they think of it as \emph{tweeting}. This is something that may have changed throughout the lifetime of the service, and if so would be a good candidate to change between API versions. The Collection used by the aforementioned Endpoints would therefor be better named \texttt{tweets}.
 
 
 \section{Anatomy of an HTTP Message}
 
-Since all RESTful API traffic happens over HTTP, let's examine some raw HTTP messages. It's surprising how many developers who have been building websites for years don't know what an HTTP message looks like! When the Consumer sends a request to the Server, it provides a Request-Line and a set of Key/Value pairs called headers. For POST, PUT, and PATCH requests it also provides two newlines and then the the request body. All This information is sent in the same HTTP request (although this request can be broken up into multiple network packets if the message is large enough).
+Since HTTP is the protocol we're using to build our API, let's examine some raw HTTP messages. It's surprising how many developers who have been building websites for years don't know what an HTTP message looks like! When the Consumer sends a request to the Server, it provides a Request-Line and a set of Key/Value pairs called headers. For POST, PUT, and PATCH requests it also provides two newlines and then the the request body. All This information is sent in the same HTTP request (although this request can be broken up into multiple network packets if the message is large enough).
 
 The Server then replies in a similar format, first with a Status-Line and headers, and typically two newlines followed by a body (the body is technically optional, as you'll find out later). HTTP is very much a request/response protocol; there is no \emph{push} support (the Server does not send data to the Consumer unprovoked). To do that you would need to use a different protocol such as Websockets.
 
@@ -146,7 +146,7 @@ Cache-Control: no-cache
 
 \subsection{Debugging HTTP Traffic}
 
-\href{http://getpostman.com/}{Postman} (a Google Chrome extension) is an excellent tool for interacting with a RESTful API. As seen in Figure ~\ref{fig:postman}, Postman provides a powerful yet easy-to-use interface for building API requests, as well as debugging the content of API responses. It also provides many advanced features regarding authentication (which we'll cover in later chapters).
+\href{http://getpostman.com/}{Postman} (a Google Chrome extension) is an excellent tool for interacting with an HTTP API. As seen in Figure ~\ref{fig:postman}, Postman provides a powerful yet easy-to-use interface for building API requests, as well as debugging the content of API responses. It also provides many advanced features regarding authentication (which we'll cover in later chapters).
 
 \begin{figure}[ht!]
 \centering
@@ -212,4 +212,4 @@ A URI Template is a compact sequence of characters for describing a range of Uni
 
 Information about the currently-authenticated user can also be placed in the root of the API. As an example, either the user ID or URL to the user would make a great candidate. If you take a similar approach to what GitHub does, one of the keys could be \texttt{current\_user}, and the value could be a URL to the \texttt{users} endpoint pre-populated with the current users \texttt{user\_id}.
 
-It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these would contradict the existing RESTful URL patterns the rest of the API adheres to.
+It may be tempting to create an endpoint called \texttt{/user} or \texttt{/users/me} for accessing information about the current user, but these would contradict the existing URL patterns the rest of the API adheres to.

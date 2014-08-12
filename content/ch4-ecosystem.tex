@@ -16,13 +16,13 @@ Over time you can deprecate old versions of the API. To deprecate a feature does
 
 \subsection{Requesting a Specific Version}
 
-There are three common methods RESTful APIs use for communicating which version of the API to use.
+There are three common methods HTTP APIs use for communicating which version of the API to use.
 
 \subsubsection{Versioning via a URL Segment}
 
 The method which is the easiest for most Consumers to handle to to add a URL segment after the root location of the API and the specific Endpoints. Changing the URL is the easiest thing a developer can do.
 
-The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good REST principles. However, the two URLs likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
+The most common argument against this approach is that \texttt{/v1/users} and \texttt{/v2/users} supposedly represent the same data, and using redundant URLs for the same data violates good HTTP design principles. However, the two URLs likely \emph{do not} represent the same data, as one could be abstracting data completely different than the other. There's also no guarantee endpoints will be named the same between versions.
 
 \begin{verbatim}
 https://api.example.org/v1/*
@@ -34,7 +34,7 @@ LinkedIn, and Google+ use a \texttt{v} and an integer (e.g. \texttt{/v3/}). Drop
 
 \subsubsection{Versioning via the Accept Header}
 
-Another method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as REST is concerned.
+Another method is to use a custom Accept header, where the Consumer specifies the type of content they are expecting along with the version of the API. This method may be the \emph{purest} as far as API design is concerned.
 
 The Accept header offers a way to specify generic and less generic content types, as well as specifying fall-backs. In the example below, we are requesting a more specific version of JSON, conceptually, Version 1 of the API JSON.
 

@@ -2,7 +2,7 @@
 
 \section{HTTP Status Codes}
 
-It is vital that a RESTful API makes use of the proper HTTP Status Codes; they are a standard after all! Various networking equipment is able to read these Status Codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out too many errors. Client libraries understand if a request has succeeded or failed depending on the Status Code.
+It is vital that an HTTP API makes use of the proper HTTP Status Codes; they are a standard after all! Various networking equipment is able to read these Status Codes, e.g. load balancers can be configured to avoid sending requests to a web server sending out too many errors. Client libraries understand if a request has succeeded or failed depending on the Status Code.
 
 \begin{quote}
 The first line of a Response message is the Status-Line, consisting of the protocol version followed by a numeric status code and its associated textual phrase, with each element separated by SP characters. No CR or LF is allowed except in the final CRLF sequence. \cite{RFC2616}
@@ -79,7 +79,7 @@ The \textbf{5XX} range is reserved as a response when the Server makes a mistake
 
 \section{Content Types}
 
-Currently, the most \emph{exciting} of APIs provide JSON data from RESTful interfaces. This includes Facebook, Twitter, GitHub, etc. XML appears to have lost the popularity contest a while ago (save for large corporate environments). SOAP, thankfully, is all but dead. We really don't see many APIs providing HTML to be consumed (except for web scrapers).
+Currently, the most \emph{exciting} of APIs provide JSON data via HTTP. This includes Facebook, Twitter, GitHub, etc. XML appears to have lost the popularity contest a while ago (save for large corporate environments). SOAP, thankfully, is all but dead. We really don't see many APIs providing HTML to be consumed (except for web scrapers).
 
 Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emph{JSON API}, \emph{XML API}, and \emph{SOAP API}. This should provide an understanding of how their popularities have changed over time.
 
@@ -103,7 +103,7 @@ When a Consumer makes a request to the Server, something needs to be returned as
 
 \subsubsection{GET /\{collection\}}
 
-When performing a GET request to an entire Collection, the Consumer expects an array of Resources to be returned. In the simplest form of RESTful APIs, this consists of a single JSON array containing a homogeneous list of resources.
+When performing a GET request to an entire Collection, the Consumer typically expects an array of Resources to be returned. In the simplest form of HTTP APIs, this consists of a single JSON array containing a homogeneous list of resources.
 
 \begin{verbatim}
 [
@@ -124,7 +124,7 @@ When performing a GET request to an entire Collection, the Consumer expects an a
 
 \subsubsection{GET /\{collection\}/\{resource\_id\}}
 
-When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple RESTful API, this is just the resource as a top level JSON object.
+When performing a GET request for a specific resource, the Consumer is expecting to receive the resource object. In a simple HTTP API, this is just the resource as a top level JSON object.
 
 \begin{verbatim}
 {
@@ -137,7 +137,7 @@ When performing a GET request for a specific resource, the Consumer is expecting
 
 \subsubsection{POST /\{collection\}}
 
-When performing a POST request to a Collection, the Consumer expects the resource it just created to be returned. In the ideal academic REST API, the object being provided is exactly the same as the object being returned. However, there is very important information being returned to the Consumer which it doesn't already know, such as the \texttt{resource\_id} and other calculated attributes such as timestamps.
+When performing a POST request to a Collection, the Consumer expects the resource it just created to be returned. In the ideal HTTP API, the object being provided is exactly the same as the object being returned. However, there is very important information being returned to the Consumer which it doesn't already know, such as the \texttt{resource\_id} and other calculated attributes such as timestamps.
 
 \begin{verbatim}
 {
