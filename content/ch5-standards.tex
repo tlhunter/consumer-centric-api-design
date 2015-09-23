@@ -40,7 +40,8 @@ Now, imagine that these disparate tools by different companies can work with eac
     <link href="http://example.org/2003/12/13/atom03" />
     <link rel="alternate" type="text/html"
         href="http://example.org/2003/12/13/atom03.html"/>
-    <link rel="edit" href="http://example.org/2003/12/13/atom03/edit"/>
+    <link rel="edit"
+        href="http://example.org/2003/12/13/atom03/edit"/>
     <id>urn:uuid:1225c695-cfb8-4ebb-aaaa-80da344efa6a</id>
     <updated>2003-12-13T18:30:02Z</updated>
     <summary>Some text.</summary>
@@ -159,9 +160,8 @@ The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a s
         "customerId": "pj123",
         "name": "Peter Joseph"
       },
-      "links": [
-        {"rel":["self"],"href":"http://api.x.io/customers/pj123"}
-      ]
+      "links": [ {"rel":["self"],
+        "href":"http://api.x.io/customers/pj123"} ]
     }
   ],
   "actions": [
@@ -172,16 +172,16 @@ The \href{http://sirenspec.org}{Siren Hypermedia} \cite{SIREN} spec provides a s
       "href": "http://api.x.io/orders/42/items",
       "type": "application/x-www-form-urlencoded",
       "fields": [
-        { "name": "orderNumber", "type": "hidden", "value":"42"},
+        {"name":"orderNumber","type":"hidden","value":"42"},
         { "name": "productCode", "type": "text" },
         { "name": "quantity", "type": "number" }
       ]
     }
   ],
   "links": [
-    { "rel": [ "self" ], "href": "http://api.x.io/orders/42" },
-    { "rel": [ "previous" ], "href": "http://api.x.io/orders/41" },
-    { "rel": [ "next" ], "href": "http://api.x.io/orders/43" }
+    { "rel": [ "self" ], "href":"http://api.x.io/orders/42"},
+    {"rel":["previous"],"href":"http://api.x.io/orders/41"},
+    { "rel": [ "next" ],"href": "http://api.x.io/orders/43"}
   ]
 }
 \end{verbatim}
@@ -210,7 +210,7 @@ JSON RPC also has mechanisms for sending batches of operations at once, and in s
 \subsubsection{Example JSON RPC Request}
 
 \begin{verbatim}
-{"jsonrpc": "2.0", "method": "subtract", "params": [42, 23], "id": 1}
+{"jsonrpc":"2.0","method":"subtract","params":[42,23],"id":1}
 \end{verbatim}
 
 \subsubsection{Example JSON RPC Response}

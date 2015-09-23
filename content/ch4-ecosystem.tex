@@ -66,7 +66,7 @@ As you can tell in Figure \ref{fig:twolegged}, the concept of Two-Legged Authent
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=60mm]{images/two-legged.eps}
+\includegraphics[width=1.75in]{images/two-legged.eps}
 \caption{Two-Legged Authentication (2LA)}
 \label{fig:twolegged}
 \end{figure}
@@ -77,13 +77,13 @@ Modern websites make use of sessions for handling this state, where a session id
 The introduction of site-wide state information in the form of HTTP cookies is an example of an inappropriate extension to the protocol. Cookie interaction fails to match REST’s application state model, often resulting in confusion for the typical browser application.\cite[Page 145]{ACMV2N2}
 \end{quote}
 
-The HTTP protocol conveniently gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
+The HTTP protocol gives us a header called \texttt{Authorization} for passing around this sort of information. While there are many different ways to do API authorization, many of them make use of this header in some manner.
 
 \subsubsection{Basic HTTP Authentication}
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/basic-http-auth.png}
+\includegraphics[width=3.8in]{images/basic-http-auth.png}
 \caption{Basic HTTP Authentication Dialog in FireFox}
 \label{fig:basichhtpauth}
 \end{figure}
@@ -131,7 +131,7 @@ You can always invent your own method of auth where you supply the Consumer with
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=60mm]{images/three-legged.eps}
+\includegraphics[width=1.75in]{images/three-legged.eps}
 \caption{Three-Legged Authentication (3LA)}
 \label{fig:threelegged}
 \end{figure}
@@ -192,7 +192,7 @@ Regarding \emph{3LA}, the Consumer needs to have the ability to specify which re
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=120mm]{images/permissions-twitter.png}
+\includegraphics[width=3.8in]{images/permissions-twitter.png}
 \caption{Twitter OAuth Permissions}
 \label{fig:twitteroauth}
 \end{figure}
@@ -229,7 +229,7 @@ When a Consumer registers their application with your Server, assuming permissio
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=150mm]{images/permissions-consumer.png}
+\includegraphics[width=3.8in]{images/permissions-consumer.png}
 \caption{Copy.com Default Consumer Permissions}
 \label{fig:copypermissions}
 \end{figure}
@@ -253,7 +253,8 @@ X-RateLimit-Reset: 1377013266
 
 {
     "message": "API rate limit exceeded. \
-        See http://developer.github.com/v3/#rate-limiting for details."
+        See http://developer.github.com/v3/ \
+        #rate-limiting for details."
 }
 \end{verbatim}
 
@@ -268,7 +269,7 @@ If you can, try to keep track of a matrix worth of analytics data. For example, 
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=120mm]{images/apigee-analytics.png}
+\includegraphics[width=3.8in]{images/apigee-analytics.png}
 \caption{Screenshot of Apigee Analytics}
 \label{fig:apigee}
 \end{figure}
@@ -303,7 +304,7 @@ A Web-based developer console, e.g. Figure \ref{fig:devconsole}, will allow deve
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/api-console.png}
+\includegraphics[width=3.8in]{images/api-console.png}
 \caption{Example API Console}
 \label{fig:devconsole}
 \end{figure}
@@ -328,9 +329,9 @@ This is the example cURL command displayed on the Mailgun homepage \cite{MAILGUN
 
 \begin{verbatim}
 curl -s --user 'api:key-3ax6xnjp29jd6fds4gc373sgvjxteol0' \
-    https://api.mailgun.net/v2/samples.mailgun.org/messages \
-    -F from='Excited User <excited@samples.mailgun.org>' \
-    -F to='devs@mailgun.net' \
-    -F subject='Hello' \
-    -F text='Testing some Mailgun awesomeness!'
+  https://api.mailgun.net/v2/samples.mailgun.org/messages \
+  -F from='Excited User <excited@samples.mailgun.org>' \
+  -F to='devs@mailgun.net' \
+  -F subject='Hello' \
+  -F text='Testing some Mailgun awesomeness!'
 \end{verbatim}

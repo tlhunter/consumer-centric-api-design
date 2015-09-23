@@ -85,7 +85,7 @@ Figure ~\ref{fig:googletrends} is a Google Trends graph comparing the terms \emp
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/xml-vs-json-vs-soap-google-trends.png}
+\includegraphics[width=3.8in]{images/xml-vs-json-vs-soap-google-trends.png}
 \caption{Google Trends for JSON API, XML API, and SOAP API}
 \label{fig:googletrends}
 \end{figure}
@@ -302,7 +302,7 @@ PUT /v1/users/1
   "fields": [
     {
       "field": "age",
-      "error_human": "Age must be a number between 1 and 100",
+      "error_human":"Age must be a number between 1 and 100",
       "error_code": "integer_validation"
     }
   ]
@@ -356,7 +356,7 @@ Many APIs I've seen include the use of numeric error codes. For example, if ther
 The Stripe API \cite[\#Errors]{STRIPEAPI} makes great use of error strings for conveying error codes. One such example is \texttt{expired\_card}, which as a third-party developer, you immediately know that the user-supplied card has expired.
 
 
-\section{Responses should Resemble Requests}
+\section{Responses should Mimic Requests}
 
 As a general rule, a Response resource structure should closely resemble the equivalent Request resource. This means that the same attribute names and values are used for Requests as well as Responses.
 
