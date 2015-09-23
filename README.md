@@ -130,7 +130,13 @@ submit a pull request, and I'll look it over and make the necessary modification
 
 ### OS X
 
-There's a convenient package you can install called [MacTeX](https://tug.org/mactex/).
+There's a convenient package you can install called [MacTeX](https://tug.org/mactex/). Once you install
+MacTeX, you'll want to add it's directory to your PATH, e.g. append the following to `.bash_profile`:
+
+```bash
+PATH="$PATH:/usr/texbin"
+export PATH
+```
 
 There's also a homebrew cask you can tap, but in the background it grabs that same package.
 
