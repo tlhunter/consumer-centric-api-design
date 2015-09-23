@@ -150,7 +150,7 @@ Cache-Control: no-cache
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/postman.png}
+\includegraphics[width=3.8in]{images/postman.png}
 \caption{Postman Screenshot}
 \label{fig:postman}
 \end{figure}
@@ -161,7 +161,7 @@ Figure ~\ref{fig:wireshark} is an example of a complex HTTP request from a form 
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[height=100mm]{images/wireshark.png}
+\includegraphics[height=3in]{images/wireshark.png}
 \caption{Wireshark Screenshot}
 \label{fig:wireshark}
 \end{figure}
@@ -197,9 +197,11 @@ Here's a truncated list of the content provided by the \href{https://api.github.
 \begin{verbatim}
 {
   "current_user_url": "https://api.github.com/user",
-  "authorizations_url": "https://api.github.com/authorizations",
+  "authorizations_url":
+    "https://api.github.com/authorizations",
   "emails_url": "https://api.github.com/user/emails",
-  "starred_url": "https://api.github.com/user/starred{/owner}{/repo}",
+  "starred_url":
+    "https://api.github.com/user/starred{/owner}{/repo}",
   ...
 }
 \end{verbatim}

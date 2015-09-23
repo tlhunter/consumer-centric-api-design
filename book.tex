@@ -10,14 +10,50 @@
             pdfsubject={Creating consumer-friendly HTTP APIs.},
             pdfkeywords={HTTP, API, REST, RESTful, OAuth},
             pdfproducer={Latex},
-            pdfcreator={pdflatex}]{hyperref}
+            pdfcreator={pdflatex},
+            hidelinks]{hyperref}
 \usepackage{graphicx}
-\usepackage{hyperref}
 \usepackage{epstopdf}
 \usepackage{lib/wallpaper}
-\usepackage{geometry}
+\usepackage[margin=1in, paperwidth=6in, paperheight=9in]{geometry}
 \usepackage[utf8]{inputenc}
 \renewcommand\bibname{References}
+
+% Shrinks the size of VERBATIM text
+% http://tex.stackexchange.com/a/133442/44007
+\makeatletter
+\def\verbatim{\small\@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+\makeatother
+
+% Shrinks the top margin of the CONTENTS page
+% http://tex.stackexchange.com/a/62126/44007
+\usepackage{etoolbox}
+\makeatletter
+\let\oldtableofcontents\tableofcontents
+\renewcommand{\tableofcontents}{\begingroup%
+  \patchcmd{\@makeschapterhead}% <cmd>
+    {\vspace*{50\p@}}% <search>
+    {}% <replace>
+    {}{}% <success><failure>
+  \oldtableofcontents%
+  \endgroup%
+}
+\makeatother
+
+% Allow linebreaks within TEXTTT blocks
+% http://tex.stackexchange.com/a/219497/44007
+\renewcommand{\texttt}[1]{%
+  \begingroup
+  \ttfamily
+  \begingroup\lccode`~=`/\lowercase{\endgroup\def~}{/\discretionary{}{}{}}%
+  \begingroup\lccode`~=`[\lowercase{\endgroup\def~}{[\discretionary{}{}{}}%
+  \begingroup\lccode`~=`=\lowercase{\endgroup\def~}{=\discretionary{}{}{}}%
+  \begingroup\lccode`~=`\{\lowercase{\endgroup\def~}{\{\discretionary{}{}{}}%
+  \begingroup\lccode`~=`.\lowercase{\endgroup\def~}{.\discretionary{}{}{}}%
+  \catcode`/=\active\catcode`[=\active\catcode`.=\active
+  \scantokens{#1\noexpand}%
+  \endgroup
+}
 
 \begin{document}
 

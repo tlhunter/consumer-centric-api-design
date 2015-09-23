@@ -79,7 +79,7 @@ An Endpoint is a URL within your API which provides a method to interact with a 
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=12cm]{images/zoo-relationships.eps}
+\includegraphics[width=3.8in]{images/zoo-relationships.eps}
 \caption{Diagram of Relationships}
 \label{fig:zoorelationships}
 \end{figure}
@@ -145,7 +145,7 @@ Since these are GET requests on Collections, filters should be passed via URL pa
 \item \texttt{?sort\_attribute=name,asc}: Sort the results based on the specified attributes\newline{}(\texttt{ORDER BY name ASC})
 \end{itemize}
 
-Some filtering can be redundant with other endpoints. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\{zoo\_id\}}. Dedicated endpoints will make API consumption easier for developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
+Some filtering can be redundant with other endpoints. In the Endpoints section we had a \texttt{GET /zoo/\{zoo\_id\}/animals} Endpoint. This would be the same thing as \texttt{GET /animals?zoo\_id=\hspace{0pt}\{zoo\_id\}}. Dedicated endpoints will make API consumption easier for developers. This is especially true with requests you anticipate will be made frequently. In the documentation, mention this redundancy so that developers aren't left wondering what the differences is.
 
 
 \section{White-Listing Attributes}
@@ -197,7 +197,8 @@ GET http://api.example.org/user/12
 \paragraph{\textbf{Resulting SQL Query}}
 
 \begin{verbatim}
-SELECT * FROM user LEFT JOIN user_desc ON user.id = user_desc.id WHERE user.id = 12;
+SELECT * FROM user LEFT JOIN user_desc ON
+    user.id = user_desc.id WHERE user.id = 12;
 \end{verbatim}
 
 \paragraph{\textbf{Response Body}}
@@ -259,16 +260,16 @@ POST /file_upload HTTP/1.1
 Host: example.com
 Content-Length: 275
 Accept: text/html
-Content-Type: multipart/form-data; boundary=----RANDOM_jDMUxq4Ot5
+Content-Type: multipart/form-data; boundary=----RANDOM_jDMUxq
 
-------RANDOM_jDMUxq4Ot5
-Content-Disposition: form-data; name="file"; filename="hello.txt"
+------RANDOM_jDMUxq
+Content-Disposition: form-data; name="file"; filename="h.txt"
 Content-Type: application/octet-stream
 
 Hello World
-------RANDOM_jDMUxq4Ot5
+------RANDOM_jDMUxq
 Content-Disposition: form-data; name="some_checkbox"
 
 on
-------RANDOM_jDMUxq4Ot5--
+------RANDOM_jDMUxq--
 \end{verbatim}
