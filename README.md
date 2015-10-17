@@ -11,6 +11,12 @@ but hey, if it works for Trent Reznor perhaps it can work for me.
 The book is currently around 55 pages long. If there is any content you feel the book is missing, please
 submit a question in the form of an issue and I'll go ahead and write about it!
 
+## Buy a Physical Copy
+
+A physical copy of this book is now available for purchase via Amazon! If you would like to support
+this project please consider purchasing a copy:
+[Consumer Centric API Design on Amazon](http://amzn.to/1kcwhCo) ($14)
+
 ## Downloading PDFs
 
 [Download Book Builds Here](https://thomashunter.name/consumer-centric-api-design/)
@@ -164,13 +170,6 @@ Once you have LaTeX run the following command from within the book directory:
 ```
 
 The book will be named something like `Consumer-Centric API Design vX.Y.Z.pdf`.
-
-## Donations
-
-Donations help fund the time I've spent on the project (as well as validate I should keep going).
-
-* [GitTip/tlhunter](https://www.gittip.com/tlhunter/)
-* Bitcoin: `16XGDMMDFFWrL2qsbTUjyK97zK6uiM5fYC`
 
 ## License
 
