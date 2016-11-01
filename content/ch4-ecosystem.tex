@@ -241,7 +241,7 @@ Ideally, your Server could even allow for both of these mechanisms to work in pa
 
 Rate limiting is a feature which can be implemented in an API to prevent Consumers from making diminishing Server stability by making too many requests. Consumers can be given a limit on the number of requests they make. This limit could be per-Consumer, per-User-per-Consumer, or whatever you decide. If limits are per-Consumer, depending on how much your Server trusts the Consumer, the limits could be higher. Some services even offer a subscription fee for increasing this limit.
 
-If your API makes use of rate limits, be sure information about the limit can be accesses programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
+If your API makes use of rate limits, be sure information about the limit can be accessed programmatically. The following is an example of how GitHub conveys rate limit information to third parties with the introduction of \texttt{X-RateLimit} headers. The \texttt{-Limit} header represents the total limit per period of time, \texttt{-Remaining} is how many requests remain to be made during this period of time, and \texttt{-Reset} is a timestamp for when the period resets.
 
 \begin{verbatim}
 HTTP/1.1 403 Forbidden

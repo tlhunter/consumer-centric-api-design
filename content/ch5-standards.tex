@@ -20,7 +20,7 @@ JSON doesn't quite give us the semantics we need for specifying which attributes
 
 Imagine a tool on the internet that you want to use. It could be Google Calendar, or Meetup, or Facebook Events. Also imagine that you want to use other tools too, like email or instant messengers. Normally, integrations between tools are only convenient if you're using a massive suite of tools, such as what is offered by Microsoft or Google. As an example, Google Mail integrates very tightly with Google Calendar and Google+ to provide a seamless user experience.
 
-Now, imagine that these disparate tools by different companies can work with each other as tightly as these massive suites of tools. Often times when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could theoretically work automatically, with the different services discovering each other and configuring themselves to play nicely. This is a future offered by hypermedia-based APIs.
+Now, imagine that these disparate tools by different companies can work with each other as tightly as these massive suites of tools. Often times when a company builds a single product it is better than the equivalent component of a larger suite. This combination of specific, well-built tools working seamlessly with other services becomes the best of both worlds! The process could theoretically work automatically, with the different services discovering each other and configuring themselves to play nicely. This is a feature offered by hypermedia-based APIs.
 
 \subsection{ATOM: An Early Hypermedia API}
 
@@ -64,7 +64,7 @@ For example, if making a filtered request limits a Collection response to contai
 
 \subsection{JSON Schema}
 
-\href{http://json-schema.org/}{JSON Schema} \cite{JSONSCHEMA} provides a method for describing the attributes provided by a API endpoints. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, a Consumer could easily automate data validation and generation of CRUD forms.
+\href{http://json-schema.org/}{JSON Schema} \cite{JSONSCHEMA} provides a method for describing the attributes provided by an API endpoint. This description is written in JSON in such a way as to be both human-readable and easy to work with programmatically. Using JSON Schema, a Consumer could easily automate data validation and generation of CRUD forms.
 
 \subsubsection{Example JSON Schema Document}
 
@@ -93,7 +93,7 @@ For example, if making a filtered request limits a Collection response to contai
 
 The \href{http://jsonapi.org/}{JSON API} \cite{JSONAPI} spec provided a standardized format for structuring response documents by introducing some reserved attributes which have special meaning (e.g. \texttt{id} must be used for identifying a resource, a convention we've been otherwise following).
 
-An notable feature of JSON API is that is also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating the Consumers next request(s).
+An notable feature of JSON API is that it also provides a method for returning not only a requested resource but also other resources which it depends on, as if anticipating the Consumers next request(s).
 
 \subsubsection{Example JSON API Document}
 
