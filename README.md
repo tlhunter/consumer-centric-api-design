@@ -151,7 +151,7 @@ There's also a homebrew cask you can tap, but in the background it grabs that sa
 If you're using a Debian-based linux distribution (e.g. Ubuntu), install the package `texlive`:
 
 ```
-sudo apt-get install texlive
+sudo apt-get install texlive texlive-latex-extra texlive-font-utils
 ```
 
 Other distributions may have different package names.
