@@ -19,7 +19,7 @@ this project please consider purchasing a copy:
 
 ## Downloading PDFs
 
-[Download Book Builds Here](https://thomashunter.name/consumer-centric-api-design/)
+[Download Book Builds Here](https://github.com/tlhunter/consumer-centric-api-design/tree/master/pdf)
 
 The PDFs make heavy usage of hyperlinking within the document. The Table of Contents, for example, link
 to relevant sections. References to figures will link to the figure. References will link to more
